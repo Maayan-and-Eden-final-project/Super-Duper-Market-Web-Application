@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" stylesheets="@../resources/blueSkin/welcome.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.welcomeScene.WelcomeController">
+   <content>
+      <BorderPane>
+         <center>
+            <VBox fx:id="welcomePane" alignment="CENTER" fillWidth="false" prefHeight="400.0" prefWidth="600.0" spacing="15.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="150.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+                     <VBox.margin>
+                        <Insets bottom="42.0" />
+                     </VBox.margin>
+                     <image>
+                        <Image url="@../resources/superDuperMarketLogo.png" />
+                     </image>
+                  </ImageView>
+                  <Button fx:id="loadXmlButton" minHeight="45.0" minWidth="129.0" mnemonicParsing="false" onAction="#openFileButtonAction" prefHeight="45.0" prefWidth="129.0" styleClass="menuButton" text="Load Xml File">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Button>
+                  <HBox alignment="CENTER" minWidth="-Infinity" spacing="10.0">
+                     <children>
+                        <ProgressBar fx:id="progressBar" prefWidth="208.0" progress="0.0" visible="false">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </ProgressBar>
+                        <Label fx:id="progressLabel" text="Label" visible="false" />
+                     </children>
+                     <VBox.margin>
+                        <Insets left="30.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="30.0" left="30.0" right="30.0" />
+                     </padding>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets top="30.0" />
+               </padding>
+            </VBox>
+         </center>
+      </BorderPane>
+   </content>
+</ScrollPane>

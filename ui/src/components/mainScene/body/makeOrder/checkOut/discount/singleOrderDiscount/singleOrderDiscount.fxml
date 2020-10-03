@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox fx:id="discountVbox" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" styleClass="information-grid"  xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.mainScene.body.makeOrder.checkOut.discount.singleOrderDiscount.SingleOrderDiscountController">
+   <children>
+      <HBox>
+         <children>
+            <Label fx:id="discountNameLabel" styleClass="information-label" text="Discount Name: " />
+            <Label fx:id="discountNameValue" styleClass="information-value" text="Label" />
+         </children>
+      </HBox>
+      <HBox>
+         <children>
+            <Label fx:id="youSelectedLabel" styleClass="information-label" text="You Selected: " />
+            <Label fx:id="youSelectedValue" styleClass="information-value" text="Label" />
+         </children>
+      </HBox>
+      <HBox>
+         <children>
+            <Label fx:id="youCanGetLabel" styleClass="information-label" text="You Can Get: " />
+            <Label fx:id="youCanGetValue" styleClass="information-value" text="Label" />
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</VBox>

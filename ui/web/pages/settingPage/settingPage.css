@@ -1,0 +1,41 @@
+.header-row {
+    background-color: #BED7D1;
+}
+
+#icon {
+    width:40%;
+}
+
+.image-icon {
+    text-align: center;
+    padding-top: 3%;
+    padding-bottom: 5%;
+}
+
+.container {
+    text-align: center;
+}
+
+.nav-tabs>li>a {
+    border-radius: 13px 13px 0 0;
+    margin-right: 7px;
+}
+
+a {
+    background-color: ghostwhite;
+    color: #308b80c7;
+
+}
+
+a:hover, a:focus {
+    background-color: #308b80c7 !important;
+    color: ghostwhite;
+    opacity: 70%;
+}
+
+.table-container {
+    margin: 0 3% 0 3%;
+}
+
+
+

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox fx:id="orderHeaderHbox" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="649.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.mainScene.body.makeOrder.orderHeader.OrderHeaderController">
+   <children>
+      <ComboBox fx:id="customerComboBox" minWidth="-Infinity" onAction="#selectingCustomerAction" prefWidth="137.0" promptText="Choose Customer" HBox.hgrow="ALWAYS">
+         <styleClass>
+            <String fx:value="combo-box" />
+            <String fx:value="combo-box-popup" />
+            <String fx:value="updateComboBox" />
+         </styleClass>
+      </ComboBox>
+      <DatePicker fx:id="orderDate" onAction="#selectingDateAction" promptText="Choose Date" HBox.hgrow="ALWAYS" />
+      <ComboBox fx:id="orderMethodComboBox" minWidth="-Infinity" onAction="#orderMethodAction" prefWidth="122.0" promptText="Static/Dynamic" HBox.hgrow="ALWAYS">
+         <styleClass>
+            <String fx:value="combo-box" />
+            <String fx:value="combo-box-popup" />
+            <String fx:value="updateComboBox" />
+         </styleClass>
+      </ComboBox>
+      <VBox fx:id="storeVbox" alignment="TOP_CENTER">
+         <children>
+            <ComboBox fx:id="storeComboBox" disable="true" minWidth="-Infinity" onAction="#selectingStoreAction" prefWidth="113.0" promptText="Choose Store">
+               <styleClass>
+                  <String fx:value="combo-box" />
+                  <String fx:value="combo-box-popup" />
+                  <String fx:value="updateComboBox" />
+               </styleClass>
+            </ComboBox>
+         </children>
+      </VBox>
+      <Button fx:id="displayItemsButton" mnemonicParsing="false" onAction="#displayItemsAction" styleClass="menuButton" text="Submit" HBox.hgrow="ALWAYS" />
+   </children>
+   <stylesheets>
+      <URL value="@orderHeader.css" />
+   </stylesheets>
+</HBox>

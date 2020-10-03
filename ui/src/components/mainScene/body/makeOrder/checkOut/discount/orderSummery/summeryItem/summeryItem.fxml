@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="information-grid"  xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.mainScene.body.makeOrder.checkOut.discount.orderSummery.summeryItem.SummeryItemController">
+  <columnConstraints>
+      <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
+      <ColumnConstraints hgrow="SOMETIMES" />
+    <ColumnConstraints hgrow="SOMETIMES" />
+    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="NEVER" />
+  </rowConstraints>
+   <children>
+      <Label fx:id="itemIdLabel" styleClass="information-label" text="Item Id:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Label fx:id="itemIdValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <Label fx:id="itemNameLabel" styleClass="information-label" text="Item Name: " GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Label fx:id="itemNameValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+      <Label fx:id="purchaseCategoryLabel" styleClass="information-label" text="Purchase Category:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Label fx:id="purchaseCategoryValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+      <Label fx:id="amountLabel" styleClass="information-label" text="Amount:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <Label fx:id="amountValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+      <Label fx:id="pricePerPieceLabel" styleClass="information-label" text="Price Per Piece:" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <Label fx:id="pricePerPieceValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+      <Label fx:id="totalItemPriceLabel" styleClass="information-label" text="Total Item Price:" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <Label fx:id="totalItemPriceValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+      <Label fx:id="isFromDiscountLabel" styleClass="information-label" text="Is From Discount:" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      <Label fx:id="isFromDiscountValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+   </children>
+</GridPane>

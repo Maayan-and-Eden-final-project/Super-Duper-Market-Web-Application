@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+
+  <GridPane fx:id="singleOrderGrid" hgap="10.0" styleClass="information-grid"  vgap="5.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.mainScene.body.storesData.singleOrder.SingleOrderController">
+      <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
+      </columnConstraints>
+      <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="NEVER" />
+      </rowConstraints>
+      <children>
+          <Label fx:id="dateLabel" styleClass="information-label" text="Date:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+          <Label fx:id="dateValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+          <Label fx:id="totalItemsLabel" styleClass="information-label" text="Total Items:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+          <Label fx:id="totalItemsValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+          <Label fx:id="totalItemsCostLabel" styleClass="information-label" text="Total Items Cost:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+          <Label fx:id="totalItemsCostValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+          <Label fx:id="totalDeliveryCostLabel" styleClass="information-label" text="Total Delivery Cost:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+          <Label fx:id="totalDeliveryCostValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+          <Label fx:id="totalCostLabel" styleClass="information-label" text="Total Cost:" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+          <Label fx:id="totalCostValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+      <Label fx:id="dynamicOrderIdLabel" layoutX="160.0" layoutY="174.0" styleClass="information-label" text="Dynamic Order Id:" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <Label fx:id="dynamicOrderIdValue" layoutX="11.0" layoutY="9.0" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+      </children>
+  </GridPane>

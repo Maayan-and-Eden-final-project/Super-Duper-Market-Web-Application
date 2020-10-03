@@ -1,0 +1,65 @@
+.not-selected {
+    -fx-border-color: red;
+}
+
+.headerPane {
+    -fx-background-color: #DECBE0;
+}
+
+.menuButton {
+    -fx-background-color: #DECBE0;
+    -fx-border-radius: 10px;
+    -fx-border-color: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-border-width: 2px;
+    -fx-background-radius: 10px;
+}
+
+.menuButton:hover {
+    -fx-background-color: #A897BC;
+}
+
+.menuButton:pressed {
+    -fx-background-color: #867996;
+}
+
+
+.updateComboBox .text{
+    -fx-fill: #FFFFFF;
+}
+
+.combo-box .arrow{
+    -fx-background-color: #FFFFFF;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #DECBE0 ;
+}
+
+
+.updateComboBox .combo-box-popup .list-cell:hover {
+    -fx-background-color: #867996 ;
+}
+
+.date-picker .text-field {
+    -fx-control-inner-background: #DECBE0 ;
+    -fx-prompt-text-fill: #FFFFFF;
+
+}
+
+#purpleSkin {
+    -fx-background-color: #A897BC;
+}
+
+#yellowSkin {
+    -fx-background-color: #FFAB28;
+}
+
+#blueSkin {
+    -fx-background-color: #2C8AB8;
+}
+
+
+

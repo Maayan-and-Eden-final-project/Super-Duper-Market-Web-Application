@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="8.0"  xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.mainScene.body.updateStoreItem.UpdateStoreItemController">
+   <children>
+      <HBox alignment="CENTER" spacing="10.0">
+         <children>
+            <ComboBox fx:id="chooseUpdateComboBox" onAction="#chooseUpdateAction" prefWidth="150.0" promptText="Choose Update">
+               <styleClass>
+                  <String fx:value="combo-box-popup" />
+                  <String fx:value="updateComboBox" />
+               </styleClass>
+            </ComboBox>
+            <ComboBox fx:id="chooseStoreComboBox" prefWidth="150.0" promptText="Choose Store">
+               <styleClass>
+                  <String fx:value="combo-box-popup" />
+                  <String fx:value="updateComboBox" />
+               </styleClass>
+            </ComboBox>
+            <ComboBox fx:id="chooseItemComboBox" prefWidth="150.0" promptText="Choose Item">
+               <styleClass>
+                  <String fx:value="combo-box-popup" />
+                  <String fx:value="updateComboBox" />
+               </styleClass>
+            </ComboBox>
+            <TextField fx:id="itemPriceTextField" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="75.0" promptText="New Price" />
+            <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateAction" styleClass="menuButton" text="Update" />
+         </children>
+      </HBox>
+      <Label fx:id="messageLabel" contentDisplay="RIGHT" text="Label" visible="false" />
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</VBox>

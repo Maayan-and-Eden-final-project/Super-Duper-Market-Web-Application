@@ -1,0 +1,40 @@
+.information-grid {
+    -fx-border-radius: 10px;
+    -fx-background-color: transparent;
+    -fx-border-color: #BED7D1;
+}
+
+.information-value {
+    -fx-text-fill: #504c4d;
+    -fx-font-family: Tahoma;
+}
+
+.information-label {
+    -fx-font-family: Tahoma;
+    -fx-text-fill: #ed5485 ;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.information-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+#storeDataVbox{
+    -fx-border-color: #82C2D0;
+    -fx-border-width: 1px;
+}
+
+.information-holder{
+    -fx-font-family: "Calibri Light";
+    -fx-text-fill: #2C8AB8;
+    -fx-font-size: 20px;
+}
+
+.discount-header {
+    -fx-font-family: Tahoma;
+    -fx-text-fill: #2C8AB8 ;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}

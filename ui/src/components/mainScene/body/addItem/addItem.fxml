@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.mainScene.body.addItem.AddItemController">
+   <children>
+      <HBox spacing="15.0">
+         <children>
+            <TextField fx:id="itemIdTextField" promptText="Item Id" />
+            <TextField fx:id="itemNameTextField" promptText="Item Name" />
+            <ComboBox fx:id="purchaseCategoryComboBox" prefWidth="150.0" promptText="Purchase Category">
+               <styleClass>
+                  <String fx:value="combo-box-popup" />
+                  <String fx:value="updateComboBox" />
+               </styleClass>
+            </ComboBox>
+         </children>
+      </HBox>
+      <Label fx:id="messageLabel" visible="false" />
+      <Label styleClass="information-holder" text="Choose Stores And Prices" />
+      <VBox fx:id="checkStoresVbox" spacing="15.0" />
+      <HBox alignment="CENTER_RIGHT" spacing="15.0">
+         <children>
+            <Label fx:id="storesMessageLabel" text="Label" visible="false" />
+            <Button fx:id="addItemButton" mnemonicParsing="false" onAction="#addItemAction" styleClass="menuButton" text="Add Item" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

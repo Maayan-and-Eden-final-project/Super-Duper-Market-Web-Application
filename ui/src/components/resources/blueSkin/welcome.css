@@ -1,0 +1,32 @@
+#welcomePane {
+-fx-background-color: #BED7D1;
+}
+
+.menuButton {
+    -fx-background-color: #BED7D1;
+    -fx-border-radius: 10px;
+    -fx-border-color: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-border-width: 2px;
+    -fx-background-radius: 10px;
+}
+
+#progressLabel {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 15px;
+}
+
+#progressBar {
+
+}
+
+.menuButton:hover {
+    -fx-background-color: #ed5485;
+}
+
+.menuButton:pressed {
+    -fx-background-color: #E0447E;
+}
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="storeItemsHolderVbox" alignment="CENTER"  xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.mainScene.body.storesData.storeItemsHolder.StoreItemsHolderController">
+   <children>
+      <Label fx:id="itemsInStoreLabel" styleClass="information-holder" text="Items In Store">
+         <VBox.margin>
+            <Insets bottom="13.0" top="10.0" />
+         </VBox.margin></Label>
+      <FlowPane fx:id="storesItemPane" alignment="TOP_CENTER" />
+   </children>
+</VBox>

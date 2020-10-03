@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="information-grid" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.mainScene.body.makeOrder.checkOut.discount.cartOptimize.SingleCartOptimizeController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" />
+    <ColumnConstraints hgrow="SOMETIMES" />
+      <ColumnConstraints hgrow="SOMETIMES" />
+      <ColumnConstraints hgrow="SOMETIMES" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints vgrow="SOMETIMES" />
+    <RowConstraints vgrow="SOMETIMES" />
+    <RowConstraints vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label fx:id="youPurchasedLabel" styleClass="information-label" text="You Purchased:" />
+      <Label fx:id="youPurchasedValue" styleClass="information-value" text="Label" GridPane.columnIndex="1" />
+      <Label fx:id="atAPriceOfLabel" styleClass="information-label" text="At A Price Of:" GridPane.columnIndex="2" />
+      <Label fx:id="atAPriceOfValue" styleClass="information-value" text="Label" GridPane.columnIndex="3" />
+      <Label styleClass="discount-header" text="Do you want to replace it with this discount ?" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+      <Label fx:id="youCanUseLabel" styleClass="discount-header" text="You Can Use" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+      <Label fx:id="andGetLabel" styleClass="information-label" text="And Get:" GridPane.rowIndex="2" />
+      <Label fx:id="andGetValue" styleClass="information-value" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Label fx:id="forLabel" styleClass="information-label" text="At A Price Of:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+      <Label fx:id="forValue" styleClass="information-value" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+      <Button fx:id="replaceButton" mnemonicParsing="false" onAction="#replaceAction" styleClass="menuButton" text="YES" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</GridPane>

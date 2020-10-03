@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox fx:id="storeDataVbox" spacing="10.0" styleClass="information-grid"  xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.mainScene.body.storesData.singleStore.SingleStoreController">
+   <children>
+      <GridPane fx:id="storeGrid" hgap="10.0" styleClass="information-grid" vgap="5.0">
+          <columnConstraints>
+              <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
+              <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" />
+              <ColumnConstraints hgrow="ALWAYS" />
+              <ColumnConstraints hgrow="ALWAYS" />
+              <ColumnConstraints hgrow="ALWAYS" />
+              <ColumnConstraints hgrow="ALWAYS" />
+              <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+              <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
+          </columnConstraints>
+          <rowConstraints>
+              <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="NEVER" />
+              <RowConstraints vgrow="ALWAYS" />
+              <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="NEVER" />
+          </rowConstraints>
+          <children>
+              <Label fx:id="idLabel" styleClass="information-label" text="Id:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+              <Label fx:id="idValue" styleClass="information-value" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+              <Label fx:id="nameLabel" styleClass="information-label" text="Name:" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+              <Label fx:id="nameValue" styleClass="information-value" text="Label" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+              <Label fx:id="ppkLabel" styleClass="information-label" text="PPK:" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+              <Label fx:id="ppkValue" styleClass="information-value" text="Label" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+            <Label fx:id="totalDeliveryPaymentsLabel" styleClass="information-label" text="Total Delivery Payments: " GridPane.columnIndex="7" GridPane.rowIndex="1" />
+            <Label fx:id="totalDeliveryPaymentsValue" styleClass="information-value" text="Label" GridPane.columnIndex="8" GridPane.rowIndex="1" />
+          </children>
+      </GridPane>
+      <fx:include fx:id="storeItemsComponent" source="../storeItemsHolder/storeItemsHolder.fxml" />
+      <fx:include fx:id="storeOrdersComponent" source="../ordersHolder/ordersHolder.fxml" />
+      <fx:include fx:id="storeDiscountsComponent" source="../discountsHolder/discountsHolder.fxml" />
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>
