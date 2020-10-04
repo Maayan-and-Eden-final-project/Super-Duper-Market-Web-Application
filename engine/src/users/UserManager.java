@@ -1,6 +1,8 @@
 package users;
 
 import sdm.enums.UserType;
+import systemEngine.DesktopEngine;
+import systemEngine.WebEngine;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,9 +16,15 @@ of the user of this class to handle the synchronization of isUserExists with oth
 public class UserManager {
 
     private final Set<SingleUser> usersSet;
+    private WebEngine engine;
 
     public UserManager() {
         usersSet = new HashSet<>();
+        engine = new WebEngine();
+    }
+
+    public WebEngine getEngine() {
+        return engine;
     }
 
     public synchronized void addUser(String username, UserType userType, Integer userId) {

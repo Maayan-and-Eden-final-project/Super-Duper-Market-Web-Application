@@ -4,13 +4,12 @@
 
 #icon {
     width:30%;
-    padding-bottom: 0%;
 }
 
 .image-icon {
     text-align: center;
     padding-top: 3%;
-    padding-bottom: 0% !important;
+    padding-bottom: 3% !important;
 }
 
 .container {

@@ -8,8 +8,16 @@
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>sdmWebApplication.servlets.LoginServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UploadFileServlet</servlet-name>
+        <servlet-class>sdmWebApplication.servlets.UploadFileServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/pages/login/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UploadFileServlet</servlet-name>
+        <url-pattern>/pages/settingPage/uploadFile</url-pattern>
     </servlet-mapping>
 </web-app>

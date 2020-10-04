@@ -53,7 +53,7 @@ public class LoadXmlTask extends Task<Boolean>{
             }
             updateProgress(2,10);
             Thread.sleep(500);
-            xmlValidate.validate(absolutePath);
+            //xmlValidate.validate(absolutePath);
             updateProgress(5,10);
             Thread.sleep(500);
             this.isFileSelectedTaskProperty.set(true);
