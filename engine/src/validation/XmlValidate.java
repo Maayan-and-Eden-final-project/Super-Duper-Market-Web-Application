@@ -3,13 +3,18 @@ package validation;
 import exceptions.*;
 import sdm.enums.Operator;
 import sdm.enums.PurchaseCategory;
-import sdm.generated2.SDMCustomer;
-import sdm.generated2.SDMItem;
-import sdm.generated2.SDMStore;
-import sdm.generated2.SuperDuperMarketDescriptor;
+import sdm.generated3.SDMItem;
+import sdm.generated3.SDMStore;
+import sdm.generated3.SuperDuperMarketDescriptor;
+import sdm.generated2.*;
 import sdm.sdmElements.*;
+import sdm.sdmElements.IfYouBuy;
+import sdm.sdmElements.ThenYouGet;
+import sdmWebApplication.utils.ServletUtils;
 import systemEngine.Connector;
 import systemEngine.DesktopEngine;
+import systemEngine.WebEngine;
+import users.UserManager;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -22,30 +27,37 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static sdmWebApplication.utils.ServletUtils.getUserManager;
+
 public class XmlValidate implements Validator{
     private  SuperDuperMarketDescriptor generatedSdm;
     private Connector engine;
+    private UserManager userManager;
 
     public XmlValidate(Connector linkableEngine) {
         this.engine = linkableEngine;
     }
 
+    public void setUserManager(UserManager userManager) {
+        this.userManager = userManager;
+    }
+
     @Override
-    public void validate(String toValidate) throws Exception {
+    public void validate(InputStream inputStream, String userName) throws Exception {
 
         try {
-            isXmlFileExist(toValidate);
+            isXmlFileExist(inputStream, userName);
             isAllItemsIdUnique();
             isAllStoresIdUnique();
             isStoresItemExist();
             isAllItemsSold();
             isItemAlreadyExist();
-            isAllCustomersIdUnique();
+           /* isAllCustomersIdUnique();*/
             isStoresInValidLocation();
             isAllDiscountsItemSold();
-            Path xmlPath = Paths.get(toValidate);
+            /*Path xmlPath = Paths.get(toValidate);
             Path fileName = xmlPath.getFileName();
-            engine.setXmlFileName(extractFileExtension(fileName.toString()));
+            engine.setXmlFileName(extractFileExtension(fileName.toString()));*/
         } catch (Exception e) {
             throw e;
         }
@@ -58,23 +70,19 @@ public class XmlValidate implements Validator{
         return fileName;
     }
 
-    private void isXmlFileExist(String path) throws XmlFileNotFoundException, JAXBException {
-        if (path.toLowerCase().endsWith("xml")) {
-            try {
-                File file = new File(path);
+    private void isXmlFileExist(InputStream inputStream, String userName) throws JAXBException, AreaAlreadyExistException {
 
-                JAXBContext jaxbContext = null;
-                jaxbContext = JAXBContext.newInstance(SuperDuperMarketDescriptor.class);
+        try {
 
-                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                generatedSdm = (SuperDuperMarketDescriptor) jaxbUnmarshaller.unmarshal(file);
-                loadFromGeneratedSdm(generatedSdm);
+            JAXBContext jaxbContext = null;
+            jaxbContext = JAXBContext.newInstance(SuperDuperMarketDescriptor.class);
 
-            } catch (JAXBException e) {
-                throw e;
-            }
-        } else {
-            throw new XmlFileNotFoundException();
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            generatedSdm = (SuperDuperMarketDescriptor) jaxbUnmarshaller.unmarshal(inputStream);
+            loadFromGeneratedSdm(generatedSdm, userName);
+
+        } catch (JAXBException e) {
+            throw e;
         }
     }
 
@@ -99,7 +107,7 @@ public class XmlValidate implements Validator{
             throw new XmlSimilarStoresIdException();
         }
     }
-
+/*
     private void isAllCustomersIdUnique() throws XmlSimilarCustomersIdException {
         List<Integer> generatedSdmIdList = new ArrayList<>();
         generatedSdm.getSDMCustomers().getSDMCustomer()
@@ -110,7 +118,7 @@ public class XmlValidate implements Validator{
         if (duplicates > 0) {
             throw new XmlSimilarCustomersIdException();
         }
-    }
+    }*/
 
     private void isStoresItemExist() throws XmlItemNotFoundException {
        Long allItemsExist = engine.getStores().values().stream().
@@ -122,7 +130,7 @@ public class XmlValidate implements Validator{
 
     private void isAllDiscountsItemSold() throws XmlDiscountItemIsNotDefinedException, XmlDiscountItemIsNotSoldException {
 
-        if (engine instanceof DesktopEngine) {
+        if (engine instanceof DesktopEngine || engine instanceof WebEngine) {
             Collection<Store> storesList = engine.getStores().values();
             for (Store store : storesList) {
                 for (Discount discount : store.getDiscountList()) {
@@ -213,11 +221,12 @@ public class XmlValidate implements Validator{
                     }
                 }
             }
+             if (invalidCustomerLocation > 0) {
+                throw new XmlCustomerLocationOutOfRangeException();
+            }
         }
         if(invalidStoreLocation > 0 ) {
             throw new XmlStoreLocationOutOfRangeException();
-        } else if (invalidCustomerLocation > 0) {
-            throw new XmlCustomerLocationOutOfRangeException();
         }
     }
 
@@ -233,24 +242,26 @@ public class XmlValidate implements Validator{
         return frequency;
     }
 
-    public void loadFromGeneratedSdm(SuperDuperMarketDescriptor generatedSdm) {
-        engine.getItems().clear();
-        engine.getStores().clear();
+    public void loadFromGeneratedSdm(SuperDuperMarketDescriptor generatedSdm, String userName) throws AreaAlreadyExistException {
+       /* engine.getItems().clear();
+        engine.getStores().clear();*/
         if(engine instanceof DesktopEngine) {
             ((DesktopEngine) engine).getIdToCustomer().clear();
+        } else if(engine instanceof WebEngine) {
+            userManager.addAreaToUser(generatedSdm.getSDMZone().getName(), userName);
         }
         generatedSdm.getSDMItems().getSDMItem().forEach(item ->  engine.getItems().put(item.getId(),generatedItemToMyItem(item)));
         generatedSdm.getSDMStores().getSDMStore().forEach(store -> engine.getStores().put(store.getId(),generatedStoreToMyStore(store)));
-        if(engine instanceof DesktopEngine) {
+     /*   if(engine instanceof DesktopEngine) {
             generatedSdm.getSDMCustomers().getSDMCustomer()
                     .forEach(customer -> ((DesktopEngine) engine).getIdToCustomer()
                             .put(customer.getId(),generatedCustomerToMyCustomer(customer)));
-        }
+        }*/
     }
-
+/*
     private Customer generatedCustomerToMyCustomer(SDMCustomer sdmCustomer) {
         return new Customer(sdmCustomer.getName(), new Point(sdmCustomer.getLocation().getX(), sdmCustomer.getLocation().getY()), sdmCustomer.getId());
-    }
+    }*/
 
     private Item generatedItemToMyItem(SDMItem sdmItem) {
         Item myItem = new Item(sdmItem.getId(), sdmItem.getName(), PurchaseCategory.valueOf(sdmItem.getPurchaseCategory().toUpperCase()));

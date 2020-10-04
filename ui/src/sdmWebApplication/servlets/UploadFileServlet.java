@@ -1,11 +1,13 @@
 package sdmWebApplication.servlets;
 
 import sdmWebApplication.utils.ServletUtils;
+import sdmWebApplication.utils.SessionUtils;
 import users.UserManager;
 import validation.Validator;
 import validation.XmlValidate;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,33 +18,30 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Scanner;
 
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class UploadFileServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
         PrintWriter out = response.getWriter();
+        Collection<Part> parts = request.getParts();
 
-        String fileName = request.getParameter("file1");
-        readFromInputStream(fileName);
-        /*
-        // we could extract the 3rd member (not the file one) also as 'part' using the same 'key'
-        // we used to upload it on the formData object in JS....
-        Part name = request.getPart("name");
-        String nameValue = readFromInputStream(name.getInputStream());
-         */
-
-
+        for (Part part : parts) {
+            readFromInputStream(part.getInputStream(), request, out);
+        }
     }
 
-    private void readFromInputStream(String fileName) {
+    private void readFromInputStream(InputStream inputStream, HttpServletRequest request,PrintWriter out ) {
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         Validator validator = new XmlValidate(userManager.getEngine());
-        try {
-            validator.validate(fileName);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+        ((XmlValidate)validator).setUserManager(userManager);
+        String usernameFromSession = SessionUtils.getUsername(request);
 
+        try {
+            validator.validate(inputStream, usernameFromSession);
+        } catch (Exception exception) {
+           out.println(exception.getMessage());
+           out.flush();
+        }
     }
 }

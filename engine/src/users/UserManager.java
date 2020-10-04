@@ -1,5 +1,6 @@
 package users;
 
+import exceptions.AreaAlreadyExistException;
 import sdm.enums.UserType;
 import systemEngine.DesktopEngine;
 import systemEngine.WebEngine;
@@ -45,5 +46,20 @@ public class UserManager {
 
     public boolean isUserExists(String username) {
         return usersSet.stream().filter(user -> user.getUsername().equals(username)).count() > 0;
+    }
+
+
+    public void addAreaToUser(String area, String userName) throws AreaAlreadyExistException {
+        for(SingleUser user : usersSet) {
+            if (user.getAreas().contains(area)) {
+                throw new AreaAlreadyExistException();
+            }
+        }
+
+        usersSet.forEach(user -> {
+            if(user.getUsername().equals(userName)) {
+                user.addNewArea(area);
+            }
+        });
     }
 }
