@@ -3,13 +3,14 @@
 }
 
 #icon {
-    width:40%;
+    width:30%;
+    padding-bottom: 0%;
 }
 
 .image-icon {
     text-align: center;
     padding-top: 3%;
-    padding-bottom: 5%;
+    padding-bottom: 0% !important;
 }
 
 .container {

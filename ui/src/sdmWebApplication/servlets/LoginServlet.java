@@ -68,7 +68,8 @@ public class LoginServlet extends HttpServlet {
                         } else if(usertypeFromParameter.equals("1")) {
                             userType = UserType.SHOP_OWNER;
                         }
-                        userManager.addUser(usernameFromParameter,userType);
+                        Integer userId = userManager.getUsers().size();
+                        userManager.addUser(usernameFromParameter,userType,++userId);
                         //set the username in a session so it will be available on each request
                         //the true parameter means that if a session object does not exists yet
                         //create a new one
