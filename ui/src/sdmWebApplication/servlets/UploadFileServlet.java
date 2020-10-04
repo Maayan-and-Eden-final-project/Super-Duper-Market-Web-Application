@@ -21,6 +21,7 @@ import java.util.Scanner;
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class UploadFileServlet extends HttpServlet {
 
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
@@ -39,9 +40,10 @@ public class UploadFileServlet extends HttpServlet {
 
         try {
             validator.validate(inputStream, usernameFromSession);
+
         } catch (Exception exception) {
-           out.println(exception.getMessage());
-           out.flush();
+            out.println(exception.getMessage());
+            out.flush();
         }
     }
 }

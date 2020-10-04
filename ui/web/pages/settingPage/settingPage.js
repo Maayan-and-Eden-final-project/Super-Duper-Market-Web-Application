@@ -6,9 +6,10 @@ $(function() { // onload...do
             " <h3>Select a File:</h3>\n" +
             "        <form id=\"uploadFileForm\" action=\"uploadFile\" enctype=\"multipart/form-data\" method=\"POST\">\n" +
             "            <input id=\"file1\" type=\"file\" name=\"file1\" accept=\".xml\"><br>\n" +
-            "            <input type=\"Submit\" value=\"Upload File\"><br>\n" +
+            "            <div id=\"popup\"></div> \n" +
+            "<input type=\"Submit\" value=\"Upload File\"><br>\n" +
             "        </form>");
-    });
+
 
         $("#uploadFileForm").submit(function () {
             var file1 = this[0].files[0];
@@ -20,18 +21,24 @@ $(function() { // onload...do
                 method:'POST',
                 data: formData,
                 url: this.action,
+                processData: false,
+                contentType: false,
                 timeout: 4000,
                 error: function(e) {
-                    $("#myPopup").append(e);
-                  /*  $("#myPopup").classList.toggle("show");*/
+                    $("#popup").append(e);
+                    /*  $("#myPopup").classList.toggle("show");*/
                     console.error("Failed to submit");
-                    },
+                },
                 success: function(r) {
-                    $("#myPopup").append(r);
-                   /* $("#myPopup").classList.toggle("show");*/
+                    $("#popup").append(r);
+                    /* $("#myPopup").classList.toggle("show");*/
                 }
             });
             return false;
         });
+
+    });
+
+
     });
 
