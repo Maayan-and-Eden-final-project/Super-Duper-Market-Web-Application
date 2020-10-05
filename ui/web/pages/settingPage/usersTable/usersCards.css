@@ -112,3 +112,8 @@ ul{
 .our-webcoderskull .cnt-block .follow-us li .fa:hover{
     color:#025a8e;
 }
+
+ul{
+    display: table-caption !important;
+    list-style-type: none !important;
+}

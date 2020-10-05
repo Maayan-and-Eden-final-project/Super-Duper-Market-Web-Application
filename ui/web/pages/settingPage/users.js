@@ -48,18 +48,18 @@ function refreshUsersList(users) {
     $.each(users || [], function(index, singleUser) {
 
         var imageUrl;
-        if(singleUser.usertype.indexOf("CUSTOMER") > -1 ) {
+        if(singleUser.userType.indexOf("CUSTOMER") > -1 ) {
             imageUrl = "../../common/images/users.png";
-        } else if(singleUser.usertype.indexOf("SHOP_OWNER") > -1 ) {
+        } else if(singleUser.userType.indexOf("SHOP_OWNER") > -1 ) {
             imageUrl = "../../common/images/shop_owner.png";
         }
 
         $(".users-list").append(
             "<li class=\"col-12 col-md-6 col-lg-3\">\n" +
         "                <div class=\"cnt-block equal-hight\" style=\"height: 349px;\">\n" +
-        "                    <figure><img src=" + imageUrl + " class=\"img-responsive\" alt=\"\"></figure>\n" +
-        "                    <h3 class=\"user-name\">" + singleUser.username + "</h3> <!--userName-->\n" +
-        "                    <p class=\"user-type\">" + singleUser.usertype + "</p> <!--type-->\n" +
+        "                    <figure><img src=" + imageUrl + " class=\"img-responsive rounded-circle\"  alt=\"\"></figure>\n" +
+        "                    <h3 class=\"user-name\">" + singleUser.userName + "</h3> <!--userName-->\n" +
+        "                    <p class=\"user-type\">" + singleUser.userType + "</p> <!--type-->\n" +
         "                </div>\n" +
         "            </li>\n");
 
