@@ -4,22 +4,26 @@
     line-height: 95px;
     font-weight: 400;
     text-align: center;
-    margin: 0 0 40px;
     padding-bottom: 20px;
     text-transform: uppercase;
 }
+
 ul{
     margin:0;
     padding:0;
     list-style:none;
+    list-style-type: none !important;
 }
+
+li {
+    display: table-caption !important;
+}
+
 .heading.heading-icon {
     display: block;
 }
 .padding-lg {
     display: block;
-    padding-top: 60px;
-    padding-bottom: 60px;
 }
 .practice-area.padding-lg {
     padding-bottom: 55px;
@@ -52,10 +56,6 @@ ul{
 }
 
 
-.our-webcoderskull{
-    background: url("http://www.webcoderskull.com/img/right-sider-banner.png") no-repeat center top / cover;
-
-}
 .our-webcoderskull .cnt-block{
     float:left;
     width:100%;
@@ -113,7 +113,3 @@ ul{
     color:#025a8e;
 }
 
-ul{
-    display: table-caption !important;
-    list-style-type: none !important;
-}

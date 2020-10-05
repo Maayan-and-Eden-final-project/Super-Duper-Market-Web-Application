@@ -5,13 +5,17 @@ import exceptions.ItemIsNotSoldException;
 import exceptions.SingleSellingStoreException;
 import exceptions.XmlSimilarItemsIdException;
 import javafx.util.Pair;
+import sdm.sdmElements.Order;
+import sdm.sdmElements.Store;
 import systemInfoContainers.*;
+import systemInfoContainers.webContainers.AreaContainer;
+import users.SingleUser;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class WebEngine  extends Connector{
 
@@ -95,5 +99,35 @@ public class WebEngine  extends Connector{
     @Override
     public ProgressDynamicOrderContainer getProgressDynamicOrder(Point userLocation, Map<Integer, Float> itemIdToAmount) {
         return null;
+    }
+
+    public List<AreaContainer> getAreasContainer(Set<SingleUser> usersSet) {
+        List<AreaContainer> areaContainersList = new ArrayList<>();
+
+        for (SingleUser user : usersSet) {
+            if (!user.getAreas().isEmpty()) {
+                for (String area : user.getAreas()) {
+                    AreaContainer areaContainer = new AreaContainer();
+                    areaContainer.setAreaName(area);
+                    areaContainer.setAreaOwner(user.getUserName());
+                    areaContainer.setStoresInArea(user.getAreaNameToStores().get(area).size());
+                    areaContainer.setItemsInArea(user.getAreaNameToItems().get(area).size());
+
+                    for(Pair<Integer, Store> storeIdToStore: user.getAreaNameToStores().get(area)) {
+                        Store store = storeIdToStore.getValue().clone();
+                        areaContainer.setOrdersInArea(store.getOrders().size());
+
+                        float ordersAvg = 0;
+                        for(Order order: store.getOrders().values()) {
+                            ordersAvg += order.getTotalItemsPrice();
+                        }
+                        ordersAvg /= store.getOrders().size();
+                        areaContainer.setAvgOrdersCostsInArea(ordersAvg);
+                    }
+                    areaContainersList.add(areaContainer);
+                }
+            }
+        }
+        return areaContainersList;
     }
 }

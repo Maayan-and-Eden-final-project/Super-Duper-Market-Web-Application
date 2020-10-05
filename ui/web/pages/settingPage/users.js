@@ -32,7 +32,6 @@ $(function () {
              }
              */
 function refreshUsersList(users) {
-    $(".dynamic-container").children().remove();
     $(".dynamic-container").append(
     "<section class=\"our-webcoderskull padding-lg\">\n" +
     "    <div class=\"container\">\n" +
@@ -48,18 +47,21 @@ function refreshUsersList(users) {
     $.each(users || [], function(index, singleUser) {
 
         var imageUrl;
+        var userType;
         if(singleUser.userType.indexOf("CUSTOMER") > -1 ) {
-            imageUrl = "../../common/images/users.png";
+            imageUrl = "../../common/images/soccer-player.png";
+            userType = "Customer";
         } else if(singleUser.userType.indexOf("SHOP_OWNER") > -1 ) {
             imageUrl = "../../common/images/shop_owner.png";
+            userType = "Shop Owner";
         }
 
         $(".users-list").append(
             "<li class=\"col-12 col-md-6 col-lg-3\">\n" +
-        "                <div class=\"cnt-block equal-hight\" style=\"height: 349px;\">\n" +
+        "                <div class=\"cnt-block equal-hight\" style=\"height: 321px;\">\n" +
         "                    <figure><img src=" + imageUrl + " class=\"img-responsive rounded-circle\"  alt=\"\"></figure>\n" +
         "                    <h3 class=\"user-name\">" + singleUser.userName + "</h3> <!--userName-->\n" +
-        "                    <p class=\"user-type\">" + singleUser.userType + "</p> <!--type-->\n" +
+        "                    <p class=\"user-type\">" + userType + "</p> <!--type-->\n" +
         "                </div>\n" +
         "            </li>\n");
 
