@@ -8,14 +8,14 @@ import java.util.List;
 
 public class SingleUser {
 
+    private final String userName;
     private final UserType userType;
-    private final String username;
     private final Integer userId;
     private List<String> areas;
 
     public SingleUser(UserType userType, String username, Integer userId) {
         this.userType = userType;
-        this.username = username;
+        this.userName = username;
         this.userId = userId;
         this.areas = new ArrayList<>();
     }
@@ -32,8 +32,8 @@ public class SingleUser {
         return userType;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
     public synchronized void addNewArea(String newArea) {

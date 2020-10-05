@@ -46,9 +46,6 @@ public class LoginServlet extends HttpServlet {
             String usertypeFromParameter = request.getParameter(USERTYPE);
 
             if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {
-                //no username in session and no username in parameter -
-                //redirect back to the index page
-                //this return an HTTP code back to the browser telling it to load
                 response.sendRedirect(SIGN_UP_URL);
             } else {
                 //normalize the username value
@@ -78,7 +75,7 @@ public class LoginServlet extends HttpServlet {
 
                         //redirect the request to the chat room - in order to actually change the URL
                         System.out.println("On login, request URI is: " + request.getRequestURI());
-                       response.sendRedirect(SETTING_PAGE_URL);
+                        response.sendRedirect(SETTING_PAGE_URL);
                     }
                 }
             }

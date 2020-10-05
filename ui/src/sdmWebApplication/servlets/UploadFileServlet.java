@@ -1,5 +1,6 @@
 package sdmWebApplication.servlets;
 
+import sdm.enums.UserType;
 import sdmWebApplication.utils.ServletUtils;
 import sdmWebApplication.utils.SessionUtils;
 import users.UserManager;
@@ -21,6 +22,15 @@ import java.util.Scanner;
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class UploadFileServlet extends HttpServlet {
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter out = resp.getWriter();
+        String usernameFromSession = SessionUtils.getUsername(req);
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        UserType userType = userManager.getUserType(usernameFromSession);
+        out.println(userType.toString());
+        out.flush();
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,7 +50,8 @@ public class UploadFileServlet extends HttpServlet {
 
         try {
             validator.validate(inputStream, usernameFromSession);
-
+            out.println("File uploaded successfully");
+            out.flush();
         } catch (Exception exception) {
             out.println(exception.getMessage());
             out.flush();

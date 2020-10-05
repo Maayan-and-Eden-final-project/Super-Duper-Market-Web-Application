@@ -12,6 +12,10 @@
         <servlet-name>UploadFileServlet</servlet-name>
         <servlet-class>sdmWebApplication.servlets.UploadFileServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UsersServlet</servlet-name>
+        <servlet-class>sdmWebApplication.servlets.UsersServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/pages/login/login</url-pattern>
@@ -19,5 +23,9 @@
     <servlet-mapping>
         <servlet-name>UploadFileServlet</servlet-name>
         <url-pattern>/pages/settingPage/uploadFile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UsersServlet</servlet-name>
+        <url-pattern>/pages/settingPage/users</url-pattern>
     </servlet-mapping>
 </web-app>

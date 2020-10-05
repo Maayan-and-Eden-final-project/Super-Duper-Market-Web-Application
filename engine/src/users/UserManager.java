@@ -2,7 +2,6 @@ package users;
 
 import exceptions.AreaAlreadyExistException;
 import sdm.enums.UserType;
-import systemEngine.DesktopEngine;
 import systemEngine.WebEngine;
 
 import java.util.Collections;
@@ -34,7 +33,7 @@ public class UserManager {
 
     public synchronized void removeUser(String username) {
         usersSet.forEach(user -> {
-            if(user.getUsername().equals(username)) {
+            if(user.getUserName().equals(username)) {
                 usersSet.remove(user);
             }
         });
@@ -45,7 +44,7 @@ public class UserManager {
     }
 
     public boolean isUserExists(String username) {
-        return usersSet.stream().filter(user -> user.getUsername().equals(username)).count() > 0;
+        return usersSet.stream().filter(user -> user.getUserName().equals(username)).count() > 0;
     }
 
 
@@ -57,9 +56,19 @@ public class UserManager {
         }
 
         usersSet.forEach(user -> {
-            if(user.getUsername().equals(userName)) {
+            if(user.getUserName().equals(userName)) {
                 user.addNewArea(area);
             }
         });
+    }
+
+    public UserType getUserType(String userName) {
+        UserType userType = null;
+         for(SingleUser user : usersSet) {
+             if (user.getUserName().equals(userName)) {
+                 userType =  user.getUserType();
+             }
+         }
+         return userType;
     }
 }
