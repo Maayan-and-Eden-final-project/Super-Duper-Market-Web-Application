@@ -13,6 +13,7 @@ $(function () {
             }
         });
     });
+    $("#usersTab").click();
 });
 
 /*

@@ -31,7 +31,7 @@ a {
 
 }
 
-a:hover, a:focus {
+a:hover, a:focus, a:active {
     background-color: #308b80c7 !important;
     color: ghostwhite;
     opacity: 70%;
@@ -129,7 +129,6 @@ h3{
     border-width: 2px;
     background-radius: 10px;
     font-size: 15px;
-    border:outset !important;
 }
 
 .btn-outline-info:hover, .btn-info:hover {

@@ -153,26 +153,18 @@ public class XmlValidate implements Validator {
             }
         } else if (engine instanceof WebEngine) {
             for (Offer offer : discount.getThenYouGet().getOffers()) {
-                for (SingleUser user : userManager.getUsers().values()) {
-                    for (Area area : user.getAreaNameToAreas().values()) {
-                        if (!area.getItemIdToItem().keySet().contains(offer.getItemId())) {
-                            throw new XmlDiscountItemIsNotDefinedException();
-                        }
-                        if (!store.getItemsIdAndPrices().keySet().contains(offer.getItemId())) {
-                            throw new XmlDiscountItemIsNotSoldException();
-                        }
-                    }
+                if (!tempArea.getItemIdToItem().keySet().contains(offer.getItemId())) {
+                    throw new XmlDiscountItemIsNotDefinedException();
+                }
+                if (!store.getItemsIdAndPrices().keySet().contains(offer.getItemId())) {
+                    throw new XmlDiscountItemIsNotSoldException();
                 }
             }
-            for (SingleUser user : userManager.getUsers().values()) {
-                for (Area area : user.getAreaNameToAreas().values()) {
-                    if (!area.getItemIdToItem().keySet().contains(discount.getIfYouBuy().getItemId())) {
-                        throw new XmlDiscountItemIsNotDefinedException();
-                    }
-                    if (!store.getItemsIdAndPrices().keySet().contains(discount.getIfYouBuy().getItemId())) {
-                        throw new XmlDiscountItemIsNotSoldException();
-                    }
-                }
+            if (!tempArea.getItemIdToItem().keySet().contains(discount.getIfYouBuy().getItemId())) {
+                throw new XmlDiscountItemIsNotDefinedException();
+            }
+            if (!store.getItemsIdAndPrices().keySet().contains(discount.getIfYouBuy().getItemId())) {
+                throw new XmlDiscountItemIsNotSoldException();
             }
         }
     }
