@@ -20,6 +20,10 @@
         <servlet-name>AreasServlet</servlet-name>
         <servlet-class>sdmWebApplication.servlets.AreasServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AccountServlet</servlet-name>
+        <servlet-class>sdmWebApplication.servlets.AccountServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/pages/login/login</url-pattern>
@@ -35,5 +39,9 @@
     <servlet-mapping>
         <servlet-name>AreasServlet</servlet-name>
         <url-pattern>/pages/settingPage/areas</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AccountServlet</servlet-name>
+        <url-pattern>/pages/settingPage/account</url-pattern>
     </servlet-mapping>
 </web-app>
