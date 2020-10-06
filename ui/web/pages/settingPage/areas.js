@@ -7,6 +7,7 @@ $(function () {
             timeout: 4000,
             dataType: "json",
             error: function (e) {
+                console.error("test");
             },
             success: function (r) {
                 refreshAreasList(r);

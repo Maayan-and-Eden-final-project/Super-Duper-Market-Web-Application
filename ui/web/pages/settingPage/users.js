@@ -18,6 +18,7 @@ $(function () {
 /*
              data will arrive in the next form:
              {
+
                 "SingleUser": [
                     {
                         "userName":"Moshe",

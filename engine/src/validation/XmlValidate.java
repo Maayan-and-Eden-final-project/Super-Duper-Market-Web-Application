@@ -1,5 +1,6 @@
 package validation;
 
+import areas.Area;
 import exceptions.*;
 import sdm.enums.Operator;
 import sdm.enums.PurchaseCategory;
@@ -14,6 +15,7 @@ import sdmWebApplication.utils.ServletUtils;
 import systemEngine.Connector;
 import systemEngine.DesktopEngine;
 import systemEngine.WebEngine;
+import users.SingleUser;
 import users.UserManager;
 
 import javax.xml.bind.JAXBContext;
@@ -29,10 +31,11 @@ import java.util.stream.Collectors;
 
 import static sdmWebApplication.utils.ServletUtils.getUserManager;
 
-public class XmlValidate implements Validator{
-    private  SuperDuperMarketDescriptor generatedSdm;
+public class XmlValidate implements Validator {
+    private SuperDuperMarketDescriptor generatedSdm;
     private Connector engine;
     private UserManager userManager;
+    private Area tempArea;
 
     public XmlValidate(Connector linkableEngine) {
         this.engine = linkableEngine;
@@ -52,20 +55,17 @@ public class XmlValidate implements Validator{
             isStoresItemExist();
             isAllItemsSold();
             isItemAlreadyExist();
-           /* isAllCustomersIdUnique();*/
             isStoresInValidLocation();
             isAllDiscountsItemSold();
-            /*Path xmlPath = Paths.get(toValidate);
-            Path fileName = xmlPath.getFileName();
-            engine.setXmlFileName(extractFileExtension(fileName.toString()));*/
+            userManager.addAreaToUser(tempArea, userName);
         } catch (Exception e) {
             throw e;
         }
     }
 
     private String extractFileExtension(String fileName) {
-        if(fileName.indexOf(".") > 0) {
-            fileName = fileName.substring(0,fileName.lastIndexOf("."));
+        if (fileName.indexOf(".") > 0) {
+            fileName = fileName.substring(0, fileName.lastIndexOf("."));
         }
         return fileName;
     }
@@ -107,32 +107,27 @@ public class XmlValidate implements Validator{
             throw new XmlSimilarStoresIdException();
         }
     }
-/*
-    private void isAllCustomersIdUnique() throws XmlSimilarCustomersIdException {
-        List<Integer> generatedSdmIdList = new ArrayList<>();
-        generatedSdm.getSDMCustomers().getSDMCustomer()
-                .stream().forEach(customer -> generatedSdmIdList.add(customer.getId()));
-
-        Map<Integer, Integer> idToFrequency = getFrequencies(generatedSdmIdList);
-        Long duplicates = idToFrequency.entrySet().stream().filter(id -> id.getValue() > 1).count();
-        if (duplicates > 0) {
-            throw new XmlSimilarCustomersIdException();
-        }
-    }*/
 
     private void isStoresItemExist() throws XmlItemNotFoundException {
-       Long allItemsExist = engine.getStores().values().stream().
-               filter(store -> engine.getItems().keySet().containsAll(store.getItemsIdAndPrices().keySet()) == false).count();
-       if (allItemsExist > 0) {
-           throw new XmlItemNotFoundException();
-       }
+
+        Long allItemsExist = tempArea.getStoreIdToStore().values().stream().filter(store ->
+                tempArea.getItemIdToItem().keySet().containsAll(store.getItemsIdAndPrices().keySet()) == false).count();
+        if (allItemsExist > 0) {
+            throw new XmlItemNotFoundException();
+        }
     }
 
     private void isAllDiscountsItemSold() throws XmlDiscountItemIsNotDefinedException, XmlDiscountItemIsNotSoldException {
 
-        if (engine instanceof DesktopEngine || engine instanceof WebEngine) {
+        if (engine instanceof DesktopEngine) {
             Collection<Store> storesList = engine.getStores().values();
             for (Store store : storesList) {
+                for (Discount discount : store.getDiscountList()) {
+                    isDiscountItemsInSystem(discount, store);
+                }
+            }
+        } else if (engine instanceof WebEngine) {
+            for (Store store : tempArea.getStoreIdToStore().values()) {
                 for (Discount discount : store.getDiscountList()) {
                     isDiscountItemsInSystem(discount, store);
                 }
@@ -141,45 +136,68 @@ public class XmlValidate implements Validator{
     }
 
     private void isDiscountItemsInSystem(Discount discount, Store store) throws XmlDiscountItemIsNotDefinedException, XmlDiscountItemIsNotSoldException {
-        for (Offer offer : discount.getThenYouGet().getOffers()) {
-            if (!engine.getItems().keySet().contains(offer.getItemId())) {
+        if (engine instanceof DesktopEngine) {
+            for (Offer offer : discount.getThenYouGet().getOffers()) {
+                if (!engine.getItems().keySet().contains(offer.getItemId())) {
+                    throw new XmlDiscountItemIsNotDefinedException();
+                }
+                if (!store.getItemsIdAndPrices().keySet().contains(offer.getItemId())) {
+                    throw new XmlDiscountItemIsNotSoldException();
+                }
+            }
+            if (!engine.getItems().keySet().contains(discount.getIfYouBuy().getItemId())) {
                 throw new XmlDiscountItemIsNotDefinedException();
             }
-            if (!store.getItemsIdAndPrices().keySet().contains(offer.getItemId())) {
+            if (!store.getItemsIdAndPrices().keySet().contains(discount.getIfYouBuy().getItemId())) {
                 throw new XmlDiscountItemIsNotSoldException();
             }
-        }
-        if (!engine.getItems().keySet().contains(discount.getIfYouBuy().getItemId())) {
-            throw new XmlDiscountItemIsNotDefinedException();
-        }
-        if (!store.getItemsIdAndPrices().keySet().contains(discount.getIfYouBuy().getItemId())) {
-            throw new XmlDiscountItemIsNotSoldException();
+        } else if (engine instanceof WebEngine) {
+            for (Offer offer : discount.getThenYouGet().getOffers()) {
+                for (SingleUser user : userManager.getUsers().values()) {
+                    for (Area area : user.getAreaNameToAreas().values()) {
+                        if (!area.getItemIdToItem().keySet().contains(offer.getItemId())) {
+                            throw new XmlDiscountItemIsNotDefinedException();
+                        }
+                        if (!store.getItemsIdAndPrices().keySet().contains(offer.getItemId())) {
+                            throw new XmlDiscountItemIsNotSoldException();
+                        }
+                    }
+                }
+            }
+            for (SingleUser user : userManager.getUsers().values()) {
+                for (Area area : user.getAreaNameToAreas().values()) {
+                    if (!area.getItemIdToItem().keySet().contains(discount.getIfYouBuy().getItemId())) {
+                        throw new XmlDiscountItemIsNotDefinedException();
+                    }
+                    if (!store.getItemsIdAndPrices().keySet().contains(discount.getIfYouBuy().getItemId())) {
+                        throw new XmlDiscountItemIsNotSoldException();
+                    }
+                }
+            }
         }
     }
 
-
     private void isAllItemsSold() throws XmlItemIsNotSoldException {
         Map<Integer, Integer> frequencyId = new HashMap<>();
-        Collection<Store> storesList = engine.getStores().values();
-        frequencyId = engine.getItems().keySet().stream().collect(Collectors.toMap(itemId -> itemId,frequency -> 0));
+        Collection<Store> storesList = tempArea.getStoreIdToStore().values();
+        frequencyId = tempArea.getItemIdToItem().keySet().stream().collect(Collectors.toMap(itemId -> itemId, frequency -> 0));
 
         for (Store store : storesList) {
-            for (Integer itemId : store.getItemsIdAndPrices().keySet()){
+            for (Integer itemId : store.getItemsIdAndPrices().keySet()) {
                 Integer currentCount = frequencyId.get(itemId);
                 frequencyId.put(itemId, ++currentCount);
             }
         }
 
-        if(frequencyId.values().contains(0)){
+        if (frequencyId.values().contains(0)) {
             throw new XmlItemIsNotSoldException();
-        }
-        else{
-            Map<Integer,Item> allItems = engine.getItems();
-            for(Store store : engine.getStores().values()) {
-                for(Integer itemId : store.getItemsIdAndPrices().keySet()) {
+        } else {
+            Map<Integer, Item> allItems = tempArea.getItemIdToItem();
+            for (Store store : tempArea.getStoreIdToStore().values()) {
+                for (Integer itemId : store.getItemsIdAndPrices().keySet()) {
                     Item tempItem = allItems.get(itemId);
-                    Item item = new Item(tempItem.getId(),tempItem.getName(),tempItem.getPurchaseCategory());
-                    store.getItemsAndPrices().put(item,store.getItemsIdAndPrices().get(itemId));
+                    Item item = new Item(tempItem.getId(), tempItem.getName(), tempItem.getPurchaseCategory());
+                    store.getItemsAndPrices().put(item, store.getItemsIdAndPrices().get(itemId));
                 }
             }
         }
@@ -201,32 +219,45 @@ public class XmlValidate implements Validator{
 
     private void isStoresInValidLocation() throws XmlStoreLocationOutOfRangeException, XmlCustomerLocationOutOfRangeException, XmlSameCustomerAndStoreLocationException {
         Long invalidCustomerLocation = null;
-        Long invalidStoreLocation = engine.getStores().values().stream().filter(store ->
-                store.getLocation().getX() < 1 ||
-                store.getLocation().getX() > 50 ||
-                store.getLocation().getY() < 1 ||
-                store.getLocation().getY() > 50).count();
 
         if (engine instanceof DesktopEngine) {
-            invalidCustomerLocation = ((DesktopEngine) engine).getIdToCustomer().values().stream().filter(customer ->
-                    customer.getLocation().getX() < 1 ||
-                            customer.getLocation().getX() > 50 ||
-                            customer.getLocation().getY() < 1 ||
-                            customer.getLocation().getY() > 50).count();
+            Long invalidStoreLocation = engine.getStores().values().stream().filter(store ->
+                    store.getLocation().getX() < 1 ||
+                            store.getLocation().getX() > 50 ||
+                            store.getLocation().getY() < 1 ||
+                            store.getLocation().getY() > 50).count();
 
-            for (Customer customer : ((DesktopEngine) engine).getIdToCustomer().values()) {
-                for (Store store : engine.getStores().values()) {
-                    if (customer.getLocation().equals(store.getLocation())) {
-                        throw new XmlSameCustomerAndStoreLocationException();
+            if (engine instanceof DesktopEngine) {
+                invalidCustomerLocation = ((DesktopEngine) engine).getIdToCustomer().values().stream().filter(customer ->
+                        customer.getLocation().getX() < 1 ||
+                                customer.getLocation().getX() > 50 ||
+                                customer.getLocation().getY() < 1 ||
+                                customer.getLocation().getY() > 50).count();
+
+                for (Customer customer : ((DesktopEngine) engine).getIdToCustomer().values()) {
+                    for (Store store : engine.getStores().values()) {
+                        if (customer.getLocation().equals(store.getLocation())) {
+                            throw new XmlSameCustomerAndStoreLocationException();
+                        }
                     }
                 }
+                if (invalidCustomerLocation > 0) {
+                    throw new XmlCustomerLocationOutOfRangeException();
+                }
             }
-             if (invalidCustomerLocation > 0) {
-                throw new XmlCustomerLocationOutOfRangeException();
+            if (invalidStoreLocation > 0) {
+                throw new XmlStoreLocationOutOfRangeException();
             }
-        }
-        if(invalidStoreLocation > 0 ) {
-            throw new XmlStoreLocationOutOfRangeException();
+        } else if (engine instanceof WebEngine) {
+            Long invalidStoreLocation = tempArea.getStoreIdToStore().values().stream().filter(store ->
+                    store.getLocation().getX() < 1 ||
+                            store.getLocation().getX() > 50 ||
+                            store.getLocation().getY() < 1 ||
+                            store.getLocation().getY() > 50).count();
+
+            if (invalidStoreLocation > 0) {
+                throw new XmlStoreLocationOutOfRangeException();
+            }
         }
     }
 
@@ -247,21 +278,21 @@ public class XmlValidate implements Validator{
         engine.getStores().clear();*/
         if(engine instanceof DesktopEngine) {
             ((DesktopEngine) engine).getIdToCustomer().clear();
+            generatedSdm.getSDMItems().getSDMItem().forEach(item ->  engine.getItems().put(item.getId(),generatedItemToMyItem(item)));
+            generatedSdm.getSDMStores().getSDMStore().forEach(store -> engine.getStores().put(store.getId(),generatedStoreToMyStore(store)));
         } else if(engine instanceof WebEngine) {
-            userManager.addAreaToUser(generatedSdm.getSDMZone().getName(), userName);
+            tempArea = new Area(generatedSdm.getSDMZone().getName());
+
+            generatedSdm.getSDMItems().getSDMItem().forEach(item -> {
+                tempArea.addItemToArea(generatedItemToMyItem(item));
+            });
+
+            generatedSdm.getSDMStores().getSDMStore().forEach(store -> {
+                tempArea.addStoreToArea(generatedStoreToMyStore(store));
+            });
         }
-        generatedSdm.getSDMItems().getSDMItem().forEach(item ->  engine.getItems().put(item.getId(),generatedItemToMyItem(item)));
-        generatedSdm.getSDMStores().getSDMStore().forEach(store -> engine.getStores().put(store.getId(),generatedStoreToMyStore(store)));
-     /*   if(engine instanceof DesktopEngine) {
-            generatedSdm.getSDMCustomers().getSDMCustomer()
-                    .forEach(customer -> ((DesktopEngine) engine).getIdToCustomer()
-                            .put(customer.getId(),generatedCustomerToMyCustomer(customer)));
-        }*/
     }
-/*
-    private Customer generatedCustomerToMyCustomer(SDMCustomer sdmCustomer) {
-        return new Customer(sdmCustomer.getName(), new Point(sdmCustomer.getLocation().getX(), sdmCustomer.getLocation().getY()), sdmCustomer.getId());
-    }*/
+
 
     private Item generatedItemToMyItem(SDMItem sdmItem) {
         Item myItem = new Item(sdmItem.getId(), sdmItem.getName(), PurchaseCategory.valueOf(sdmItem.getPurchaseCategory().toUpperCase()));
@@ -328,4 +359,3 @@ public class XmlValidate implements Validator{
         return myOperator;
     }
 }
-

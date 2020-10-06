@@ -24,8 +24,8 @@ $(function () { // onload...do
         $(".dynamic-container").append(
             " <h3>Select a File:</h3>\n" +
             "        <form id=\"uploadFileForm\" action=\"uploadFile\" enctype=\"multipart/form-data\" method=\"POST\">\n" +
-            "            <input id=\"file1\" type=\"file\" name=\"file1\" accept=\".xml\"><br>" +
-            "            <input type=\"Submit\" value=\"Upload File\"> " +
+            "            <input id=\"file1\" type=\"file\" class='btn btn-info btn-outline-info' accept=\".xml\"><br>" +
+            "            <input type=\"Submit\"  class=\"btn btn-info btn-outline-info\" value=\"Upload File\"> " +
             "        </form> \n" +
             "        <div class=\"popup\" >\n" +
             "            <span class=\"popuptext\" id=\"myPopup\"></span>" +
@@ -51,8 +51,6 @@ $(function () { // onload...do
                     setTimeout(function () {
                         popup.classList.toggle("show"); //close the tooltip
                     }, 2000);
-
-                    console.error("Failed to submit");
                 },
                 success: function (r) {
                     var popup = document.getElementById("myPopup");

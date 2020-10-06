@@ -1,14 +1,15 @@
 package users;
 
+import areas.Area;
 import exceptions.AreaAlreadyExistException;
 import sdm.enums.UserType;
+import sdm.sdmElements.Item;
+import sdm.sdmElements.OrderedItem;
+import sdm.sdmElements.Store;
 import systemEngine.WebEngine;
 import systemInfoContainers.webContainers.AreaContainer;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /*
 Adding and retrieving users is synchronized and in that manner - these actions are thread safe
@@ -17,11 +18,11 @@ of the user of this class to handle the synchronization of isUserExists with oth
  */
 public class UserManager {
 
-    private final Set<SingleUser> usersSet;
+    private Map<String, SingleUser> userNameToUser;
     private WebEngine engine;
 
     public UserManager() {
-        usersSet = new HashSet<>();
+        userNameToUser = new HashMap<>();
         engine = new WebEngine();
     }
 
@@ -30,51 +31,48 @@ public class UserManager {
     }
 
     public synchronized void addUser(String username, UserType userType, Integer userId) {
-        usersSet.add(new SingleUser(userType,username, userId));
+        userNameToUser.put(username, new SingleUser(userType,username, userId));
     }
 
-    public synchronized void removeUser(String username) {
+    /*public synchronized void removeUser(String username) {
         usersSet.forEach(user -> {
             if(user.getUserName().equals(username)) {
                 usersSet.remove(user);
             }
         });
-    }
+    }*/
 
-    public synchronized Set<SingleUser> getUsers() {
-        return Collections.unmodifiableSet(usersSet);
+    public synchronized Map<String,SingleUser> getUsers() {
+        return Collections.unmodifiableMap(userNameToUser);
     }
 
     public boolean isUserExists(String username) {
-        return usersSet.stream().filter(user -> user.getUserName().equals(username)).count() > 0;
+        return userNameToUser.containsKey(username);
     }
 
-
-    public void addAreaToUser(String area, String userName) throws AreaAlreadyExistException {
-        for(SingleUser user : usersSet) {
-            if (user.getAreas().contains(area)) {
+    public void addAreaToUser(Area area, String userName) throws AreaAlreadyExistException {
+        for(SingleUser user : userNameToUser.values()) {
+            if (user.getAreaNameToAreas().keySet().contains(area.getAreaName())) {
                 throw new AreaAlreadyExistException();
             }
         }
 
-        usersSet.forEach(user -> {
-            if(user.getUserName().equals(userName)) {
-                user.addNewArea(area);
-            }
-        });
+        if(userNameToUser.containsKey(userName)) {
+            userNameToUser.get(userName).addNewArea(area);
+        }
     }
 
     public UserType getUserType(String userName) {
         UserType userType = null;
-         for(SingleUser user : usersSet) {
-             if (user.getUserName().equals(userName)) {
-                 userType =  user.getUserType();
-             }
-         }
+
+        if(userNameToUser.containsKey(userName)) {
+            userType = userNameToUser.get(userName).getUserType();
+        }
          return userType;
     }
 
     public List<AreaContainer> getAreas() {
-        return engine.getAreasContainer(usersSet);
+        return engine.getAreasContainer(userNameToUser);
     }
+
 }

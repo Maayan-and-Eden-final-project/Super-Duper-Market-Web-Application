@@ -1,5 +1,6 @@
 package users;
 
+import areas.Area;
 import javafx.util.Pair;
 import sdm.enums.UserType;
 import sdm.sdmElements.OrderedItem;
@@ -12,31 +13,17 @@ public class SingleUser {
     private final String userName;
     private final UserType userType;
     private final Integer userId;
-    private List<String> areas;
-    private Map<String, List<Pair<Integer,Store>>> areaNameToStores;
-    private Map<String, List<Pair<Integer, OrderedItem>>> areaNameToItems;
-
+    private Map<String, Area> areaNameToAreas;
 
     public SingleUser(UserType userType, String username, Integer userId) {
         this.userType = userType;
         this.userName = username;
         this.userId = userId;
-        this.areas = new ArrayList<>();
-        this.areaNameToStores = new HashMap<>();
-        this.areaNameToItems = new HashMap<>();
+        this.areaNameToAreas = new HashMap<>();
     }
 
-
-    public Map<String, List<Pair<Integer, OrderedItem>>> getAreaNameToItems() {
-        return Collections.unmodifiableMap(areaNameToItems);
-    }
-
-    public Map<String, List<Pair<Integer, Store>>> getAreaNameToStores() {
-        return Collections.unmodifiableMap(areaNameToStores);
-    }
-
-    public List<String> getAreas() {
-        return Collections.unmodifiableList(areas);
+    public Map<String, Area> getAreaNameToAreas() {
+        return Collections.unmodifiableMap(areaNameToAreas);
     }
 
     public Integer getUserId() {
@@ -51,7 +38,7 @@ public class SingleUser {
         return userName;
     }
 
-    public synchronized void addNewArea(String newArea) {
-        areas.add(newArea);
+    public synchronized void addNewArea(Area newArea) {
+        areaNameToAreas.put(newArea.getAreaName(),newArea);
     }
 }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 import java.util.Set;
 
 public class UsersServlet extends HttpServlet {
@@ -21,7 +22,7 @@ public class UsersServlet extends HttpServlet {
         try (PrintWriter out = resp.getWriter()) {
             Gson gson = new Gson();
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            Set<SingleUser> usersList = userManager.getUsers();
+            Map<String,SingleUser> usersList = userManager.getUsers();
             String json = gson.toJson(usersList);
             out.println(json);
             out.flush();

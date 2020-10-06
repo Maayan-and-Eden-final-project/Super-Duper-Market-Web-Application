@@ -1,5 +1,6 @@
 package systemEngine;
 
+import areas.Area;
 import exceptions.InvalideOrderHistoryLoadFileException;
 import exceptions.ItemIsNotSoldException;
 import exceptions.SingleSellingStoreException;
@@ -101,27 +102,30 @@ public class WebEngine  extends Connector{
         return null;
     }
 
-    public List<AreaContainer> getAreasContainer(Set<SingleUser> usersSet) {
+    public List<AreaContainer> getAreasContainer(Map<String,SingleUser> userMap) {
         List<AreaContainer> areaContainersList = new ArrayList<>();
 
-        for (SingleUser user : usersSet) {
-            if (!user.getAreas().isEmpty()) {
-                for (String area : user.getAreas()) {
+        for (SingleUser user : userMap.values()) {
+            if (!user.getAreaNameToAreas().isEmpty()) {
+                for (Area area : user.getAreaNameToAreas().values()) {
                     AreaContainer areaContainer = new AreaContainer();
-                    areaContainer.setAreaName(area);
+                    areaContainer.setAreaName(area.getAreaName());
                     areaContainer.setAreaOwner(user.getUserName());
-                    areaContainer.setStoresInArea(user.getAreaNameToStores().get(area).size());
-                    areaContainer.setItemsInArea(user.getAreaNameToItems().get(area).size());
+                    areaContainer.setStoresInArea(area.getStoreIdToStore().size());
+                    areaContainer.setItemsInArea(area.getItemIdToItem().size());
 
-                    for(Pair<Integer, Store> storeIdToStore: user.getAreaNameToStores().get(area)) {
-                        Store store = storeIdToStore.getValue().clone();
+                    for(Store store: area.getStoreIdToStore().values()) {
                         areaContainer.setOrdersInArea(store.getOrders().size());
 
                         float ordersAvg = 0;
                         for(Order order: store.getOrders().values()) {
                             ordersAvg += order.getTotalItemsPrice();
                         }
-                        ordersAvg /= store.getOrders().size();
+                        if(store.getOrders().size() == 0) {
+                            ordersAvg = 0;
+                        } else {
+                            ordersAvg /= store.getOrders().size();
+                        }
                         areaContainer.setAvgOrdersCostsInArea(ordersAvg);
                     }
                     areaContainersList.add(areaContainer);
