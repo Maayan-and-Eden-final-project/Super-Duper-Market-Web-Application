@@ -8,6 +8,7 @@ import sdm.sdmElements.Item;
 import sdm.sdmElements.OrderedItem;
 import sdm.sdmElements.Store;
 import systemEngine.WebEngine;
+import systemInfoContainers.ItemsContainer;
 import systemInfoContainers.webContainers.AccountActionsContainer;
 import systemInfoContainers.webContainers.AreaContainer;
 
@@ -84,5 +85,18 @@ public class UserManager {
     public AccountActionsContainer getUserActions(String userName) {
         AccountActionsContainer actions = new AccountActionsContainer(userNameToUser.get(userName).getAccountActions(),userNameToUser.get(userName).getBalance());
         return actions;
+    }
+
+    public ItemsContainer getAreaItems(String areaName) throws CloneNotSupportedException {
+        ItemsContainer itemsContainer = null;
+        for(SingleUser user: userNameToUser.values()) {
+           for(Area area : user.getAreaNameToAreas().values()) {
+               if(area.getAreaName().equals(areaName)) {
+                   itemsContainer = engine.systemItemsInformation(area.getItemIdToItem(), area.getStoreIdToStore());
+               }
+           }
+        }
+
+        return itemsContainer;
     }
 }

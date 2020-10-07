@@ -1,0 +1,40 @@
+package sdmWebApplication.servlets;
+
+import com.google.gson.Gson;
+import sdmWebApplication.utils.ServletUtils;
+import sdmWebApplication.utils.SessionUtils;
+import systemInfoContainers.ItemsContainer;
+import systemInfoContainers.webContainers.AccountActionsContainer;
+import users.UserManager;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class ItemsAndStoresServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String actionType = req.getParameter("actionType");
+        String areanameFromSession = SessionUtils.getAreaName(req);
+        resp.setContentType("application/json");
+        try (PrintWriter out = resp.getWriter()) {
+            Gson gson = new Gson();
+            String json = null;
+            if (actionType.equals("items")) {
+                ItemsContainer items = ServletUtils.getUserManager(getServletContext()).getAreaItems(areanameFromSession);
+                json = gson.toJson(items);
+
+            } else if (actionType.equals("stores")) {
+
+            }
+
+            out.println(json);
+            out.flush();
+        } catch (CloneNotSupportedException e) {
+
+        }
+    }
+}

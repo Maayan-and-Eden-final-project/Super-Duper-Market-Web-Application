@@ -24,6 +24,10 @@
         <servlet-name>AccountServlet</servlet-name>
         <servlet-class>sdmWebApplication.servlets.AccountServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ItemsAndStoresServlet</servlet-name>
+        <servlet-class>sdmWebApplication.servlets.ItemsAndStoresServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/pages/login/login</url-pattern>
@@ -43,5 +47,9 @@
     <servlet-mapping>
         <servlet-name>AccountServlet</servlet-name>
         <url-pattern>/pages/settingPage/account</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ItemsAndStoresServlet</servlet-name>
+        <url-pattern>/pages/areaMainPage/itemsAndStores</url-pattern>
     </servlet-mapping>
 </web-app>

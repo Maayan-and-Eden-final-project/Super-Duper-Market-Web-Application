@@ -6,6 +6,7 @@ import exceptions.ItemIsNotSoldException;
 import exceptions.SingleSellingStoreException;
 import exceptions.XmlSimilarItemsIdException;
 import javafx.util.Pair;
+import sdm.sdmElements.Item;
 import sdm.sdmElements.Order;
 import sdm.sdmElements.Store;
 import systemInfoContainers.*;
@@ -17,18 +18,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WebEngine  extends Connector{
 
-
-
     @Override
-    public StoresContainer getStoresInformation() throws CloneNotSupportedException {
+    public ItemsContainer getItemsInformation() throws CloneNotSupportedException {
         return null;
     }
 
     @Override
-    public ItemsContainer getItemsInformation() throws CloneNotSupportedException {
+    public StoresContainer getStoresInformation() throws CloneNotSupportedException {
         return null;
     }
 
@@ -101,6 +101,44 @@ public class WebEngine  extends Connector{
     public ProgressDynamicOrderContainer getProgressDynamicOrder(Point userLocation, Map<Integer, Float> itemIdToAmount) {
         return null;
     }
+
+    public ItemsContainer systemItemsInformation(Map<Integer, Item> itemIdToItem, Map<Integer, Store> storeIdToStore) throws CloneNotSupportedException {
+        ItemsContainer systemItemsInfo = new ItemsContainer();
+        List<Store> storesList;
+        int sellingStores;
+        int sum;
+        float average;
+        float numberOfSoldItems = 0;
+        ItemInfo itemInfo;
+
+        for(Item item : itemIdToItem.values()) {
+            itemInfo = new ItemInfo();
+
+            storesList = storeIdToStore.values().stream().filter(store -> store.getItemsIdAndPrices()
+                    .containsKey(item.getId())).collect(Collectors.toList());
+            sellingStores = storesList.size();
+
+            sum = storesList.stream().mapToInt(store -> store.getItemsIdAndPrices().get(item.getId())).sum();
+            average = sum / sellingStores;
+
+            numberOfSoldItems = 0;
+
+            for (Store store : storesList) {
+                if(store.getPurchasedItems().containsKey(item.getId()))
+                    numberOfSoldItems += store.getPurchasedItems().get(item.getId());
+            }
+            itemInfo.setItemId(item.getId());
+            itemInfo.setItemName(item.getName());
+            itemInfo.setAvgPrice(average);
+            itemInfo.setNumOfSellingStores(sellingStores);
+            itemInfo.setPurchaseCategory(item.getPurchaseCategory());
+            itemInfo.setTotalPurchases(numberOfSoldItems);
+            systemItemsInfo.getItemIdToItemInfo().put(item.getId(),itemInfo);
+        }
+
+        return systemItemsInfo;
+    }
+
 
     public List<AreaContainer> getAreasContainer(Map<String,SingleUser> userMap) {
         List<AreaContainer> areaContainersList = new ArrayList<>();
