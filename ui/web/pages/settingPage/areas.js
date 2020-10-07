@@ -39,9 +39,22 @@ function refreshAreasList(areas) {
         "           <li class=\"area-list-item\">Number Of Orders:" + areaContainer.ordersInArea + "</li>\n" +
         "           <li class=\"area-list-item\">Average Orders Costs:" + areaContainer.avgOrdersCostsInArea + "</li>\n" +
         "       </ul>\n" +
-        "       <button type=\"button\" class=\"btn btn-lg btn-block btn-outline-primary\">Go To Area</button>\n" +
+        "       <button type=\"button\" class=\"btn btn-lg btn-block btn-outline-primary single-area-button\">Go To Area</button>\n" +
         "    </div>\n" +
         "</div>\n");
+        $(".single-area-button").click(function () {
+            $.ajax({
+                method: 'POST',
+                data: "areaKey=" + areaContainer.areaName ,
+                url: "areas",
+                error: function (e) {
+
+                },
+                success: function (r) {
+
+                }
+            });
+        });
     });
 }
 
