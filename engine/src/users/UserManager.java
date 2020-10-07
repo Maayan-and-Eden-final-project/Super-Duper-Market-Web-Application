@@ -2,11 +2,13 @@ package users;
 
 import areas.Area;
 import exceptions.AreaAlreadyExistException;
+import sdm.enums.AccountAction;
 import sdm.enums.UserType;
 import sdm.sdmElements.Item;
 import sdm.sdmElements.OrderedItem;
 import sdm.sdmElements.Store;
 import systemEngine.WebEngine;
+import systemInfoContainers.webContainers.AccountActionsContainer;
 import systemInfoContainers.webContainers.AreaContainer;
 
 import java.util.*;
@@ -75,4 +77,12 @@ public class UserManager {
         return engine.getAreasContainer(userNameToUser);
     }
 
+    public void addFundsToWallet(Float amount, String date, String userName) {
+        userNameToUser.get(userName).handleAddFundsAction(date,amount);
+    }
+
+    public AccountActionsContainer getUserActions(String userName) {
+        AccountActionsContainer actions = new AccountActionsContainer(userNameToUser.get(userName).getAccountActions(),userNameToUser.get(userName).getBalance());
+        return actions;
+    }
 }

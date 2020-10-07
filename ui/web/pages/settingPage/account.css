@@ -1,0 +1,25 @@
+thead {
+    text-align: center;
+}
+
+tbody {
+text-align: left;
+}
+
+.account-actions{
+    margin: 5%;
+    background-color: white;
+    padding: 3%;
+    border-radius: 15px;
+    background-color: #0d3f57;
+    color: ghostwhite;
+}
+
+.table-hover>tbody>tr:hover {
+    background-color: ghostwhite;
+    color: #0d3f57 ;
+}
+
+.add-fund.popup{
+    position: unset !important;
+}

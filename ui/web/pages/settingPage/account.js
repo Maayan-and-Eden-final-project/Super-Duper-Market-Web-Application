@@ -1,3 +1,5 @@
+var accountTableInterval;
+
 function getUserTypeForAccount() {
     $.ajax({
         method: 'GET',
@@ -12,11 +14,11 @@ function getUserTypeForAccount() {
                     "    <input type=\"float\" class=\"form-control\" id=\"amount-input\" placeholder=\"Amount\" required \n>\n" +
                     "  </div>\n" +
                     "  <input type=\"date\" id=\"date-input\" name=\"birthday\" required>\n" +
-                    "  <button type=\"submit\" class=\"btn btn-primary mb-2\">Add Money To My Account</button>\n" +
-                    "</form>" +
-                    "<div class=\"popup\" >\n" +
+                    "  <button type=\"submit\" class=\"btn btn-primary mb-2\">Add Funds To My Wallet</button>\n" +
+                    "<div class=\"add-fund popup\" >\n" +
                     "     <span class=\"popuptext\" id=\"myPopup\"></span>" +
-                    "</div> \n");
+                    "</div> \n" +
+                    "</form>");
 
                 $("#form-account").submit((function () {
                     var amount = $("#amount-input").val();
@@ -27,11 +29,8 @@ function getUserTypeForAccount() {
 
                     $.ajax({
                         method: 'POST',
-                        data: formData,
+                        data: "amountKey=" + amount + "&dateKey=" + date,
                         url: this.action,
-                        processData: false,
-                        contentType: false,
-                        timeout: 4000,
                         error: function (e) {
                             var popup = document.getElementById("myPopup");
                             popup.innerText = e;
@@ -50,10 +49,55 @@ function getUserTypeForAccount() {
 
                         }
                     });
+                    $("#amount-input").val("");
+                    $("#date-input").val("");
                     return false;
 
                 }));
             }
+            $(".dynamic-container").append("<div class=\"account-actions\"><table id=\"actions-table\" class=\"table table-hover\">\n" +
+                "  <thead>\n" +
+                "    <tr>\n" +
+                "      <th scope=\"col\">Date</th>\n" +
+                "      <th scope=\"col\">Action</th>\n" +
+                "      <th scope=\"col\">Amount</th>\n" +
+                "      <th scope=\"col\">Balance Before Action</th>\n" +
+                "      <th scope=\"col\">Balance After Action</th>\n" +
+                "    </tr>\n" +
+                "  </thead>\n" +
+                "  <tbody id=\"actions-holder\">\n" +
+                "  </tbody>\n" +
+                "</table></div>");
+            refreshAccountTable();
+        }
+    });
+}
+
+function refreshAccountActionsTable(accountActions) {
+    $("#actions-holder").empty();
+    $.each(accountActions.actions || [], function(index, action) {
+        $("#actions-holder").append(
+            "    <tr>\n" +
+            "      <th scope=\"row\">" + action.actionDate + "</th>\n" +
+            "      <td>" + action.accountAction + "</td>\n" +
+            "      <td>" + action.actionAmount + "</td>\n" +
+            "      <td>" + action.balanceBeforeAction + "</td>\n" +
+            "      <td>" + action.balanceAfterAction + "</td>\n" +
+            "    </tr>\n"
+        );
+    });
+}
+
+function refreshAccountTable() {
+    $.ajax({
+        method: 'GET',
+        url: "account",
+        timeout: 4000,
+        dataType: "json",
+        error: function (e) {
+        },
+        success: function (r) {
+            refreshAccountActionsTable(r);
         }
     });
 }
@@ -62,6 +106,7 @@ $(function () {
     $("#accountTab").click(function () {
         $(".dynamic-container").children().remove();
         getUserTypeForAccount();
+        accountTableInterval = setInterval(refreshAccountTable, 1500);
 
     });
 });

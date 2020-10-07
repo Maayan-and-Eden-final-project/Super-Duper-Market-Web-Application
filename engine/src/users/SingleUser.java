@@ -2,6 +2,7 @@ package users;
 
 import areas.Area;
 import javafx.util.Pair;
+import sdm.enums.AccountAction;
 import sdm.enums.UserType;
 import sdm.sdmElements.OrderedItem;
 import sdm.sdmElements.Store;
@@ -14,12 +15,16 @@ public class SingleUser {
     private final UserType userType;
     private final Integer userId;
     private Map<String, Area> areaNameToAreas;
+    private List<SingleAccountAction> accountActions;
+    private float balance;
 
     public SingleUser(UserType userType, String username, Integer userId) {
         this.userType = userType;
         this.userName = username;
         this.userId = userId;
         this.areaNameToAreas = new HashMap<>();
+        this.accountActions = new ArrayList<>();
+        this.balance = 0;
     }
 
     public Map<String, Area> getAreaNameToAreas() {
@@ -38,7 +43,24 @@ public class SingleUser {
         return userName;
     }
 
+    public List<SingleAccountAction> getAccountActions() {
+        return Collections.unmodifiableList(accountActions);
+    }
+
+    public float getBalance() {
+        return balance;
+    }
+
     public synchronized void addNewArea(Area newArea) {
         areaNameToAreas.put(newArea.getAreaName(),newArea);
     }
+
+    public void handleAddFundsAction(String date, Float amount) {
+        SingleAccountAction singleAccountAction =
+                new SingleAccountAction(AccountAction.ADD_FUNDS,date,amount,balance+amount, balance);
+        balance += amount;
+        accountActions.add(singleAccountAction);
+    }
+
+
 }
