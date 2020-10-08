@@ -23,7 +23,7 @@ function displayStores(stores) {
         "<section class=\"our-webcoderskull padding-lg\">\n" +
         "    <div class=\"container\">\n" +
         "        <div class=\"row heading heading-icon\">\n" +
-        "            <h2>Stores</h2>\n" +
+        "            <h2 class=\"stores-header\">Stores</h2>\n" +
         "        </div>\n" +
         "        <ul class=\"row stores-list\">\n" +
         "        </ul>\n" +
@@ -38,32 +38,35 @@ function displayStores(stores) {
 
         $(".stores-list").append(
             "<li class=\"col-12 col-md-6 col-lg-3 store-card\">\n" +
-            "       <div class=\"cnt-block equal-hight\">\n" +
+            "       <div class=\"cnt-block equal-hight store-info-block\">\n" +
             "            <figure><img src=" + storeImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
-            "             <h3 class=\"store-name\">" + singleStore.storeName + "</h3>" +
-            "           <p class=\"area-list-store\">Store Id: " + singleStore.storeId + " </p>\n" +
-            "           <p class=\"area-list-store\">Area Owner: " + singleStore.ownerName + "</p>\n" +
-            "           <p class=\"area-list-store\">Location: " + singleStore.location.x + "," + singleStore.location.y + "</p>\n" +
-            "           <p class=\"area-list-store\">Number Of Orders: " + singleStore.numOfOrders + "</p>\n" +
-            "           <p class=\"area-list-store\">Purchased Items Cost: " + singleStore.purchasedItemsCost + "</p>\n" +
-            "           <p class=\"area-list-store\">PPK: " + singleStore.deliveryPPK + "</p>\n" +
-            "           <p class=\"area-list-store\">Total Delivery Payment: " + singleStore.totalDeliveryPayment + "</p>\n" +
-
-            "<section class=\"our-webcoderskull padding-lg\">\n" +
-            "    <div class=\"container\">\n" +
-            "        <div class=\"row heading heading-icon\">\n" +
-            "            <h2>Items</h2>\n" +
-            "        </div>\n" +
-            "        <ul class=\"row items-list\">\n" +
-            "        </ul>\n" +
-            "    </div>\n" +
-            "</section>" +
-            "        </div>" +
+            "             <h3 class=\"store-name\">" + singleStore.storeName + " " +
+            "                 <small class=\"text-muted\"> Store Id: " + singleStore.storeId +
+            "                 </small>" +
+            "             </h3>" +
+                    "     <div class=\"row store-information-row\">" +
+                    "         <div class=\"area-list-store col-sm-2\">Area Owner: " + singleStore.ownerName + "</div>\n" +
+                    "         <div class=\"area-list-store col-sm-2\">Location: " + singleStore.location.x + "," + singleStore.location.y + "</div>\n" +
+                    "         <div class=\"area-list-store col-sm-2\">Number Of Orders: " + singleStore.numOfOrders + "</div>\n" +
+                    "         <div class=\"area-list-store col-sm-2\">Purchased Items Cost: " + singleStore.purchasedItemsCost + "</div>\n" +
+                    "         <div class=\"area-list-store col-sm-2\">PPK: " + singleStore.deliveryPPK + "</div>\n" +
+                    "         <div class=\"area-list-store col-sm-2\">Total Delivery Payment: " + singleStore.totalDeliveryPayment + "</div>\n" +
+            "             </div>" +
+                    "<section class=\"our-webcoderskull padding-lg\">\n" +
+                    "    <div class=\"container store-item-container\">\n" +
+                    "        <div class=\"row heading heading-icon \">\n" +
+                    "            <h2 class=\"store-items-header\">Items</h2>\n" +
+                    "        </div>\n" +
+                    "        <ul id=\"store-" + singleStore.storeId + "\"  class=\"row items-list\">\n" +
+                    "        </ul>\n" +
+                    "    </div>\n" +
+                    "</section>" +
+            "     </div>" +
             "</li>\n");
         $.each(singleStore.storeItems || [], function(index, singleStoreItem) {
-            $(".items-list").append(
+            $("#store-" + singleStore.storeId).append(
                 "           <li class=\"col-12 col-md-6 col-lg-3 item-card\">\n" +
-                "           <figure><img src=" + itemImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
+                "           <figure class=\"image-figure\"><img src=" + itemImageUrl + " class=\"img-responsive store-item-image\"  alt=\"\"></figure>\n" +
                 "           <h3 class=\"item-name\">" + singleStoreItem.itemName + "</h3>" +
                 "           <p class=\"area-list-item\">Item Id: " + singleStoreItem.itemId + " </p>\n" +
                 "           <p class=\"area-list-item\">Purchase Category: " + singleStoreItem.purchaseCategory + "</p>\n" +
@@ -73,3 +76,19 @@ function displayStores(stores) {
         });
     });
 }
+
+/*
+
+<div class="cnt-block equal-hight">
+    <figure><img src="../../common/images/storeIcon.png" class="img-responsive" alt=""></figure>
+    <h3 class="store-name">Rami</h3>
+    <div class="row">
+
+    <div class="area-list-store col-sm-2">Store Id: 1 </div>
+<div class="area-list-store col-sm-2">Area Owner: maya</div>
+<div class="area-list-store col-sm-2">Location: 3,4</div>
+<div class="area-list-store col-sm-2">Number Of Orders: 0</div>
+<div class="area-list-store col-sm-2">Purchased Items Cost: 0</div>
+<div class="area-list-store col-sm-2">PPK: 10</div>
+<div class="area-list-store col-sm-2">Total Delivery Payment: 0</div>
+</div>*/
