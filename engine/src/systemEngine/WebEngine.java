@@ -11,6 +11,8 @@ import sdm.sdmElements.Order;
 import sdm.sdmElements.Store;
 import systemInfoContainers.*;
 import systemInfoContainers.webContainers.AreaContainer;
+import systemInfoContainers.webContainers.SingleStoreContainer;
+import systemInfoContainers.webContainers.SingleStoreItemContainer;
 import users.SingleUser;
 
 import java.awt.*;
@@ -171,5 +173,42 @@ public class WebEngine  extends Connector{
             }
         }
         return areaContainersList;
+    }
+
+    public List<SingleStoreContainer> getAreaStores(Map<Integer, Store> storeIdToStore, String areaOwnerName) {
+        List<SingleStoreContainer> stores = new ArrayList<>();
+
+        for(Store store : storeIdToStore.values()) {
+            SingleStoreContainer singleStore = new SingleStoreContainer();
+            singleStore.setStoreId(store.getId());
+            singleStore.setStoreName(store.getName());
+            singleStore.setOwnerName(areaOwnerName);
+            singleStore.setLocation(store.getLocation());
+            singleStore.setNumOfOrders(store.getStoresOrders().size());
+            singleStore.setDeliveryPPK(store.getDeliveryPPK());
+            singleStore.setTotalDeliveryPayment(store.getTotalDeliveryPayment());
+
+            float totalItemsCost = 0;
+            for(Order order: store.getOrders().values()) {
+                totalItemsCost += order.getTotalItemsPrice();
+            }
+            singleStore.setPurchasedItemsCost(totalItemsCost);
+
+            for(Item item: store.getItemsAndPrices().keySet()) {
+                SingleStoreItemContainer singleItem = new SingleStoreItemContainer();
+                singleItem.setItemId(item.getId());
+                singleItem.setItemName(item.getName());
+                singleItem.setPurchaseCategory(item.getPurchaseCategory());
+                singleItem.setItemPrice(store.getItemsAndPrices().get(item));
+                if(store.getPurchasedItems().containsKey(item.getId())) {
+                    singleItem.setAmountSold(store.getPurchasedItems().get(item.getId()));
+                } else {
+                    singleItem.setAmountSold(0);
+                }
+                singleStore.getStoreItems().add(singleItem);
+            }
+            stores.add(singleStore);
+        }
+        return stores;
     }
 }

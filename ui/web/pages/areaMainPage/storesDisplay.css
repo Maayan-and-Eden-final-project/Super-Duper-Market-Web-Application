@@ -1,0 +1,23 @@
+.store-card {
+    width: fit-content;
+}
+
+.our-webcoderskull .cnt-block:hover {
+    box-shadow: none!important;
+    border: 0px solid #d5d5d5 !important;
+}
+
+.our-webcoderskull .cnt-block {
+    box-shadow: none!important;
+    border: 0px solid #d5d5d5 !important;
+}
+
+.stores-list {
+    margin-top: 80px;
+    width: 90%;
+}
+
+.area-list-store {
+    display: flow-root !important;
+    padding-bottom: 1%;
+}

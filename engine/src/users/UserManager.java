@@ -11,6 +11,7 @@ import systemEngine.WebEngine;
 import systemInfoContainers.ItemsContainer;
 import systemInfoContainers.webContainers.AccountActionsContainer;
 import systemInfoContainers.webContainers.AreaContainer;
+import systemInfoContainers.webContainers.SingleStoreContainer;
 
 import java.util.*;
 
@@ -98,5 +99,17 @@ public class UserManager {
         }
 
         return itemsContainer;
+    }
+
+    public List<SingleStoreContainer> getAreaStores(String areaName) {
+            List<SingleStoreContainer> stores = null;
+        for(SingleUser user: userNameToUser.values()) {
+            for(Area area : user.getAreaNameToAreas().values()) {
+                if(area.getAreaName().equals(areaName)) {
+                    stores = engine.getAreaStores(area.getStoreIdToStore(),user.getUserName());
+                }
+            }
+        }
+        return stores;
     }
 }

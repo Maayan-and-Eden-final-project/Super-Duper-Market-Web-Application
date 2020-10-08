@@ -96,7 +96,10 @@ h2 {
     font-weight: 100;
 }
 
-.items-list {
-    margin-top: 80px;
-    width: 90%;
+
+.dynamic-container {
+    float: left;
+    padding-left: 6%;
+    padding-right: 6%;
 }
+

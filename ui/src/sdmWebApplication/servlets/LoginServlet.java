@@ -42,7 +42,7 @@ public class LoginServlet extends HttpServlet {
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         if (usernameFromSession == null) {
             //user is not logged in yet
-            String usernameFromParameter = request.getParameter(USERNAME);
+            String usernameFromParameter = request.getParameter(USERNAME).toLowerCase();
             String usertypeFromParameter = request.getParameter(USERTYPE);
 
             if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {

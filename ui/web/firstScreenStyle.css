@@ -1,6 +1,6 @@
 
 body, html {
-    background-color: #BED7D1 ;
+    background-color: #FED057 ;
 }
 
 
@@ -48,7 +48,7 @@ h2 {
     width: 40%;
     resize: both;
     position: absolute;
-    background-color: #BED7D1;
+    background-color: #FED057;
 }
 
 .icon-image {
@@ -73,7 +73,7 @@ h2 {
     background-color: #5bc0de;
 }
 .btn {
-    background-color: #BED7D1;
+    background-color: #FED057;
     border-radius: 10px;
     border-color: #FFFFFF;
     text-fill: #FFFFFF;
@@ -85,10 +85,6 @@ h2 {
 }
 
 .btn-outline-info:hover, .btn-info:hover {
-    background-color: #ed5485 !important;
+    background-color: #26394E !important;
     border-color: #ffffff;
 }
-
-
-
-

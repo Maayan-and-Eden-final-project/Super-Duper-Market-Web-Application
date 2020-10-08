@@ -1,0 +1,27 @@
+.item-card {
+    width: fit-content;
+}
+
+.our-webcoderskull .cnt-block:hover {
+    box-shadow: none!important;
+    border: 0px solid #d5d5d5 !important;
+}
+
+.our-webcoderskull .cnt-block {
+    box-shadow: none!important;
+    border: 0px solid #d5d5d5 !important;
+}
+
+.items-list {
+    margin-top: 80px;
+    width: 90%;
+}
+
+.main-menu-item {
+    cursor: pointer;
+    display: grid!important;
+}
+
+.main-menu-item:hover {
+    color: #0d3f57;
+}
