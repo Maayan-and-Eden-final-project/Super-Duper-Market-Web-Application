@@ -21,7 +21,7 @@ function displayItems(items) {
     $(".dynamic-container").children().remove();
     $(".dynamic-container").append(
         "<section class=\"our-webcoderskull padding-lg\">\n" +
-        "    <div class=\"container\">\n" +
+        "    <div class=\"container items-container\">\n" +
         "        <div class=\"row heading heading-icon\">\n" +
         "            <h2>Items</h2>\n" +
         "        </div>\n" +

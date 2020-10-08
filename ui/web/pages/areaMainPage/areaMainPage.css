@@ -88,7 +88,7 @@ ul li {
 
 h2 {
     position: absolute;
-    left: 50%;
+    left: 47%;
     color: #fff;
     margin: 0;
     font-size: 16px;
@@ -99,7 +99,7 @@ h2 {
 
 .dynamic-container {
     float: left;
-    padding-left: 11%;
-    padding-right: 6%;
+    padding-left: 85px;
+    padding-right: 1px;
 }
 

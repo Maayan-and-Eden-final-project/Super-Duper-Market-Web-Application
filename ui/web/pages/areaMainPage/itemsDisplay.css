@@ -1,5 +1,5 @@
 .item-card {
-    width: fit-content;
+    width: 315px;
 }
 
 .our-webcoderskull .cnt-block:hover {
@@ -15,6 +15,10 @@
 .items-list {
     margin-top: 80px;
     width: 90%;
+    text-align: -webkit-center;
+    position: absolute!important;
+    margin-right: 0!important;
+    margin-left: 0!important;
 }
 
 .main-menu-item {
@@ -24,4 +28,8 @@
 
 .main-menu-item:hover {
     color: #0d3f57;
+}
+
+.items-container {
+    width: 90%;
 }

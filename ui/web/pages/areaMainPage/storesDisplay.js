@@ -21,7 +21,7 @@ function displayStores(stores) {
     $(".dynamic-container").children().remove();
     $(".dynamic-container").append(
         "<section class=\"our-webcoderskull padding-lg\">\n" +
-        "    <div class=\"container\">\n" +
+        "    <div class=\"container stores-container\">\n" +
         "        <div class=\"row heading heading-icon\">\n" +
         "            <h2 class=\"stores-header\">Stores</h2>\n" +
         "        </div>\n" +
@@ -57,7 +57,7 @@ function displayStores(stores) {
                     "        <div class=\"row heading heading-icon \">\n" +
                     "            <h2 class=\"store-items-header\">Items</h2>\n" +
                     "        </div>\n" +
-                    "        <ul id=\"store-" + singleStore.storeId + "\"  class=\"row items-list\">\n" +
+                    "        <ul id=\"store-" + singleStore.storeId + "\"  class=\"row store-items-list\">\n" +
                     "        </ul>\n" +
                     "    </div>\n" +
                     "</section>" +
@@ -65,7 +65,7 @@ function displayStores(stores) {
             "</li>\n");
         $.each(singleStore.storeItems || [], function(index, singleStoreItem) {
             $("#store-" + singleStore.storeId).append(
-                "           <li class=\"col-12 col-md-6 col-lg-3 item-card\">\n" +
+                "           <li class=\"col-12 col-md-6 col-lg-3 store-item-card\">\n" +
                 "           <figure class=\"image-figure\"><img src=" + itemImageUrl + " class=\"img-responsive store-item-image\"  alt=\"\"></figure>\n" +
                 "           <h3 class=\"item-name\">" + singleStoreItem.itemName + "</h3>" +
                 "           <p class=\"area-list-item\">Item Id: " + singleStoreItem.itemId + " </p>\n" +

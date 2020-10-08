@@ -1,5 +1,5 @@
 .store-card {
-    width: fit-content;
+    width: 100%;
     display: inline-block!important;
 }
 
@@ -35,7 +35,7 @@ ul{
     position: relative!important;
 }
 
-.items-list{
+.store-items-list{
     margin-top: 0;
     width: 100%;
     overflow: auto;
@@ -52,7 +52,7 @@ ul{
     text-align: -webkit-center;
 }
 
-.item-card{
+.store-item-card{
     border: 1.3px solid #ff407a !important;
     margin-right: 9px;
     border-radius: 12px;
@@ -73,11 +73,16 @@ ul{
 }
 
 .store-item-image{
-    width: 100px;
+    width: 100px!important;
+    height: 100px!important;
     display: inherit!important;
 }
 
 .image-figure{
     height: fit-content!important;
+}
+
+.stores-container {
+    width: 90%;
 }
 
