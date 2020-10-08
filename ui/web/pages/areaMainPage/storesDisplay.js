@@ -34,6 +34,7 @@ function displayStores(stores) {
     $.each(stores || [], function(index, singleStore) {
 
         var storeImageUrl = "../../common/images/storeIcon.png";
+        var itemImageUrl = "../../common/images/itemIcon.png";
 
         $(".stores-list").append(
             "<li class=\"col-12 col-md-6 col-lg-3 store-card\">\n" +
@@ -48,7 +49,27 @@ function displayStores(stores) {
             "           <p class=\"area-list-store\">PPK: " + singleStore.deliveryPPK + "</p>\n" +
             "           <p class=\"area-list-store\">Total Delivery Payment: " + singleStore.totalDeliveryPayment + "</p>\n" +
 
-            "</div>" +
-            "            </li>\n");
+            "<section class=\"our-webcoderskull padding-lg\">\n" +
+            "    <div class=\"container\">\n" +
+            "        <div class=\"row heading heading-icon\">\n" +
+            "            <h2>Items</h2>\n" +
+            "        </div>\n" +
+            "        <ul class=\"row items-list\">\n" +
+            "        </ul>\n" +
+            "    </div>\n" +
+            "</section>" +
+            "        </div>" +
+            "</li>\n");
+        $.each(singleStore.storeItems || [], function(index, singleStoreItem) {
+            $(".items-list").append(
+                "           <li class=\"col-12 col-md-6 col-lg-3 item-card\">\n" +
+                "           <figure><img src=" + itemImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
+                "           <h3 class=\"item-name\">" + singleStoreItem.itemName + "</h3>" +
+                "           <p class=\"area-list-item\">Item Id: " + singleStoreItem.itemId + " </p>\n" +
+                "           <p class=\"area-list-item\">Purchase Category: " + singleStoreItem.purchaseCategory + "</p>\n" +
+                "           <p class=\"area-list-item\">Price: " + singleStoreItem.itemPrice + "</p>\n" +
+                "           <p class=\"area-list-item\">Amount Sold: " + singleStoreItem.amountSold + "</p>\n" +
+                "           </li>\n");
+        });
     });
 }
