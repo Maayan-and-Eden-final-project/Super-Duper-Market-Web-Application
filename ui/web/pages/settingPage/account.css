@@ -11,8 +11,8 @@ text-align: left;
     background-color: white;
     padding: 3%;
     border-radius: 15px;
-    background-color: #0d3f57;
-    color: ghostwhite;
+    background-color: ghostwhite;
+    color: #0d3f57;
 }
 
 .table-hover>tbody>tr:hover {
