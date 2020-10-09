@@ -1,6 +1,8 @@
 .store-card {
     width: 100%;
     display: inline-block!important;
+    font-family: GeosansLight !important;
+    font-size: 15px;
 }
 
 .our-webcoderskull .cnt-block:hover {
@@ -27,7 +29,8 @@ ul{
 .area-list-store {
     display: flow-root !important;
     padding-bottom: 1%;
-    color: #2b542c;
+    color: #26394E;
+    font-weight: bold;
 }
 
 .store-item-container {
@@ -37,7 +40,7 @@ ul{
 
 .store-items-list{
     margin-top: 0;
-    width: 100%;
+    width: fit-content;
     overflow: auto;
     max-height: 375px;
 }
@@ -53,11 +56,12 @@ ul{
 }
 
 .store-item-card{
-    border: 1.3px solid #ff407a !important;
     margin-right: 9px;
     border-radius: 12px;
     width: 194px!important;
     margin-top: 10px;
+    font-family: GeosansLight !important;
+    border: 1.3px solid #26394e57 !important;
 }
 
 .store-items-header {
@@ -86,3 +90,6 @@ ul{
     width: 90%;
 }
 
+.area-list-item{
+    font-size: 15px !important;
+}

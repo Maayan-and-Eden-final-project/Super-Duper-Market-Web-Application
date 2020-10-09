@@ -30,8 +30,9 @@ function refreshAreasList(areas) {
         $("#areasHolder").append(
         "<div class=\"card mb shadow-sm\">\n" +
         "    <div class=\"card-header\">\n" +
+            "<img src=\"../../common/images/location.png\" class=\"area-card-icon\"/>" +
         "       <p class=\"my-0 font-weight-normal area-card-header\">" + areaContainer.areaName + "</p>\n" +
-        "    </div>\n" +
+            "    </div>\n" +
         "    <div class=\"card-body\">\n" +
         "       <ul class=\"list-unstyled mt-3 mb-4 area-info\">\n" +
             "       <li class=\"area-list-item\">Area Owner: " + areaContainer.areaOwner + "</li>\n" +

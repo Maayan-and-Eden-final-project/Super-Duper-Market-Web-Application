@@ -62,7 +62,7 @@ function refreshUsersList(users) {
             "<li class=\"col-12 col-md-6 col-lg-3\">\n" +
         "                <div class=\"cnt-block equal-hight\" style=\"height: 321px;\">\n" +
         "                    <figure><img src=" + imageUrl + " class=\"img-responsive rounded-circle\"  alt=\"\"></figure>\n" +
-        "                    <h3 class=\"user-name\">" + singleUser.userName + "</h3> <!--userName-->\n" +
+        "                    <p class=\"user-name\">" + singleUser.userName + "</p> <!--userName-->\n" +
         "                    <p class=\"user-type\">" + userType + "</p> <!--type-->\n" +
         "                </div>\n" +
         "            </li>\n");

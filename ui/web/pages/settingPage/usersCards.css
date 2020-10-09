@@ -119,3 +119,13 @@ li {
     font-size: 40px;
     line-height: 1.1!important;
 }
+
+.user-type{
+    font-size: 18px !important;
+}
+
+.user-name{
+    font-size: 37px !important;
+    margin-bottom: 24px !important;
+    margin-top: 18px !important;
+}
