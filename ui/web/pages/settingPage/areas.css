@@ -3,7 +3,7 @@
 }
 
 .card-body {
-    padding: 8%;
+    padding: 14px 24px 0 24px;
 }
 
 
@@ -11,19 +11,20 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    text-align: center;
     min-width: 0;
-    background-color: aliceblue;
     word-wrap: break-word;
     background-clip: border-box;
-    margin-bottom: 7%;
-    margin-right: 2%;
-    border-radius: 4%;
+    background-color: ghostwhite;
+    text-align: -webkit-center;
+    margin-bottom: 23px;
+    margin-right: 23px;
+    border-radius: 14px;
 }
 
 #areasHolder {
     min-width: 280px;
     display: flex;
+    margin-top: 30px;
 }
 
 .area-list-item {
@@ -34,8 +35,7 @@
 .card-header {
     padding: .75rem 1.25rem;
     margin-bottom: 0;
-    background-color: rgba(0,0,0,.03);
-    border-bottom: 1px solid rgba(0,0,0,.125);
+    border-bottom: 1px solid #26394E;
 }
 
 .btn-block {
@@ -50,10 +50,6 @@ lg {
     border-radius: .3rem;
 }
 
-.btn-outline-primary {
-    color: #007bff;
-    border-color: #007bff;
-}
 
 .btn {
     font-weight: 400;
@@ -65,8 +61,42 @@ lg {
     transition: color .15s;
 }
 
-.btn-outline-primary:hover {
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+
+.areas-container{
+
 }
+
+#areas-header {
+    color: ghostwhite;
+    font-family: GeosansLight;
+    font-size: 40px;
+}
+
+.area-card-header{
+    font-size: 21px;
+    margin-top: 9px;
+    font-family: "Calibri Light" !important;
+}
+
+.area-info{
+    font-family: "calibri light";
+    font-size: 16px;
+}
+
+.single-area-button{
+    width: 148px;
+    border-color: #26394E;
+    color: #26394E;
+    height: 43px;
+}
+
+.single-area-button:hover{
+    color: #fff;
+    background-color: #ed5485;
+}
+
+
+.area-form{
+    padding: 14px;
+}
+

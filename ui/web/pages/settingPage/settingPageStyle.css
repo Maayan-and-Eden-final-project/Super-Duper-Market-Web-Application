@@ -1,9 +1,14 @@
+/* @font-face kit by Fonts2u (https://fonts2u.com) */ @font-face {font-family:"GeosansLight";src:url("../../fonts/geosans/GeosansLight.eot?") format("eot"),url("../../fonts/geosans/GeosansLight.woff") format("woff"),url("../../fonts/geosans/GeosansLight.ttf") format("truetype"),url("../../fonts/geosans/GeosansLight.svg#GeosansLight") format("svg");font-weight:normal;font-style:normal;}
+
+
 .header-row {
-    background-color: #BED7D1;
+    background-color:#26394E ;
+    display: grid;
 }
 
 #icon {
-    width:30%;
+    width:206px;
+    margin-left: 40px;
 }
 
 file{
@@ -11,9 +16,8 @@ file{
 }
 
 .image-icon {
-    text-align: center;
-    padding-top: 3%;
-    padding-bottom: 3% !important;
+    padding-top: 16px;
+    padding-bottom: 31px !important;
 }
 
 .container {
@@ -134,3 +138,56 @@ h3{
     background-color: #FFC0CB !important;
     border-color: #ffffff;
 }
+
+.sidebar-row{
+    background-color: #FED057;
+}
+
+.upload-file-btn{
+    float: right;
+    margin-right: 40px !important;
+    padding: 15px;
+    background-color: #26394E ;
+    color: #FFFFFF;
+    margin-top: 16px;
+    border-radius: 10px;
+}
+
+.upload-file-btn:hover, .upload-file-btn:active, .upload-file-btn:focus{
+    background-color: #FFFFFF!important;
+    color: #26394E!important;
+    border: 3px solid #26394E !important;
+    opacity: 100%!important;
+    text-decoration: none!important;
+}
+
+.setting-page-container{
+    float: left;
+    position: relative;
+}
+
+.tabs-style {
+    margin-left: 40px;
+
+}
+
+.single-tab-style{
+    background-color:white ;
+    color:#26394E ;
+    border: 2.5px solid #26394E  !important;
+    border-bottom: none!important;
+}
+
+.single-tab-style:hover, .single-tab-style:active, .single-tab-style:focus{
+    background-color:#26394E !important;
+    color: white  !important;
+    border: 2.5px solid white  !important;
+    opacity: 100%;
+    border-bottom: none!important;
+
+}
+
+.file-btn-row{
+    margin-top: 16px;
+}
+

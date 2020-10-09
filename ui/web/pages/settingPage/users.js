@@ -38,7 +38,7 @@ function refreshUsersList(users) {
     "<section class=\"our-webcoderskull padding-lg\">\n" +
     "    <div class=\"container\">\n" +
     "        <div class=\"row heading heading-icon\">\n" +
-    "            <h2>Users</h2>\n" +
+    "            <h2 class=\"users-header\">Users</h2>\n" +
     "        </div>\n" +
     "        <ul class=\"row users-list\">\n" +
     "        </ul>\n" +

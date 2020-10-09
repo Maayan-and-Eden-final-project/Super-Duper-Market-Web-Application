@@ -18,7 +18,8 @@ $(function () {
 
 function refreshAreasList(areas) {
     $(".dynamic-container").append(
-        "<div class=\"container\">\n" +
+        "<div class=\"container areas-container\">\n" +
+        "<h2 id=\"areas-header\">AREAS</h2>" +
         "    <div id=\"areasHolder\" class=\"card-deck mb-3 text-center\">\n" +
         "</div>\n" +
         "</div>\n"
@@ -29,21 +30,21 @@ function refreshAreasList(areas) {
         $("#areasHolder").append(
         "<div class=\"card mb shadow-sm\">\n" +
         "    <div class=\"card-header\">\n" +
-        "       <h4 class=\"my-0 font-weight-normal\">" + areaContainer.areaName + "</h4>\n" +
+        "       <p class=\"my-0 font-weight-normal area-card-header\">" + areaContainer.areaName + "</p>\n" +
         "    </div>\n" +
         "    <div class=\"card-body\">\n" +
-        "       <h3 class=\"card-title pricing-card-title\">Area Owner: <small class=\"text-muted\">" + areaContainer.areaOwner + " </small></h3>\n" +
-        "       <ul class=\"list-unstyled mt-3 mb-4\">\n" +
-        "           <li class=\"area-list-item\">Number Of Stores:" + areaContainer.storesInArea + " </li>\n" +
-        "           <li class=\"area-list-item\">Number Of Items:" + areaContainer.itemsInArea + "</li>\n" +
-        "           <li class=\"area-list-item\">Number Of Orders:" + areaContainer.ordersInArea + "</li>\n" +
-        "           <li class=\"area-list-item\">Average Orders Costs:" + areaContainer.avgOrdersCostsInArea + "</li>\n" +
+        "       <ul class=\"list-unstyled mt-3 mb-4 area-info\">\n" +
+            "       <li class=\"area-list-item\">Area Owner: " + areaContainer.areaOwner + "</li>\n" +
+            "       <li class=\"area-list-item\">Number Of Stores: " + areaContainer.storesInArea + " </li>\n" +
+        "           <li class=\"area-list-item\">Number Of Items: " + areaContainer.itemsInArea + "</li>\n" +
+        "           <li class=\"area-list-item\">Number Of Orders: " + areaContainer.ordersInArea + "</li>\n" +
+        "           <li class=\"area-list-item\">Average Orders Costs: " + areaContainer.avgOrdersCostsInArea + "</li>\n" +
         "       </ul>\n" +
-            "<form action=\"areas\" method=\"post\">\n" +
-        "       <button type=\"submit\" class=\"btn btn-lg btn-block btn-outline-primary single-area-button\">Go To Area</button>\n" +
-        "    <input type=\"hidden\" id=\"areaKey\" name=\"areaKey\" value=" + areaContainer.areaName + ">\n" +
-            "</form>" +
             "</div>\n" +
+            "<form class=\"area-form\" action=\"areas\" method=\"post\">\n" +
+            "       <button type=\"submit\" class=\"btn single-area-button\">Go To Area</button>\n" +
+            "    <input type=\"hidden\" id=\"areaKey\" name=\"areaKey\" value=" + areaContainer.areaName + ">\n" +
+            "</form>" +
         "</div>\n");
     });
 }
