@@ -10,11 +10,11 @@ function getUserTypeForAccount() {
         success: function (r) {
             if(r.indexOf("CUSTOMER") > -1) {
                 $(".dynamic-container").append("<form id=\"form-account\" action=\"account\" class=\"form-inline\">\n" +
-                    "  <div class=\"form-group mx-sm-3 mb-2\">\n" +
+                    "  <div class=\"form-group mx-sm-3 mb-2 amount-text-field\">\n" +
                     "    <input type=\"float\" class=\"form-control\" id=\"amount-input\" placeholder=\"Amount\" required \n>\n" +
                     "  </div>\n" +
                     "  <input type=\"date\" id=\"date-input\" name=\"birthday\" required>\n" +
-                    "  <button type=\"submit\" class=\"btn btn-primary mb-2\">Add Funds To My Wallet</button>\n" +
+                    "  <button id=\"add-funds-button\" type=\"submit\" class=\"btn btn-primary mb-2 \">Add Funds To My Wallet</button>\n" +
                     "<div class=\"add-fund popup\" >\n" +
                     "     <span class=\"popuptext\" id=\"myPopup\"></span>" +
                     "</div> \n" +

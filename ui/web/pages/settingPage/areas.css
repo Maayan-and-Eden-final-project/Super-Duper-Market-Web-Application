@@ -72,6 +72,11 @@ lg {
     font-size: 40px;
 }
 
+.area-card-icon{
+    float: right;
+    width: 53px;
+}
+
 .area-card-header{
     font-size: 21px;
     margin-top: 9px;

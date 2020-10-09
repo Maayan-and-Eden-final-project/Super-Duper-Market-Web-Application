@@ -1,5 +1,6 @@
 .item-card {
     width: 315px;
+    font-family: GeosansLight !important;
 }
 
 .our-webcoderskull .cnt-block:hover {
@@ -13,7 +14,7 @@
 }
 
 .items-list {
-    margin-top: 80px;
+    margin-top: 166px;
     width: 90%;
     text-align: -webkit-center;
     position: absolute!important;

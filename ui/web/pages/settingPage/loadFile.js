@@ -22,10 +22,10 @@ $(function () { // onload...do
     $("#uploadFileTab").click(function () {
         $(".dynamic-container").children().remove();
         $(".dynamic-container").append(
-            " <h3>Select a File:</h3>\n" +
+            " <h3 id=\"load-file-header\">Select a File:</h3>\n" +
             "        <form id=\"uploadFileForm\" action=\"uploadFile\" enctype=\"multipart/form-data\" method=\"POST\">\n" +
-            "            <input id=\"file1\" type=\"file\" class='btn btn-info btn-outline-info' accept=\".xml\"><br>" +
-            "            <input type=\"Submit\"  class=\"btn btn-info btn-outline-info\" value=\"Upload File\"> " +
+            "            <input id=\"file1\" type=\"file\" class='btn btn-outline-info load-file-button' accept=\".xml\"><br>" +
+            "            <input type=\"Submit\"  class=\"btn btn-outline-info load-file-button \" value=\"Upload File\"> " +
             "        </form> \n" +
             "        <div class=\"popup\" >\n" +
             "            <span class=\"popuptext\" id=\"myPopup\"></span>" +
