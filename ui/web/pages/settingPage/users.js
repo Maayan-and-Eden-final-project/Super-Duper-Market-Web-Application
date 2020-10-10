@@ -1,17 +1,23 @@
+var usersInterval;
+
+function getUsersInfo() {
+    $.ajax({
+        method: 'GET',
+        url: "users",
+        timeout: 4000,
+        dataType: "json",
+        error: function (e) {
+        },
+        success: function (r) {
+            refreshUsersList(r);
+        }
+    });
+}
+
 $(function () {
     $("#usersTab").click(function () {
         $(".dynamic-container").children().remove();
-        $.ajax({
-            method: 'GET',
-            url: "users",
-            timeout: 4000,
-            dataType: "json",
-            error: function (e) {
-            },
-            success: function (r) {
-                refreshUsersList(r);
-            }
-        });
+            getUsersInfo();
     });
     $("#usersTab").click();
 });
@@ -34,6 +40,7 @@ $(function () {
              }
              */
 function refreshUsersList(users) {
+    $(".dynamic-container").empty();
     $(".dynamic-container").append(
     "<section class=\"our-webcoderskull padding-lg\">\n" +
     "    <div class=\"container\">\n" +
@@ -69,4 +76,11 @@ function refreshUsersList(users) {
 
     });
 }
+
+$(function () {
+    $("#usersTab").click(function () {
+        $(".dynamic-container").children().remove();
+        usersInterval = setInterval(getUsersInfo, 1500);
+    });
+});
 

@@ -23,9 +23,6 @@ function getUserTypeForAccount() {
                 $("#form-account").submit((function () {
                     var amount = $("#amount-input").val();
                     var date =  $("#date-input").val();
-                    var formData = new FormData();
-                    formData.append("fake-key-1", amount);
-                    formData.append("fake-key-2", date);
 
                     $.ajax({
                         method: 'POST',

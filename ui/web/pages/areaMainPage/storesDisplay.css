@@ -73,7 +73,7 @@ ul{
 }
 
 .stores-header {
-    left: 44%;
+    left: 47%;
 }
 
 .store-item-image{
@@ -87,7 +87,8 @@ ul{
 }
 
 .stores-container {
-    width: 90%;
+    width: 95%;
+    margin-left: 8%;
 }
 
 .area-list-item{

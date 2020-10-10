@@ -104,6 +104,8 @@ h2 {
     float: left;
     padding-left: 85px;
     padding-right: 1px;
+    width: 90%;
+    text-align: center;
 }
 
 .area-logo-image{
