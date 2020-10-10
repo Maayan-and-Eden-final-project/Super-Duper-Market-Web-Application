@@ -76,19 +76,3 @@ function displayStores(stores) {
         });
     });
 }
-
-/*
-
-<div class="cnt-block equal-hight">
-    <figure><img src="../../common/images/storeIcon.png" class="img-responsive" alt=""></figure>
-    <h3 class="store-name">Rami</h3>
-    <div class="row">
-
-    <div class="area-list-store col-sm-2">Store Id: 1 </div>
-<div class="area-list-store col-sm-2">Area Owner: maya</div>
-<div class="area-list-store col-sm-2">Location: 3,4</div>
-<div class="area-list-store col-sm-2">Number Of Orders: 0</div>
-<div class="area-list-store col-sm-2">Purchased Items Cost: 0</div>
-<div class="area-list-store col-sm-2">PPK: 10</div>
-<div class="area-list-store col-sm-2">Total Delivery Payment: 0</div>
-</div>*/

@@ -28,6 +28,14 @@
         <servlet-name>ItemsAndStoresServlet</servlet-name>
         <servlet-class>sdmWebApplication.servlets.ItemsAndStoresServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CustomerServlet</servlet-name>
+        <servlet-class>sdmWebApplication.servlets.CustomerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShopOwnerServlet</servlet-name>
+        <servlet-class>sdmWebApplication.servlets.ShopOwnerServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/pages/login/login</url-pattern>
@@ -51,5 +59,13 @@
     <servlet-mapping>
         <servlet-name>ItemsAndStoresServlet</servlet-name>
         <url-pattern>/pages/areaMainPage/itemsAndStores</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CustomerServlet</servlet-name>
+        <url-pattern>/pages/areaMainPage/customer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShopOwnerServlet</servlet-name>
+        <url-pattern>/pages/areaMainPage/shopOwner</url-pattern>
     </servlet-mapping>
 </web-app>
