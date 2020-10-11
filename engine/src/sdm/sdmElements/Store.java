@@ -22,6 +22,7 @@ public class Store implements Cloneable{
     private Map<Item,Integer> itemsAndPrices;
     private Integer orderCounter = 0;
     private List<Discount> discountList;
+    private String areaName;
 
     @Override
     public Store clone() {
@@ -73,6 +74,39 @@ public class Store implements Cloneable{
         this.orders = new HashMap<>();
         this.itemsAndPrices = new HashMap<>();
         this.discountList = new ArrayList<>();
+    }
+
+
+    public Store(int id, String name, int deliveryPPK, Point location, Map<Integer, Integer> itemIdAndPrices, String areaName) {
+        this.id = id;
+        this.name = name;
+        this.deliveryPPK = deliveryPPK;
+        this.location = location;
+        this.itemsIdAndPrices = itemIdAndPrices;
+        this.purchasedItems = new HashMap<>();
+        this.totalDeliveryPayment = 0;
+        this.orders = new HashMap<>();
+        this.itemsAndPrices = new HashMap<>();
+        this.discountList = new ArrayList<>();
+        this.areaName = areaName;
+    }
+
+    public Store(int id, String name, int deliveryPPK, Point location, Map<Integer, Integer> itemIdAndPrices,Map<Item,Integer> itemToItemPrice, String areaName) {
+        this.id = id;
+        this.name = name;
+        this.deliveryPPK = deliveryPPK;
+        this.location = location;
+        this.itemsIdAndPrices = itemIdAndPrices;
+        this.purchasedItems = new HashMap<>();
+        this.totalDeliveryPayment = 0;
+        this.orders = new HashMap<>();
+        this.itemsAndPrices = itemToItemPrice;
+        this.discountList = new ArrayList<>();
+        this.areaName = areaName;
+    }
+
+    public String getAreaName() {
+        return areaName;
     }
 
     public List<Discount> getDiscountList() {

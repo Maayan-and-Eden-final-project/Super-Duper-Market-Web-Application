@@ -271,7 +271,7 @@ public class XmlValidate implements Validator {
         if(engine instanceof DesktopEngine) {
             ((DesktopEngine) engine).getIdToCustomer().clear();
             generatedSdm.getSDMItems().getSDMItem().forEach(item ->  engine.getItems().put(item.getId(),generatedItemToMyItem(item)));
-            generatedSdm.getSDMStores().getSDMStore().forEach(store -> engine.getStores().put(store.getId(),generatedStoreToMyStore(store)));
+            //generatedSdm.getSDMStores().getSDMStore().forEach(store -> engine.getStores().put(store.getId(),generatedStoreToMyStore(store)));
         } else if(engine instanceof WebEngine) {
             tempArea = new Area(generatedSdm.getSDMZone().getName());
 
@@ -280,7 +280,7 @@ public class XmlValidate implements Validator {
             });
 
             generatedSdm.getSDMStores().getSDMStore().forEach(store -> {
-                tempArea.addStoreToArea(generatedStoreToMyStore(store));
+                tempArea.addStoreToArea(generatedStoreToMyStore(store, generatedSdm.getSDMZone().getName()));
             });
         }
     }
@@ -291,12 +291,12 @@ public class XmlValidate implements Validator {
         return myItem;
     }
 
-    private Store generatedStoreToMyStore(SDMStore sdmStore) {
+    private Store generatedStoreToMyStore(SDMStore sdmStore, String areaName) {
         Point location = new Point(sdmStore.getLocation().getX(), sdmStore.getLocation().getY());
         Map<Integer,Integer> itemsAndPrices = new HashMap<>();
 
         sdmStore.getSDMPrices().getSDMSell().forEach(item -> itemsAndPrices.put(item.getItemId(), item.getPrice()));
-        Store myStore = new Store(sdmStore.getId(), sdmStore.getName(), sdmStore.getDeliveryPpk(), location, itemsAndPrices);
+        Store myStore = new Store(sdmStore.getId(), sdmStore.getName(), sdmStore.getDeliveryPpk(), location, itemsAndPrices,areaName);
         myStore.setDiscountList(generatedDiscountToMyDiscount(sdmStore));
         return myStore;
     }

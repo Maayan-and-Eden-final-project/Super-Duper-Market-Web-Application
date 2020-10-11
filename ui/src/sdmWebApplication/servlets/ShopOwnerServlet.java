@@ -25,6 +25,7 @@ public class ShopOwnerServlet extends HttpServlet {
         PrintWriter out = resp.getWriter();
         String area = (req.getParameter("areaKey"));
         String storeName = (req.getParameter("storeNameKey"));
+        Integer storeId =  Integer.parseInt(req.getParameter("storeIdKey"));
         Integer xLocation = Integer.parseInt(req.getParameter("xLocationKey"));
         Integer yLocation = Integer.parseInt(req.getParameter("yLocationKey"));
         Integer ppk = Integer.parseInt(req.getParameter("ppkKey"));
@@ -36,8 +37,18 @@ public class ShopOwnerServlet extends HttpServlet {
         Map<Integer,Integer> itemIdToItemPrice = gson.fromJson(mapString,itemsMapType);
 
         String usernameFromSession = SessionUtils.getUsername(req);
-       /* ServletUtils.getUserManager(getServletContext()).addFundsToWallet(amount,date,usernameFromSession);
-        out.println(amount.toString() + " was added to your wallet");
-        out.flush();*/
+        String outMessage = null;
+        try {
+            if(action.equals("addStore")) {
+                outMessage =  ServletUtils.getUserManager(getServletContext()).addNewStore(area,storeId, storeName,xLocation,yLocation,ppk,itemIdToItemPrice,usernameFromSession);
+            }
+
+            out.println(outMessage);
+            out.flush();
+        } catch (Exception e) {
+            out.println(e.getMessage());
+            out.flush();
+        }
+
     }
 }

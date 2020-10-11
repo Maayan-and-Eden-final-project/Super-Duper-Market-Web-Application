@@ -17,6 +17,7 @@ public class SingleUser {
     private Map<String, Area> areaNameToAreas;
     private List<SingleAccountAction> accountActions;
     private float balance;
+    private List<Store> myAddedStores;
 
     public SingleUser(UserType userType, String username, Integer userId) {
         this.userType = userType;
@@ -25,6 +26,11 @@ public class SingleUser {
         this.areaNameToAreas = new HashMap<>();
         this.accountActions = new ArrayList<>();
         this.balance = 0;
+        this.myAddedStores = new ArrayList<>();
+    }
+
+    public List<Store> getMyAddedStores() {
+        return myAddedStores;
     }
 
     public Map<String, Area> getAreaNameToAreas() {
@@ -62,5 +68,12 @@ public class SingleUser {
         accountActions.add(singleAccountAction);
     }
 
+    public void addNewStoreToMyStoresList(Store newStore) {
+        myAddedStores.add(newStore);
+    }
+
+    public void addNewStoreToMyAreaStores(Store newStore) {
+        areaNameToAreas.get(newStore.getAreaName()).addStoreToArea(newStore);
+    }
 
 }
