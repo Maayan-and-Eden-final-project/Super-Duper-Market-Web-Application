@@ -2,6 +2,8 @@ package users;
 
 import areas.Area;
 import exceptions.AreaAlreadyExistException;
+import exceptions.StoreLocationAlreadyExistException;
+import exceptions.XmlSimilarStoresIdException;
 import sdm.enums.AccountAction;
 import sdm.enums.UserType;
 import sdm.sdmElements.Item;
@@ -13,7 +15,9 @@ import systemInfoContainers.webContainers.AccountActionsContainer;
 import systemInfoContainers.webContainers.AreaContainer;
 import systemInfoContainers.webContainers.SingleStoreContainer;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /*
 Adding and retrieving users is synchronized and in that manner - these actions are thread safe
@@ -111,5 +115,38 @@ public class UserManager {
             }
         }
         return stores;
+    }
+
+    public String addNewStore(String areaName,Integer storeId, String storeName,Integer xLocation, Integer yLocation, Integer ppk, Map<Integer,Integer> itemIdToItemPrice, String usernameFromSession) throws XmlSimilarStoresIdException, StoreLocationAlreadyExistException, CloneNotSupportedException {
+        Point newStoreLocation = new Point(xLocation,yLocation);
+
+        for(SingleUser user : userNameToUser.values()) {
+            for(Area area : user.getAreaNameToAreas().values()) {
+                if(area.getStoreIdToStore().containsKey(storeId)) {
+                   throw new XmlSimilarStoresIdException();
+                }
+                for (Store store : area.getStoreIdToStore().values()) {
+                    if(store.getLocation().equals(newStoreLocation)) {
+                        throw new StoreLocationAlreadyExistException();
+                    }
+                }
+            }
+            for(Store store : user.getMyAddedStores()) {
+                if(store.getLocation().equals(newStoreLocation)) {
+                    throw new StoreLocationAlreadyExistException();
+                }
+            }
+        }
+
+        SingleUser shopOwner = userNameToUser.get(usernameFromSession);
+        SingleUser areaOwner = null;
+        for(SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+                areaOwner = user;
+            }
+        }
+
+        engine.addNewStore(areaName,storeId,storeName,newStoreLocation,ppk,itemIdToItemPrice,shopOwner,areaOwner);
+        return "Store Added Successfully";
     }
 }

@@ -211,4 +211,20 @@ public class WebEngine  extends Connector{
         }
         return stores;
     }
+
+    public void addNewStore(String area,Integer storeId, String storeName,Point newStoreLocation, Integer ppk, Map<Integer,Integer> itemIdToItemPrice, SingleUser newShopOwner, SingleUser areaOwner ) throws CloneNotSupportedException {
+        Map<Item,Integer> itemToItemPrice =  makeItemsAndPricesMap(itemIdToItemPrice, areaOwner.getAreaNameToAreas().get(area).getItemIdToItem());
+        Store store = new Store(storeId,storeName,ppk,newStoreLocation,itemIdToItemPrice,itemToItemPrice ,area);
+        newShopOwner.addNewStoreToMyStoresList(store);
+        areaOwner.addNewStoreToMyAreaStores(store);
+    }
+
+    private Map<Item,Integer> makeItemsAndPricesMap(Map<Integer,Integer> itemIdToItemPrice, Map<Integer,Item> areaItems) throws CloneNotSupportedException {
+        Map<Item,Integer> itemToItemPrice = new HashMap<>();
+        for(Integer itemId : itemIdToItemPrice.keySet()) {
+            Item item = areaItems.get(itemId).clone();
+            itemToItemPrice.put(item, itemIdToItemPrice.get(itemId));
+        }
+        return itemToItemPrice;
+    }
 }

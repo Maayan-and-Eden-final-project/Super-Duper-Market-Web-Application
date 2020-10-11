@@ -1,4 +1,9 @@
 var itemIdToItemPrice = new Map();
+bootstrap_alert = function() {}
+bootstrap_alert.warning = function(message) {
+    $('#alert_placeholder').html('<div class="alert addStoreAlert"><a class="close addStoreAlertClose" data-dismiss="alert">x</a><span>'+message+'</span></div>')
+}
+
 
 function displayItemsOption(items) {
 
@@ -69,7 +74,9 @@ function makeNewStoreForm(areas) {
             "<option>" + area.areaName + "</option>\n");
     });
     $("#newStoreForm").append(
-        "<input type=\"text\" class=\"form-control addStoreFormControl\" id=\"storeName\" placeholder=\"Store Name\" required>");
+        "<input type=\"text\" class=\"form-control addStoreFormControl\" id=\"storeName\" placeholder=\"Store Name\" required>" +
+        "<input type=\"number\" class=\"form-control addStoreFormControl\" id=\"storeId\" placeholder=\"Store Id\" required>");
+
     $("#newStoreForm").append(
         "<input type=\"text\" class=\"form-control addStoreFormControl\" id=\"xStoreLocation\" placeholder=\"X Coordinate\" required pattern=\"^(50|[1-4]?[0-9])$\">" +
         "<input type=\"text\" class=\"form-control addStoreFormControl\" id=\"yStoreLocation\" placeholder=\"Y Coordinate\" required pattern=\"^(50|[1-4]?[0-9])$\">");
@@ -80,11 +87,6 @@ function makeNewStoreForm(areas) {
         "<div id = \"alert_placeholder\"></div>\n");
     $("#newStoreForm").submit(function () {
         if(itemIdToItemPrice.size === 0) {
-            bootstrap_alert = function() {}
-            bootstrap_alert.warning = function(message) {
-                $('#alert_placeholder').html('<div class="alert addStoreAlert"><a class="close addStoreAlertClose" data-dismiss="alert">x</a><span>'+message+'</span></div>')
-            }
-
             $('#addStoreSubmit').on('click', function() {
                 bootstrap_alert.warning('You Must Choose At Least One Item  ');
             });
@@ -93,6 +95,7 @@ function makeNewStoreForm(areas) {
 
             var area = $("#areasDropdown").val();
             var storeName =  $("#storeName").val();
+            var storeId =  $("#storeId").val();
             var xLocation =  $("#xStoreLocation").val();
             var yLocation =  $("#yStoreLocation").val();
             var ppk =  $("#storePpk").val();
@@ -101,24 +104,13 @@ function makeNewStoreForm(areas) {
 
             $.ajax({
                 method: 'POST',
-                data: "areaKey=" + area + "&storeNameKey=" + storeName + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&ppkKey=" + ppk + "&itemsListKey=" + itemsListJsonString + "&actionKey=addStore",
+                data: "areaKey=" + area + "&storeNameKey=" + storeName + "&storeIdKey=" + storeId + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&ppkKey=" + ppk + "&itemsListKey=" + itemsListJsonString + "&actionKey=addStore",
                 url: "shopOwner",
                 error: function (e) {
-                    var popup = document.getElementById("myPopup");
-                    popup.innerText = e;
-                    popup.classList.toggle("show");
-                    setTimeout(function () {
-                        popup.classList.toggle("show"); //close the tooltip
-                    }, 2000);
+                    bootstrap_alert.warning(e);
                 },
                 success: function (r) {
-                    var popup = document.getElementById("myPopup");
-                    popup.innerText = r;
-                    popup.classList.toggle("show");
-                    setTimeout(function () {
-                        popup.classList.toggle("show"); //close the tooltip
-                    }, 2000);
-
+                    bootstrap_alert.warning(r);
                 }
             });
         }

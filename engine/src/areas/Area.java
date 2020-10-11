@@ -46,4 +46,5 @@ public class Area {
     public void addStoreToArea(Store store) {
         storeIdToStore.put(store.getId(),store);
     }
+
 }
