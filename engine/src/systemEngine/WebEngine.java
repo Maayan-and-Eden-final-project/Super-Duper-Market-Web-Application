@@ -212,6 +212,7 @@ public class WebEngine  extends Connector{
         return stores;
     }
 
+
     public void addNewStore(String area,Integer storeId, String storeName,Point newStoreLocation, Integer ppk, Map<Integer,Integer> itemIdToItemPrice, SingleUser newShopOwner, SingleUser areaOwner ) throws CloneNotSupportedException {
         Map<Item,Integer> itemToItemPrice =  makeItemsAndPricesMap(itemIdToItemPrice, areaOwner.getAreaNameToAreas().get(area).getItemIdToItem());
         Store store = new Store(storeId,storeName,ppk,newStoreLocation,itemIdToItemPrice,itemToItemPrice ,area);
