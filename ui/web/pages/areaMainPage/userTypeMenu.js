@@ -1,7 +1,7 @@
 var itemIdToItemPrice = new Map();
 bootstrap_alert = function() {}
-bootstrap_alert.warning = function(message) {
-    $('#alert_placeholder').html('<div class="alert addStoreAlert"><a class="close addStoreAlertClose" data-dismiss="alert">x</a><span>'+message+'</span></div>')
+bootstrap_alert.warning = function(message, color) {
+    $('#alert_placeholder').html('<div id="addStoreAlert" class="alert addStoreAlert" style="color:' + color + "!important;\"" + '><a class="close addStoreAlertClose" data-dismiss="alert">x</a><span>'+message+'</span></div>')
 }
 
 
@@ -61,7 +61,7 @@ function getItemsOption() {
 }
 
 function makeNewStoreForm(areas) {
-
+    $(".dynamic-container").empty();
     $(".dynamic-container").append(
         "<p class=\"addStoreHeader\">Add New Store</p>\n" +
         "<form id=\"newStoreForm\" action=\"\" class=\"form-inline\">" +
@@ -88,31 +88,39 @@ function makeNewStoreForm(areas) {
     $("#newStoreForm").submit(function () {
         if(itemIdToItemPrice.size === 0) {
             $('#addStoreSubmit').on('click', function() {
-                bootstrap_alert.warning('You Must Choose At Least One Item  ');
+                bootstrap_alert.warning('You Must Choose At Least One Item  ',"red");
             });
             $('#addStoreSubmit').click();
         } else {
 
             var area = $("#areasDropdown").val();
-            var storeName =  $("#storeName").val();
-            var storeId =  $("#storeId").val();
-            var xLocation =  $("#xStoreLocation").val();
-            var yLocation =  $("#yStoreLocation").val();
-            var ppk =  $("#storePpk").val();
+            var storeName = $("#storeName").val();
+            var storeId = $("#storeId").val();
+            var xLocation = $("#xStoreLocation").val();
+            var yLocation = $("#yStoreLocation").val();
+            var ppk = $("#storePpk").val();
             var itemsListJsonString = JSON.stringify(Array.from(itemIdToItemPrice));
-
 
             $.ajax({
                 method: 'POST',
                 data: "areaKey=" + area + "&storeNameKey=" + storeName + "&storeIdKey=" + storeId + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&ppkKey=" + ppk + "&itemsListKey=" + itemsListJsonString + "&actionKey=addStore",
                 url: "shopOwner",
-                error: function (e) {
-                    bootstrap_alert.warning(e);
+                error: function (jqXHR) {
+                    bootstrap_alert.warning(jqXHR.responseText,"red");
                 },
                 success: function (r) {
-                    bootstrap_alert.warning(r);
+                    bootstrap_alert.warning(r,"green");
+                    itemIdToItemPrice.clear();
+                    $("#areasDropdown").val("");
+                    $("#storeName").val("");
+                    $("#storeId").val("");
+                    $("#xStoreLocation").val("");
+                    $("#yStoreLocation").val("");
+                    $("#storePpk").val("");
+                    $(".addStoreItemPrice").val("");
                 }
             });
+
         }
         return false;
     });
@@ -166,7 +174,6 @@ function getUserType() {
 }
 
 $(function () {
-    $(".dynamic-container").empty();
     getUserType();
 });
 

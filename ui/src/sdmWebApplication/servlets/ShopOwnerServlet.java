@@ -45,9 +45,13 @@ public class ShopOwnerServlet extends HttpServlet {
 
             out.println(outMessage);
             out.flush();
+
         } catch (Exception e) {
-            out.println(e.getMessage());
+            resp.setStatus(400);
+            out.print(e.getMessage());
             out.flush();
+
+           /* resp.sendError(4,e.getMessage());*/
         }
 
     }
