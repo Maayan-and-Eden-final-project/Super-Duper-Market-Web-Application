@@ -18,6 +18,7 @@ public class SingleUser {
     private List<SingleAccountAction> accountActions;
     private float balance;
     private List<Store> myAddedStores;
+    private List<String> userMessages;
 
     public SingleUser(UserType userType, String username, Integer userId) {
         this.userType = userType;
@@ -27,6 +28,7 @@ public class SingleUser {
         this.accountActions = new ArrayList<>();
         this.balance = 0;
         this.myAddedStores = new ArrayList<>();
+        this.userMessages = new ArrayList<>();
     }
 
     public List<Store> getMyAddedStores() {
@@ -39,6 +41,10 @@ public class SingleUser {
 
     public Integer getUserId() {
         return userId;
+    }
+
+    public List<String> getUserMessages() {
+        return Collections.unmodifiableList(userMessages);
     }
 
     public UserType getUserType() {
@@ -72,8 +78,11 @@ public class SingleUser {
         myAddedStores.add(newStore);
     }
 
-    public void addNewStoreToMyAreaStores(Store newStore) {
+    public synchronized void addNewStoreToMyAreaStores(Store newStore) {
         areaNameToAreas.get(newStore.getAreaName()).addStoreToArea(newStore);
     }
 
+    public synchronized void addNewMessage(String message) {
+        userMessages.add(message);
+    }
 }

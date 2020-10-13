@@ -117,7 +117,7 @@ public class UserManager {
         return stores;
     }
 
-    public String addNewStore(String areaName,Integer storeId, String storeName,Integer xLocation, Integer yLocation, Integer ppk, Map<Integer,Integer> itemIdToItemPrice, String usernameFromSession) throws XmlSimilarStoresIdException, StoreLocationAlreadyExistException, CloneNotSupportedException {
+    public void addNewStore(String areaName,Integer storeId, String storeName,Integer xLocation, Integer yLocation, Integer ppk, Map<Integer,Integer> itemIdToItemPrice, String usernameFromSession) throws XmlSimilarStoresIdException, StoreLocationAlreadyExistException, CloneNotSupportedException {
         Point newStoreLocation = new Point(xLocation,yLocation);
 
         for(SingleUser user : userNameToUser.values()) {
@@ -147,6 +147,24 @@ public class UserManager {
         }
 
         engine.addNewStore(areaName,storeId,storeName,newStoreLocation,ppk,itemIdToItemPrice,shopOwner,areaOwner);
-        return "Store Added Successfully";
+        addMessageToUser(shopOwner.getUserName() + " opened a new store- " + storeName +  " in your area- " + areaName, areaOwner);
+    }
+
+    private void addMessageToUser(String message, SingleUser areaOwner) {
+        areaOwner.addNewMessage(message);
+    }
+
+    public List<String> getUserMessages(String userName, Integer version) {
+        if (version < 0 || version > userNameToUser.get(userName).getUserMessages().size()) {
+            version = 0;
+        }
+        if(version != 0){
+            return userNameToUser.get(userName).getUserMessages().subList(version -1, userNameToUser.get(userName).getUserMessages().size());
+        }
+        return userNameToUser.get(userName).getUserMessages();
+    }
+
+    public int getUserMessageVersion(String userName) {
+        return userNameToUser.get(userName).getUserMessages().size();
     }
 }
