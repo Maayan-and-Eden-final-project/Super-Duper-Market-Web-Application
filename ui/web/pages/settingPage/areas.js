@@ -26,11 +26,12 @@ function refreshAreasList(areas) {
             "           <li class=\"area-list-item\">Average Orders Costs: " + areaContainer.avgOrdersCostsInArea + "</li>\n" +
             "       </ul>\n" +
             "</div>\n" +
-            "<form class=\"area-form\" action=\"areas\" method=\"post\">\n" +
+            "<form id=\"areaForm" + index + "\" class=\"area-form\" action=\"areas\" method=\"post\">\n" +
             "       <button type=\"submit\" class=\"btn single-area-button\">Go To Area</button>\n" +
-            "    <input type=\"hidden\" id=\"areaKey\" name=\"areaKey\" value=" + areaContainer.areaName + ">\n" +
+            "    <input type=\"hidden\" id=\"areaKey" + index +"\" name=\"areaKey\" value=\"" + areaContainer.areaName.replaceAll(" ", "-") + "\">\n" +
             "</form>" +
             "</div>\n");
+
     });
 }
 

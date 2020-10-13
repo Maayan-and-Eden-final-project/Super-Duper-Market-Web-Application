@@ -40,6 +40,7 @@ public class AreasServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String areaName = req.getParameter("areaKey");
+        areaName = areaName.replaceAll("-"," ");
         String areaNameFromSession = SessionUtils.getAreaName(req);
         String usernameFromSession = SessionUtils.getUsername(req);
 
@@ -53,6 +54,6 @@ public class AreasServlet extends HttpServlet {
 
         req.getSession(true).setAttribute(AREANAME, areaName);
         resp.sendRedirect(AREA_MAIN_PAGE_URL);
-
+        return;
     }
 }

@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import sdmWebApplication.constants.Constants;
 import sdmWebApplication.utils.ServletUtils;
 import sdmWebApplication.utils.SessionUtils;
+import users.UserManager;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.ServletException;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 import java.lang.Object;
 
@@ -37,13 +40,12 @@ public class ShopOwnerServlet extends HttpServlet {
         Map<Integer,Integer> itemIdToItemPrice = gson.fromJson(mapString,itemsMapType);
 
         String usernameFromSession = SessionUtils.getUsername(req);
-        String outMessage = null;
         try {
             if(action.equals("addStore")) {
-                outMessage =  ServletUtils.getUserManager(getServletContext()).addNewStore(area,storeId, storeName,xLocation,yLocation,ppk,itemIdToItemPrice,usernameFromSession);
+                ServletUtils.getUserManager(getServletContext()).addNewStore(area,storeId, storeName,xLocation,yLocation,ppk,itemIdToItemPrice,usernameFromSession);
             }
 
-            out.println(outMessage);
+            out.println("Store Added Successfully");
             out.flush();
 
         } catch (Exception e) {
@@ -51,8 +53,51 @@ public class ShopOwnerServlet extends HttpServlet {
             out.print(e.getMessage());
             out.flush();
 
-           /* resp.sendError(4,e.getMessage());*/
+
         }
 
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String usernameFromSession = SessionUtils.getUsername(req);
+
+        resp.setContentType("application/json");
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
+
+        if (usernameFromSession == null) {
+            resp.sendRedirect(req.getContextPath() + "/index.html");
+        }
+
+
+        int messageVersion = ServletUtils.getIntParameter(req, Constants.MESSAGE_VERSION_PARAMETER);
+        if (messageVersion == Constants.INT_PARAMETER_ERROR) {
+            return;
+        }
+
+        int userMessageVersion = 0;
+        List<String> messages;
+        synchronized (getServletContext()) {
+            userMessageVersion = userManager.getUserMessageVersion(usernameFromSession);
+            messages = userManager.getUserMessages(usernameFromSession,userMessageVersion);
+        }
+        MessagesAndVersion messagesAndVersion = new MessagesAndVersion(messages, userMessageVersion);
+        Gson gson = new Gson();
+        String jsonResponse = gson.toJson(messagesAndVersion);
+
+        try (PrintWriter out = resp.getWriter()) {
+            out.print(jsonResponse);
+            out.flush();
+        }
+    }
+    private static class MessagesAndVersion {
+
+        final private List<String> entries;
+        final private int version;
+
+        public MessagesAndVersion(List<String> entries, int version) {
+            this.entries = entries;
+            this.version = version;
+        }
     }
 }

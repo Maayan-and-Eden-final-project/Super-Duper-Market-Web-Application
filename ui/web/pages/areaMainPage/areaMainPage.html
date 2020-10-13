@@ -10,16 +10,35 @@
     <link rel="stylesheet" href="storesDisplay.css">
     <link rel="stylesheet" href="addStore.css">
     <script src="../../common/jquery-2.0.3.min.js"></script>
-    <script src="../../common/popper.min.js"></script>
     <script src="../../common/bootstrap.min.js"></script>
-
+    <script src="../../common/context-path-helper.js"></script>
     <script src="areaMainPage.js"></script>
+    <script src="userTypeMenu.js"></script>
     <script src="itemsDisplay.js"></script>
     <script src="storesDisplay.js"></script>
-    <script src="userTypeMenu.js"></script>
+
+    <script src="messagesHandler.js"></script>
+
 
 </head>
 <body class="main-body">
+<button id="messageButton" type="button" class="btn btn-primary" style="display: none;"
+        data-toggle="modal" data-target="#messageModal">
+</button>
+<div class="modal fade in" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Messages</h5>
+                <button id="closed-button" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+            </div>
+            <div id="messages-body" class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
 <div id="menu">
     <div class="hamburger">
         <div class="line"></div>
