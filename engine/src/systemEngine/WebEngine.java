@@ -6,9 +6,7 @@ import exceptions.ItemIsNotSoldException;
 import exceptions.SingleSellingStoreException;
 import exceptions.XmlSimilarItemsIdException;
 import javafx.util.Pair;
-import sdm.sdmElements.Item;
-import sdm.sdmElements.Order;
-import sdm.sdmElements.Store;
+import sdm.sdmElements.*;
 import systemInfoContainers.*;
 import systemInfoContainers.webContainers.*;
 import users.SingleUser;
@@ -247,5 +245,134 @@ public class WebEngine  extends Connector{
         }
 
         return items;
+    }
+
+    public List<SingleDiscountContainer> getStaticOrderDiscounts(Store store, Map<Integer,Float> itemIdToAmount) {
+        List<SingleDiscountContainer> discounts = new ArrayList<>();
+        Map<Integer, List<Integer>> storeIdToItemIDList = new HashMap<>();
+
+
+return discounts;
+    }
+
+    public List<SingleDynamicStoreContainer> getDynamicOrderCalcSummery(Area area, Map<Integer,Float> itemIdToAmount, Point location) {
+        List<SingleDynamicStoreContainer> dynamicStores = new ArrayList<>();
+        Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = calcMinimalCart(area,itemIdToAmount);
+
+        for (Integer storeId : storeIdToItemsList.keySet()) {
+            SingleDynamicStoreContainer singleStore = new SingleDynamicStoreContainer();
+            singleStore.setStoreId(storeId);
+            Store store = area.getStoreIdToStore().get(storeId);
+            singleStore.setStoreName(store.getName());
+            singleStore.setPpk(store.getDeliveryPPK());
+            singleStore.setLocation(store.getLocation());
+            double distance = area.getStoreIdToStore().get(storeId).getLocation().distance(location.x, location.y);
+            singleStore.setDistanceFromCustomer(distance);
+            singleStore.setCustomerShippingCost(distance * store.getDeliveryPPK());
+            singleStore.setNumOfDifferentItem(storeIdToItemsList.get(storeId).size());
+
+            float totalItemCost = 0;
+            for (ProgressOrderItem item : storeIdToItemsList.get(storeId)) {
+                totalItemCost += item.getAmount() *
+                        store.getItemsIdAndPrices().get(item.getItemId());
+            }
+            singleStore.setTotalItemsCost(totalItemCost);
+            dynamicStores.add(singleStore);
+        }
+        return dynamicStores;
+    }
+
+    private Map<Integer, List<ProgressOrderItem>> calcMinimalCart(Area area, Map<Integer,Float> itemIdToAmount) {
+        Store orderStore;
+
+        Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = new HashMap<>();
+
+        for (Integer itemId : itemIdToAmount.keySet()) {
+
+            Map<Integer, Integer> itemPriceToStoreId = area.getStoreIdToStore().entrySet().stream().filter(store -> store.getValue().getItemsIdAndPrices().containsKey(itemId) == true)
+                    .collect(Collectors.toMap(e -> e.getValue().getItemsIdAndPrices().get(itemId), e -> e.getKey()));
+            Integer minItemPrice = Collections.min(itemPriceToStoreId.keySet());
+
+            orderStore = area.getStoreIdToStore().get(itemPriceToStoreId.get(minItemPrice));
+
+            ProgressOrderItem item = new ProgressOrderItem();
+            item.setItemId(itemId);
+            item.setAmount(itemIdToAmount.get(itemId));
+
+            for(Item storeItem : orderStore.getItemsAndPrices().keySet()) {
+                if(storeItem.getId().equals(itemId)) {
+                    item.setItemName(storeItem.getName());
+                    item.setPurchaseCategory(storeItem.getPurchaseCategory());
+                }
+            }
+
+            if (!storeIdToItemsList.containsKey(orderStore.getId())) {
+                List<ProgressOrderItem> itemsList = new ArrayList<>();
+
+                itemsList.add(item);
+                storeIdToItemsList.put(orderStore.getId(), itemsList);
+            } else {
+                storeIdToItemsList.get(orderStore.getId()).add(item);
+                storeIdToItemsList.put(orderStore.getId(), storeIdToItemsList.get(orderStore.getId()));
+            }
+        }
+        return storeIdToItemsList;
+    }
+
+    public  List<SingleDiscountContainer> findRelevantDiscounts(Map<Integer, List<Integer>> storeIdToItemIDList, Containable progressOrderInfo) throws CloneNotSupportedException {
+        Integer purchasedItemId;
+        float amountPurchased = 0;
+        double discountAmount;
+        int numberOfCurrentDiscount;
+        List<SingleDiscountContainer> discountsContainerList = new ArrayList<>();
+
+        for (Integer storeId : storeIdToItemIDList.keySet()) {
+            for (Discount discount : this.stores.get(storeId).getDiscountList()) {
+                purchasedItemId = discount.getIfYouBuy().getItemId();
+                discountAmount = discount.getIfYouBuy().getQuantity();
+                if (storeIdToItemIDList.get(storeId).contains(purchasedItemId)) {
+                    if(progressOrderInfo instanceof ProgressStaticOrderContainer) {
+                        amountPurchased = ((ProgressStaticOrderContainer)progressOrderInfo).getItemIdToOrderInfo().get(purchasedItemId).getAmount();
+                    } else if (progressOrderInfo instanceof ProgressDynamicOrderContainer) {
+                        amountPurchased = ((ProgressDynamicOrderContainer)progressOrderInfo).getItemIdToOrderItem().get(purchasedItemId).getAmount();
+                    }
+                    if (((int) (amountPurchased / discountAmount)) >= 1) {
+
+                        for (Offer offer : discount.getThenYouGet().getOffers()) {
+                            if(progressOrderInfo instanceof ProgressStaticOrderContainer) {
+                                if(((ProgressStaticOrderContainer)progressOrderInfo).getItemIdToOrderInfo().containsKey(offer.getItemId())
+                                        && ((ProgressStaticOrderContainer)progressOrderInfo).getItemIdToOrderInfo().get(offer.getItemId()).getAmount() != null)
+                                {
+                                    discountAmount = ((ProgressStaticOrderContainer)progressOrderInfo).getItemIdToOrderInfo().get(offer.getItemId()).getAmount();
+                                }
+                                else
+                                {
+                                    discountAmount = 0;
+                                }
+                            } else if (progressOrderInfo instanceof ProgressDynamicOrderContainer) {
+                                if(((ProgressDynamicOrderContainer)progressOrderInfo).getItemIdToOrderItem().containsKey(offer.getItemId()))
+                                {
+                                    discountAmount = ((ProgressDynamicOrderContainer)progressOrderInfo).getItemIdToOrderItem().get(offer.getItemId()).getAmount();
+                                }
+                                else
+                                {
+                                    discountAmount = 0;
+                                }
+                            }
+                            if ((numberOfCurrentDiscount = (int) ( discountAmount/ offer.getQuantity())) >= 1)
+
+                                for (int i = 0; i < numberOfCurrentDiscount; i++) {
+                                    SingleDiscountContainer singleDiscountContainer = new SingleDiscountContainer();
+                                    singleDiscountContainer.setIfYouBuy(discount.getIfYouBuy().clone());
+                                    singleDiscountContainer.setThenYouGet(discount.getThenYouGet().clone());
+                                    singleDiscountContainer.setName(discount.getName());
+                                    discountsContainerList.add(singleDiscountContainer);
+                                }
+                        }
+                    }
+                }
+            }
+        }
+        return discountsContainerList;
     }
 }

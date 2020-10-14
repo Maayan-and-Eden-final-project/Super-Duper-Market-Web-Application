@@ -1,4 +1,77 @@
 var itemIdToAmount = new Map();
+var method;
+var store;
+var date;
+var xLocation;
+var yLocation;
+
+function displayMinimalCartSummery(minimalCartStores) {
+
+    $(".dynamic-container").empty();
+    $(".dynamic-container").append(
+        "<section class=\"our-webcoderskull padding-lg\">\n" +
+        "    <div class=\"container stores-container\">\n" +
+        "        <div class=\"row heading heading-icon\">\n" +
+        "            <p class=\"minimalCartHeader\">Minimal Cart</p>\n" +
+        "        </div>\n" +
+        "        <ul class=\"row items-list minimalCartList\">\n" +
+        "        </ul>\n" +
+        "    </div>\n" +
+        "</section>" +
+        " <button id=\"displayDiscountsButton\" class=\"btn btn-primary mb-2\">Next</button>\n");
+
+    $("#displayDiscountsButton").click(function () {
+        getDiscounts();
+    });
+
+
+    $.each(minimalCartStores || [], function(index, singleStore) {
+
+        var storeImageUrl = "../../common/images/storeIcon.png";
+
+        $(".items-list").append(
+            "<li class=\"col-12 col-md-6 col-lg-3 store-card\">\n" +
+            "       <div class=\"cnt-block equal-hight minimalCartStoreCard\">\n" +
+            "            <figure><img src=" + storeImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
+            "             <h3 class=\"store-name\">" + singleStore.storeName + "</h3>" +
+            "           <p id=\"storeId\" class=\"minimalCartSingleStore\">Store Id: " + singleStore.storeId + " </p>\n" +
+            "           <p class=\"minimalCartSingleStore\">Location: [" + singleStore.location.x + "," + singleStore.location.y + "] </p>\n" +
+            "           <p class=\"minimalCartSingleStore\">Distance: " + singleStore.distanceFromCustomer + "</p>\n" +
+            "           <p class=\"minimalCartSingleStore\">PPK: " + singleStore.ppk + "</p>\n" +
+            "           <p class=\"minimalCartSingleStore\">Delivery Cost: " + singleStore.customerShippingCost + "</p>\n" +
+            "           <p class=\"minimalCartSingleStore\">Number Of Items: " + singleStore.numOfDifferentItem + "</p>\n" +
+            "           <p class=\"minimalCartSingleStore\">Total Items Cost: " + singleStore.totalItemsCost + "</p>\n" +
+            "       </div>" +
+            " </li>\n");
+    });
+
+}
+
+function getMinimalCart() {
+    var itemsListJsonString = JSON.stringify(Array.from(itemIdToAmount));
+
+    $.ajax({
+        method: 'GET',
+        data: "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getMinimalCart" +"&itemIdToAmountKey=" +itemsListJsonString ,
+        url: "customer",
+        error: function (jqXHR) {
+           bootstrap_alert.warning(jqXHR.responseText,"red");
+        },
+        success: function (r) {
+            /* itemIdToItemPrice.clear();*/
+           displayMinimalCartSummery(r);
+        }
+    });
+}
+
+function addItemToMap(itemId,amount) {
+    if (itemIdToAmount.get(itemId) === undefined) {
+        itemIdToAmount.set(itemId, amount); //TODO: empty when back clicked
+    } else {
+        itemIdToAmount.set(itemId, itemIdToAmount.get(itemId) + amount); //TODO: empty when back clicked
+    }
+}
+
 
 function displayDynamicItemsOption(items) {
 
@@ -26,7 +99,7 @@ function displayDynamicItemsOption(items) {
             "           <p id=\"itemId\" class=\"newOrderSingleItem\">Item Id: " + singleItem.itemId + " </p>\n" +
             "           <p class=\"newOrderSingleItem\">Purchase Category: " + singleItem.purchaseCategory + "</p>\n" +
             "<form id=\"new-order-item-form-" + singleItem.itemId + "\">" +
-            "<input type=\"float\" class=\"form-control newOrderItemAmount\" id=\"itemAmount" + singleItem.itemId + "\" placeholder=\"Amount\" required>" +
+            "<input type=\"number\" step=\"0.01\" min=0 class=\"form-control newOrderItemAmount\" id=\"itemAmount" + singleItem.itemId + "\" placeholder=\"Amount\" required>" +
             " <button id=\"addItem" + singleItem.itemId + "\" type=\"submit\" class=\"btn btn-primary mb-2 newOrderItemSubmit\">Add Item</button>\n" +
             "</form>" +
             "        <div class=\"popup\" >\n" +
@@ -45,16 +118,41 @@ function displayDynamicItemsOption(items) {
                     setTimeout(function () {
                         popup.classList.toggle("show"); //close the tooltip
                     }, 2000);
+                } else {
+                    addItemToMap(singleItem.itemId,parseInt(amount));
                 }
             } else {
-                if(itemIdToAmount.get(singleItem.itemId) === undefined) {
-                    itemIdToAmount.set(singleItem.itemId,amount); //TODO: empty when back clicked
-                } else {
-                    itemIdToAmount.set(singleItem.itemId,itemIdToAmount.get(singleItem.itemId) + amount); //TODO: empty when back clicked
-                }
+                addItemToMap(singleItem.itemId,parseInt(amount));
             }
             return false;
         });
+    });
+}
+
+function getDiscounts() {
+    var itemsListJsonString = JSON.stringify(Array.from(itemIdToAmount));
+
+    $.ajax({
+        method: 'GET',
+        data: "methodKey=" + method + "&storeKey=" + store + "&dateKey=" + date + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getDiscounts" +"&itemIdToAmountKey=" +itemsListJsonString ,
+        url: "customer",
+        error: function (jqXHR) {
+            setTimeout(bootstrap_alert.warning(jqXHR.responseText,"red"),3000);
+        },
+        success: function (r) {
+            /* itemIdToItemPrice.clear();*/
+            $("#orderMethodDropdown").attr("disabled",true);
+            $("#storesDropdown").attr("disabled",true);
+            $("#date-input").attr("disabled",true);
+            $("#xStoreLocation").attr("disabled",true);
+            $("#yStoreLocation").attr("disabled",true);
+            $("#orderOptionSubmit").attr("disabled",true);
+            if(method.indexOf("Static Order") > -1) {
+                displayStaticItemsOption(r);
+            } else if(method.indexOf("Dynamic Order") > -1) {
+                displayDynamicItemsOption(r);
+            }
+        }
     });
 }
 
@@ -69,8 +167,12 @@ function displayStaticItemsOption(items) {
         "        <ul class=\"row items-list newOrderItemsList\">\n" +
         "        </ul>\n" +
         "    </div>\n" +
-        "</section>");
+        "</section>" +
+        " <button id=\"displayDiscountsButton\" class=\"btn btn-primary mb-2\">Next</button>\n");
 
+    $("#displayDiscountsButton").click(function () {
+        getDiscounts();
+    });
 
     $.each(items || [], function(index, singleItem) {
 
@@ -141,6 +243,7 @@ function makeNewOrderForm(areaStores) {
         "<option value=\"\">Choose Store</option>\n" +
         "  </select>\n" +
         "</form>");
+
     $.each(areaStores.stores || [], function(index, store) {
         $("#storesDropdown").append(
             "<option>" + store.storeId + ": " + store.storeName + "</option>\n");
@@ -153,7 +256,13 @@ function makeNewOrderForm(areaStores) {
 
 
         "<button type=\"submit\" class=\"btn orderFormControl\" id=\"orderOptionSubmit\" required> Show Items </button>" +
+        " <button id=\"displayMinimalCartButton\" class=\"btn btn-primary mb-2\">Next</button>\n" +
         "<div id = \"alert_placeholder\"></div>\n");
+
+    $("#displayMinimalCartButton").click(function () {
+        getMinimalCart();
+    });
+
     $("#newOrderForm").submit(function () {
        /* if(itemIdToItemPrice.size === 0) {
             $('#addStoreSubmit').on('click', function() {
@@ -163,11 +272,11 @@ function makeNewOrderForm(areaStores) {
         } else {*/
 
 
-            var method = $("#orderMethodDropdown").val();
-            var store = $("#storesDropdown").val();
-            var date = $("#date-input").val();
-            var xLocation = $("#xStoreLocation").val();
-            var yLocation = $("#yStoreLocation").val();
+            method = $("#orderMethodDropdown").val();
+            store = $("#storesDropdown").val();
+            date = $("#date-input").val();
+            xLocation = $("#xStoreLocation").val();
+            yLocation = $("#yStoreLocation").val();
 
             /*var itemsListJsonString = JSON.stringify(Array.from(itemIdToItemPrice));*/
 
@@ -185,6 +294,7 @@ function makeNewOrderForm(areaStores) {
                     $("#date-input").attr("disabled",true);
                     $("#xStoreLocation").attr("disabled",true);
                     $("#yStoreLocation").attr("disabled",true);
+                    $("#orderOptionSubmit").attr("disabled",true);
                     if(method.indexOf("Static Order") > -1) {
                         displayStaticItemsOption(r);
                     } else if(method.indexOf("Dynamic Order") > -1) {
