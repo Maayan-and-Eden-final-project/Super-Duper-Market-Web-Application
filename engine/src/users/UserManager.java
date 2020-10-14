@@ -11,9 +11,7 @@ import sdm.sdmElements.OrderedItem;
 import sdm.sdmElements.Store;
 import systemEngine.WebEngine;
 import systemInfoContainers.ItemsContainer;
-import systemInfoContainers.webContainers.AccountActionsContainer;
-import systemInfoContainers.webContainers.AreaContainer;
-import systemInfoContainers.webContainers.SingleStoreContainer;
+import systemInfoContainers.webContainers.*;
 
 import java.awt.*;
 import java.util.*;
@@ -117,6 +115,28 @@ public class UserManager {
         return stores;
     }
 
+    public List<SingleStoreItemContainer> getAreaStoreItems(String areaName, Integer storeId, Integer xLocation, Integer yLocation) throws StoreLocationAlreadyExistException {
+        Point location = new Point(xLocation,yLocation);
+
+        for(SingleUser user : userNameToUser.values()) {
+            for(Area area : user.getAreaNameToAreas().values()) {
+                for (Store store : area.getStoreIdToStore().values()) {
+                    if(store.getLocation().equals(location)) {
+                        throw new StoreLocationAlreadyExistException();
+                    }
+                }
+            }
+        }
+
+        for(SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+                Map<Item,Integer> itemToItemPrice = user.getAreaNameToAreas().get(areaName).getStoreIdToStore().get(storeId).getItemsAndPrices();
+                return engine.getStoreItems(itemToItemPrice);
+            }
+        }
+        return null;
+    }
+
     public void addNewStore(String areaName,Integer storeId, String storeName,Integer xLocation, Integer yLocation, Integer ppk, Map<Integer,Integer> itemIdToItemPrice, String usernameFromSession) throws XmlSimilarStoresIdException, StoreLocationAlreadyExistException, CloneNotSupportedException {
         Point newStoreLocation = new Point(xLocation,yLocation);
 
@@ -129,11 +149,6 @@ public class UserManager {
                     if(store.getLocation().equals(newStoreLocation)) {
                         throw new StoreLocationAlreadyExistException();
                     }
-                }
-            }
-            for(Store store : user.getMyAddedStores()) {
-                if(store.getLocation().equals(newStoreLocation)) {
-                    throw new StoreLocationAlreadyExistException();
                 }
             }
         }
@@ -166,5 +181,17 @@ public class UserManager {
 
     public int getUserMessageVersion(String userName) {
         return userNameToUser.get(userName).getUserMessages().size();
+    }
+
+    public SingleAreaOptionContainer getNewOrderOptions(String areaName) {
+        Map<Integer,Store> stores = null;
+
+        for(SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+                stores = user.getAreaNameToAreas().get(areaName).getStoreIdToStore();
+            }
+        }
+
+        return engine.getNewOrderOptions(areaName,stores);
     }
 }

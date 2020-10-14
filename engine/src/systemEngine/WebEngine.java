@@ -10,9 +10,7 @@ import sdm.sdmElements.Item;
 import sdm.sdmElements.Order;
 import sdm.sdmElements.Store;
 import systemInfoContainers.*;
-import systemInfoContainers.webContainers.AreaContainer;
-import systemInfoContainers.webContainers.SingleStoreContainer;
-import systemInfoContainers.webContainers.SingleStoreItemContainer;
+import systemInfoContainers.webContainers.*;
 import users.SingleUser;
 
 import java.awt.*;
@@ -212,7 +210,6 @@ public class WebEngine  extends Connector{
         return stores;
     }
 
-
     public void addNewStore(String area,Integer storeId, String storeName,Point newStoreLocation, Integer ppk, Map<Integer,Integer> itemIdToItemPrice, SingleUser newShopOwner, SingleUser areaOwner ) throws CloneNotSupportedException {
         Map<Item,Integer> itemToItemPrice =  makeItemsAndPricesMap(itemIdToItemPrice, areaOwner.getAreaNameToAreas().get(area).getItemIdToItem());
         Store store = new Store(storeId,storeName,ppk,newStoreLocation,itemIdToItemPrice,itemToItemPrice ,area);
@@ -227,5 +224,28 @@ public class WebEngine  extends Connector{
             itemToItemPrice.put(item, itemIdToItemPrice.get(itemId));
         }
         return itemToItemPrice;
+    }
+
+    public SingleAreaOptionContainer getNewOrderOptions(String areaName,  Map<Integer,Store> stores) {
+        SingleAreaOptionContainer orderOptions = new SingleAreaOptionContainer();
+        orderOptions.setAreaName(areaName);
+
+        for(Store store : stores.values()) {
+            SingleOrderStoreContainer singleStore = new SingleOrderStoreContainer(store.getId(),store.getName());
+            orderOptions.getStores().add(singleStore);
+        }
+
+        return orderOptions;
+    }
+
+    public List<SingleStoreItemContainer> getStoreItems(Map<Item,Integer> itemToItemPrice) {
+        List<SingleStoreItemContainer> items = new ArrayList<>();
+
+        for(Item item : itemToItemPrice.keySet()) {
+            SingleStoreItemContainer singleItem = new SingleStoreItemContainer(item.getId(),item.getName(),item.getPurchaseCategory(),itemToItemPrice.get(item));
+            items.add(singleItem);
+        }
+
+        return items;
     }
 }
