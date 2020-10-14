@@ -11,6 +11,7 @@ import sdm.sdmElements.OrderedItem;
 import sdm.sdmElements.Store;
 import systemEngine.WebEngine;
 import systemInfoContainers.ItemsContainer;
+import systemInfoContainers.SingleDiscountContainer;
 import systemInfoContainers.webContainers.*;
 
 import java.awt.*;
@@ -193,5 +194,33 @@ public class UserManager {
         }
 
         return engine.getNewOrderOptions(areaName,stores);
+    }
+
+    public List<SingleDiscountContainer> getDiscounts(String areaName, Integer storeId,String method, Map<Integer,Float> itemIdToItemAmount) {
+        Store store = null;
+        List<SingleDiscountContainer> discounts = null;
+        if(method.equals("Static Order")) {
+            for (SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    store = user.getAreaNameToAreas().get(areaName).getStoreIdToStore().get(storeId);
+                }
+            }
+            discounts =  engine.getStaticOrderDiscounts(store, itemIdToItemAmount);
+        } else if (method.equals("Dynamic Order")) {
+
+        }
+        return discounts;
+    }
+
+    public List<SingleDynamicStoreContainer> getMinimalCart(String areaName, Map<Integer,Float> itemIdToAmount, Integer xLocation, Integer yLocation) {
+        Point location = new Point(xLocation,yLocation);
+        Area area = null;
+
+        for (SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+                area = user.getAreaNameToAreas().get(areaName);
+            }
+        }
+        return engine.getDynamicOrderCalcSummery(area,itemIdToAmount,location);
     }
 }

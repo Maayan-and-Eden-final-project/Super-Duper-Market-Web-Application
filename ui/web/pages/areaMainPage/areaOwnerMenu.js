@@ -26,7 +26,7 @@ function displayItemsOption(items) {
             "           <p id=\"itemId\" class=\"addStoreSingleItem\">Item Id: " + singleItem.itemId + " </p>\n" +
             "           <p class=\"addStoreSingleItem\">Purchase Category: " + singleItem.purchaseCategory + "</p>\n" +
             "<form id=\"add-store-item-form-" + singleItem.itemId + "\">" +
-            "<input type=\"number\" class=\"form-control addStoreItemPrice\" id=\"itemPrice" + singleItem.itemId + "\" placeholder=\"Price\" required>" +
+            "<input type=\"number\" min=0 class=\"form-control addStoreItemPrice\" id=\"itemPrice" + singleItem.itemId + "\" placeholder=\"Price\" required>" +
             " <button id=\"addItem" + singleItem.itemId + "\" type=\"submit\" class=\"btn btn-primary mb-2 addStoreItemSubmit\">Add Item</button>\n" +
             "</form>" +
             "       </div>" +
@@ -70,13 +70,13 @@ function makeNewStoreForm(areas) {
     });
     $("#newStoreForm").append(
         "<input type=\"text\" class=\"form-control addStoreFormControl\" id=\"storeName\" placeholder=\"Store Name\" required>" +
-        "<input type=\"number\" class=\"form-control addStoreFormControl\" id=\"storeId\" placeholder=\"Store Id\" required>");
+        "<input type=\"number\" min=0 class=\"form-control addStoreFormControl\" id=\"storeId\" placeholder=\"Store Id\" required>");
 
     $("#newStoreForm").append(
         "<input type=\"text\" class=\"form-control addStoreFormControl\" id=\"xStoreLocation\" placeholder=\"X Coordinate\" required pattern=\"^(50|[1-4]?[0-9])$\">" +
         "<input type=\"text\" class=\"form-control addStoreFormControl\" id=\"yStoreLocation\" placeholder=\"Y Coordinate\" required pattern=\"^(50|[1-4]?[0-9])$\">");
     $("#newStoreForm").append(
-        "<input type=\"number\" class=\"form-control addStoreFormControl\" id=\"storePpk\" placeholder=\"PPK\" required>");
+        "<input type=\"number\" min=0 class=\"form-control addStoreFormControl\" id=\"storePpk\" placeholder=\"PPK\" required>");
     $("#newStoreForm").append(
         "<button type=\"submit\" class=\"btn addStoreFormControl\" id=\"addStoreSubmit\" required> Add Store </button>" +
         "<div id = \"alert_placeholder\"></div>\n");

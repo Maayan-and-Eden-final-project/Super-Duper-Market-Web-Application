@@ -87,6 +87,7 @@ public class DesktopEngine extends Connector implements Cloneable {
         }
     }
 
+
     public  List<SingleDiscountContainer> findRelevantDiscounts(Map<Integer, List<Integer>> storeIdToItemIDList, Containable progressOrderInfo) throws CloneNotSupportedException {
         Integer purchasedItemId;
         float amountPurchased = 0;
