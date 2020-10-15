@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import sdmWebApplication.utils.ServletUtils;
 import sdmWebApplication.utils.SessionUtils;
+import systemInfoContainers.SingleDiscountContainer;
 import systemInfoContainers.webContainers.SingleAreaOptionContainer;
 import systemInfoContainers.webContainers.SingleDynamicStoreContainer;
 import systemInfoContainers.webContainers.SingleStoreItemContainer;
@@ -55,12 +56,12 @@ public class CustomerServlet extends HttpServlet {
                 String store = req.getParameter("storeKey");
                 String method = req.getParameter("methodKey");
                 Integer storeId = Integer.parseInt(store.split(":")[0].trim());
-                Integer xLocation = Integer.parseInt(req.getParameter("xLocationKey"));
-                Integer yLocation = Integer.parseInt(req.getParameter("yLocationKey"));
                 String mapString = req.getParameter("itemIdToAmountKey");
                 Type itemsMapType = new TypeToken<Map<Integer, Float>>() {}.getType();
                 Map<Integer,Float> itemIdToItemAmount = gson.fromJson(mapString,itemsMapType);
 
+                List<SingleDiscountContainer> discounts =  userManager.getDiscounts(areaNameFromSession, storeId, method, itemIdToItemAmount);
+                jsonResponse = gson.toJson(discounts);
 
             } else if(actionType.equals("getMinimalCart")) {
                 Integer xLocation = Integer.parseInt(req.getParameter("xLocationKey"));

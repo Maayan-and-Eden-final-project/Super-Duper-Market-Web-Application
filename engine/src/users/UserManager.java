@@ -1,6 +1,7 @@
 package users;
 
 import areas.Area;
+import com.sun.xml.internal.bind.v2.model.core.EnumLeafInfo;
 import exceptions.AreaAlreadyExistException;
 import exceptions.StoreLocationAlreadyExistException;
 import exceptions.XmlSimilarStoresIdException;
@@ -11,6 +12,7 @@ import sdm.sdmElements.OrderedItem;
 import sdm.sdmElements.Store;
 import systemEngine.WebEngine;
 import systemInfoContainers.ItemsContainer;
+import systemInfoContainers.ProgressOrderItem;
 import systemInfoContainers.SingleDiscountContainer;
 import systemInfoContainers.webContainers.*;
 
@@ -196,20 +198,29 @@ public class UserManager {
         return engine.getNewOrderOptions(areaName,stores);
     }
 
-    public List<SingleDiscountContainer> getDiscounts(String areaName, Integer storeId,String method, Map<Integer,Float> itemIdToItemAmount) {
+    public List<SingleDiscountContainer> getDiscounts(String areaName, Integer storeId,String method, Map<Integer,Float> itemIdToItemAmount) throws CloneNotSupportedException {
         Store store = null;
-        List<SingleDiscountContainer> discounts = null;
+        Map<Integer, List<ProgressOrderItem>>  storeIdToItemsList = null;
+        Area area = null;
         if(method.equals("Static Order")) {
             for (SingleUser user : userNameToUser.values()) {
                 if (user.getAreaNameToAreas().containsKey(areaName)) {
-                    store = user.getAreaNameToAreas().get(areaName).getStoreIdToStore().get(storeId);
+                    area = user.getAreaNameToAreas().get(areaName);
+                    store = area.getStoreIdToStore().get(storeId);
+                    storeIdToItemsList = engine.makeOrderStoreIdToItemsList(store.getItemsAndPrices(),store.getId(), itemIdToItemAmount);
                 }
             }
-            discounts =  engine.getStaticOrderDiscounts(store, itemIdToItemAmount);
-        } else if (method.equals("Dynamic Order")) {
 
+        } else if (method.equals("Dynamic Order")) {
+            for (SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    area = user.getAreaNameToAreas().get(areaName);
+                    storeIdToItemsList = engine.calcMinimalCart(area, itemIdToItemAmount);
+                }
+            }
         }
-        return discounts;
+
+        return engine.findRelevantDiscounts(area, storeIdToItemsList);
     }
 
     public List<SingleDynamicStoreContainer> getMinimalCart(String areaName, Map<Integer,Float> itemIdToAmount, Integer xLocation, Integer yLocation) {

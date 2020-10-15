@@ -1,4 +1,5 @@
 var itemIdToAmount = new Map();
+var discountNameToOffersList= new Map();
 var method;
 var store;
 var date;
@@ -119,13 +120,98 @@ function displayDynamicItemsOption(items) {
                         popup.classList.toggle("show"); //close the tooltip
                     }, 2000);
                 } else {
-                    addItemToMap(singleItem.itemId,parseInt(amount));
+                    addItemToMap(singleItem.itemId,parseFloat(amount));
                 }
             } else {
-                addItemToMap(singleItem.itemId,parseInt(amount));
+                addItemToMap(singleItem.itemId,parseFloat(amount));
             }
             return false;
         });
+    });
+}
+
+function displayDiscounts(discounts){
+    $(".dynamic-container").empty();
+
+    $(".dynamic-container").append(
+        "<section class=\"our-webcoderskull padding-lg\">\n" +
+        "    <div class=\"container discounts-container\">\n" +
+        "        <div class=\"row heading heading-icon\">\n" +
+        "            <p class=\"newOrderDiscountsHeader\">Discounts</p>\n" +
+        "        </div>\n" +
+        "        <ul class=\"row items-list newOrderDiscountsList\">\n" +
+        "        </ul>\n" +
+        "    </div>\n" +
+        "</section>");
+
+
+    $.each(discounts || [], function(i, singleDiscount) {
+
+        var discountImageUrl = "../../common/images/discount-tag.png";
+
+        $(".items-list").append(
+            "<li class=\"col-12 col-md-6 col-lg-3 discount-card\">\n" +
+            "       <div class=\"cnt-block equal-hight newOrderDiscountCard\">\n" +
+            "            <figure><img src=" + discountImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
+            "             <h3 class=\"discount-name\">" + singleDiscount.name + "</h3>" +
+            "           <p id=\"ifYouBuy\" class=\"newOrderSingleDiscount\">If You Buy</p>\n" +
+            "           <p id=\"ifYouBuyItemId\" class=\"newOrderSingleDiscount\">Item Id: " + singleDiscount.ifYouBuy.itemId + "</p>\n" +
+            "           <p id=\"ifYouBuyQuantity\" class=\"newOrderSingleDiscount\">Item Quantity: " + singleDiscount.ifYouBuy.quantity + "</p>\n" +
+            "           <p id=\"thenYouGet\" class=\"newOrderSingleDiscount\">Then You Get</p>\n" +
+            "           <p id=\"thenYouGetOperator\" class=\"newOrderSingleDiscount\">" + singleDiscount.thenYouGet.operator.replaceAll("_"," ") + "</p>\n" +
+            "           <div id=\"offersList" + singleDiscount.name.replaceAll(" ","-") + i + "\" class=\"row newOrderSingleDiscount\"></div>\n" +
+            " <button id=\"addDiscount" + singleDiscount.name.replaceAll(" ","-") + i + "\" class=\"btn btn-primary mb-2 newOrderDiscountSubmit\">Add Discount</button>\n" +
+            "        <div class=\"popup\" >\n" +
+            "            <span class=\"popuptext\" id=\"myPopup\"></span>" +
+            "        </div> \n" +
+            "       </div>" +
+            " </li>\n");
+
+
+        if(singleDiscount.thenYouGet.operator.indexOf("ONE_OF") > -1) {
+            $("#offersList" + singleDiscount.name.replaceAll(" ","-") + i).append(
+            "<form id=\"oneOfForm" + singleDiscount.name.replaceAll(" ","-") + i + "\" >\n" +
+            "</form>");
+
+            $.each(singleDiscount.thenYouGet.offers || [], function(j, singleOffer) {
+                $("#oneOfForm" + singleDiscount.name.replaceAll(" ","-") + i).append(
+                    "  <input type=\"radio\" class=\"oneOfRadio" + i + "\" value=\"Offer" + singleOffer.itemId + j + i + "\" name=\"oneOfOffer" + i + "\">\n" +
+                    "  <label for=\"Offer" + singleOffer.itemId + j + i + "\">Item Id: " + singleOffer.itemId + "</label><br>\n" +
+                    "  <label for=\"Offer" + singleOffer.itemId + j + i +"\">Item Quantity: " + singleOffer.quantity + "</label><br>\n" +
+                    "  <label for=\"Offer" + singleOffer.itemId + j + i + "\">For Additional: " + singleOffer.forAdditional + "</label><br>\n");
+            });
+        } else {
+            $.each(singleDiscount.thenYouGet.offers || [], function(index, singleOffer) {
+                $("#offersList" + singleDiscount.name.replaceAll(" ","-") + i).append(
+                    "  <p  class=\"newOrderSingleDiscount\">Item Id: " + singleOffer.itemId + "</p>\n" +
+                    "  <p  class=\"newOrderSingleDiscount\">Item Quantity: " + singleOffer.quantity + "</p>\n" +
+                    "  <p  class=\"newOrderSingleDiscount\">For Additional: " + singleOffer.forAdditional + "</p>\n");
+            });
+        }
+
+        $("#addDiscount" + singleDiscount.name.replaceAll(" ","-") + i).click(function () {
+            if(singleDiscount.thenYouGet.operator.indexOf("ONE_OF") > -1) {
+                var chosenOffer = document.querySelector("input[name=oneOfOffer" + i + "]:checked").value;
+                var offerDetail = $("label[for=" + chosenOffer + "]");
+                var offerItemId = offerDetail[0].innerText.split(":")[1].trim();
+                var offerItemQuantity = offerDetail[1].innerText.split(":")[1].trim();
+                var offerForAdditional = offerDetail[2].innerText.split(":")[1].trim();
+
+                if(discountNameToOffersList.get(singleDiscount.name.replaceAll(" ","-")) !== undefined) {
+                    var offersList = discountNameToOffersList.get(singleDiscount.name.replaceAll(" ","-"));
+                    offersList.push({itemId:offerItemId,quantity:offerItemQuantity,forAdditional:offerForAdditional});
+                    discountNameToOffersList.set(singleDiscount.name.replaceAll(" ","-"),offersList);
+                } else {
+                    discountNameToOffersList.set(singleDiscount.name.replaceAll(" ","-"), new Array(
+                            {itemId:offerItemId,quantity:offerItemQuantity,forAdditional:offerForAdditional}));
+                }
+            } else {
+
+            }
+            $(".oneOfRadio" + i).attr("disabled",true);
+            $("#addDiscount" + singleDiscount.name.replaceAll(" ","-") + i).attr("disabled",true);
+        });
+
     });
 }
 
@@ -134,24 +220,13 @@ function getDiscounts() {
 
     $.ajax({
         method: 'GET',
-        data: "methodKey=" + method + "&storeKey=" + store + "&dateKey=" + date + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getDiscounts" +"&itemIdToAmountKey=" +itemsListJsonString ,
+        data: "methodKey=" + method + "&storeKey=" + store + "&actionType=getDiscounts" +"&itemIdToAmountKey=" +itemsListJsonString ,
         url: "customer",
         error: function (jqXHR) {
             setTimeout(bootstrap_alert.warning(jqXHR.responseText,"red"),3000);
         },
         success: function (r) {
-            /* itemIdToItemPrice.clear();*/
-            $("#orderMethodDropdown").attr("disabled",true);
-            $("#storesDropdown").attr("disabled",true);
-            $("#date-input").attr("disabled",true);
-            $("#xStoreLocation").attr("disabled",true);
-            $("#yStoreLocation").attr("disabled",true);
-            $("#orderOptionSubmit").attr("disabled",true);
-            if(method.indexOf("Static Order") > -1) {
-                displayStaticItemsOption(r);
-            } else if(method.indexOf("Dynamic Order") > -1) {
-                displayDynamicItemsOption(r);
-            }
+            displayDiscounts(r);
         }
     });
 }
@@ -167,12 +242,12 @@ function displayStaticItemsOption(items) {
         "        <ul class=\"row items-list newOrderItemsList\">\n" +
         "        </ul>\n" +
         "    </div>\n" +
-        "</section>" +
-        " <button id=\"displayDiscountsButton\" class=\"btn btn-primary mb-2\">Next</button>\n");
+        "</section>");
+        /* <button id=\"displayDiscountsButton\" class=\"btn btn-primary mb-2\">Next</button>\n");*/
 
-    $("#displayDiscountsButton").click(function () {
+   /* $("#displayDiscountsButton").click(function () {
         getDiscounts();
-    });
+    });*/
 
     $.each(items || [], function(index, singleItem) {
 
@@ -206,13 +281,11 @@ function displayStaticItemsOption(items) {
                     setTimeout(function () {
                         popup.classList.toggle("show"); //close the tooltip
                     }, 2000);
+                } else {
+                    addItemToMap(singleItem.itemId,parseFloat(amount));
                 }
             } else {
-                if(itemIdToAmount.get(singleItem.itemId) === undefined) {
-                    itemIdToAmount.set(singleItem.itemId,amount); //TODO: empty when back clicked
-                } else {
-                    itemIdToAmount.set(singleItem.itemId,itemIdToAmount.get(singleItem.itemId) + amount); //TODO: empty when back clicked
-                }
+                addItemToMap(singleItem.itemId,parseFloat(amount));
             }
             $("#itemAmount" + singleItem.itemId).val("");
             return false;
@@ -256,14 +329,13 @@ function makeNewOrderForm(areaStores) {
 
 
         "<button type=\"submit\" class=\"btn orderFormControl\" id=\"orderOptionSubmit\" required> Show Items </button>" +
-        " <button id=\"displayMinimalCartButton\" class=\"btn btn-primary mb-2\">Next</button>\n" +
+        " <button id=\"nextStepButton\" class=\"btn btn-primary mb-2\">Next</button>\n" +
         "<div id = \"alert_placeholder\"></div>\n");
 
-    $("#displayMinimalCartButton").click(function () {
-        getMinimalCart();
-    });
+
 
     $("#newOrderForm").submit(function () {
+
        /* if(itemIdToItemPrice.size === 0) {
             $('#addStoreSubmit').on('click', function() {
                 bootstrap_alert.warning('You Must Choose At Least One Item  ',"red");
@@ -279,6 +351,18 @@ function makeNewOrderForm(areaStores) {
             yLocation = $("#yStoreLocation").val();
 
             /*var itemsListJsonString = JSON.stringify(Array.from(itemIdToItemPrice));*/
+
+        if(method.indexOf("Dynamic Order") > -1) {
+            $("#nextStepButton").click(function () {
+                getMinimalCart();
+            });
+        } else if(method.indexOf("Static Order") > -1) {
+            $("#nextStepButton").click(function () {
+                getDiscounts();
+            });
+        }
+
+
 
             $.ajax({
                 method: 'GET',
