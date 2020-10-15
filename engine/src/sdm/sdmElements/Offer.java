@@ -2,8 +2,8 @@ package sdm.sdmElements;
 
 
 public class Offer implements Cloneable {
-    private double quantity;
     private int itemId;
+    private double quantity;
     private int forAdditional;
 
     @Override

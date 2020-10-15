@@ -247,12 +247,34 @@ public class WebEngine  extends Connector{
         return items;
     }
 
-    public List<SingleDiscountContainer> getStaticOrderDiscounts(Store store, Map<Integer,Float> itemIdToAmount) {
+   /* public List<SingleDiscountContainer> getStaticOrderDiscounts(Store store, Map<Integer,Float> itemIdToAmount) {
         List<SingleDiscountContainer> discounts = new ArrayList<>();
         Map<Integer, List<Integer>> storeIdToItemIDList = new HashMap<>();
 
 
 return discounts;
+    }*/
+
+    public  Map<Integer, List<ProgressOrderItem>> makeOrderStoreIdToItemsList(Map<Item,Integer> itemToItemId, Integer storeId, Map<Integer,Float> itemIdToAmount ) {
+        Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = new HashMap<>();
+        List<ProgressOrderItem> itemsList = new ArrayList<>();
+        for(Integer itemId : itemIdToAmount.keySet()) {
+            ProgressOrderItem singleItem = new ProgressOrderItem();
+            singleItem.setItemId(itemId);
+            singleItem.setAmount(itemIdToAmount.get(itemId));
+
+            Item tempItem = null;
+            for(Item item : itemToItemId.keySet()) {
+                if(item.getId().equals(itemId)) {
+                    tempItem = item;
+                }
+            }
+            singleItem.setItemName(tempItem.getName());
+            singleItem.setPurchaseCategory(tempItem.getPurchaseCategory());
+            itemsList.add(singleItem);
+        }
+        storeIdToItemsList.put(storeId,itemsList);
+        return storeIdToItemsList;
     }
 
     public List<SingleDynamicStoreContainer> getDynamicOrderCalcSummery(Area area, Map<Integer,Float> itemIdToAmount, Point location) {
@@ -282,7 +304,7 @@ return discounts;
         return dynamicStores;
     }
 
-    private Map<Integer, List<ProgressOrderItem>> calcMinimalCart(Area area, Map<Integer,Float> itemIdToAmount) {
+    public Map<Integer, List<ProgressOrderItem>> calcMinimalCart(Area area, Map<Integer,Float> itemIdToAmount) {
         Store orderStore;
 
         Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = new HashMap<>();
@@ -319,55 +341,31 @@ return discounts;
         return storeIdToItemsList;
     }
 
-    public  List<SingleDiscountContainer> findRelevantDiscounts(Map<Integer, List<Integer>> storeIdToItemIDList, Containable progressOrderInfo) throws CloneNotSupportedException {
+    public  List<SingleDiscountContainer> findRelevantDiscounts(Area area, Map<Integer, List<ProgressOrderItem>> storeIdToItemsList) throws CloneNotSupportedException {
         Integer purchasedItemId;
         float amountPurchased = 0;
-        double discountAmount;
+        double discountAmount = 0;
         int numberOfCurrentDiscount;
         List<SingleDiscountContainer> discountsContainerList = new ArrayList<>();
 
-        for (Integer storeId : storeIdToItemIDList.keySet()) {
-            for (Discount discount : this.stores.get(storeId).getDiscountList()) {
+        for (Integer storeId : storeIdToItemsList.keySet()) {
+            for (Discount discount : area.getStoreIdToStore().get(storeId).getDiscountList()) {
                 purchasedItemId = discount.getIfYouBuy().getItemId();
                 discountAmount = discount.getIfYouBuy().getQuantity();
-                if (storeIdToItemIDList.get(storeId).contains(purchasedItemId)) {
-                    if(progressOrderInfo instanceof ProgressStaticOrderContainer) {
-                        amountPurchased = ((ProgressStaticOrderContainer)progressOrderInfo).getItemIdToOrderInfo().get(purchasedItemId).getAmount();
-                    } else if (progressOrderInfo instanceof ProgressDynamicOrderContainer) {
-                        amountPurchased = ((ProgressDynamicOrderContainer)progressOrderInfo).getItemIdToOrderItem().get(purchasedItemId).getAmount();
-                    }
-                    if (((int) (amountPurchased / discountAmount)) >= 1) {
 
-                        for (Offer offer : discount.getThenYouGet().getOffers()) {
-                            if(progressOrderInfo instanceof ProgressStaticOrderContainer) {
-                                if(((ProgressStaticOrderContainer)progressOrderInfo).getItemIdToOrderInfo().containsKey(offer.getItemId())
-                                        && ((ProgressStaticOrderContainer)progressOrderInfo).getItemIdToOrderInfo().get(offer.getItemId()).getAmount() != null)
-                                {
-                                    discountAmount = ((ProgressStaticOrderContainer)progressOrderInfo).getItemIdToOrderInfo().get(offer.getItemId()).getAmount();
-                                }
-                                else
-                                {
-                                    discountAmount = 0;
-                                }
-                            } else if (progressOrderInfo instanceof ProgressDynamicOrderContainer) {
-                                if(((ProgressDynamicOrderContainer)progressOrderInfo).getItemIdToOrderItem().containsKey(offer.getItemId()))
-                                {
-                                    discountAmount = ((ProgressDynamicOrderContainer)progressOrderInfo).getItemIdToOrderItem().get(offer.getItemId()).getAmount();
-                                }
-                                else
-                                {
-                                    discountAmount = 0;
-                                }
+                for (ProgressOrderItem item : storeIdToItemsList.get(storeId)) {
+                    if (item.getItemId().equals(purchasedItemId)) {
+                        amountPurchased = item.getAmount();
+
+                        if ((numberOfCurrentDiscount = (int) (amountPurchased / discountAmount)) >= 1) {
+
+                            for (int i = 0; i < numberOfCurrentDiscount; i++) {
+                                SingleDiscountContainer singleDiscountContainer = new SingleDiscountContainer();
+                                singleDiscountContainer.setIfYouBuy(discount.getIfYouBuy().clone());
+                                singleDiscountContainer.setThenYouGet(discount.getThenYouGet().clone());
+                                singleDiscountContainer.setName(discount.getName());
+                                discountsContainerList.add(singleDiscountContainer);
                             }
-                            if ((numberOfCurrentDiscount = (int) ( discountAmount/ offer.getQuantity())) >= 1)
-
-                                for (int i = 0; i < numberOfCurrentDiscount; i++) {
-                                    SingleDiscountContainer singleDiscountContainer = new SingleDiscountContainer();
-                                    singleDiscountContainer.setIfYouBuy(discount.getIfYouBuy().clone());
-                                    singleDiscountContainer.setThenYouGet(discount.getThenYouGet().clone());
-                                    singleDiscountContainer.setName(discount.getName());
-                                    discountsContainerList.add(singleDiscountContainer);
-                                }
                         }
                     }
                 }
