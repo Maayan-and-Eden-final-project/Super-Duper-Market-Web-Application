@@ -2,9 +2,12 @@ package sdmWebApplication.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import sdm.sdmElements.Offer;
 import sdmWebApplication.utils.ServletUtils;
 import sdmWebApplication.utils.SessionUtils;
+import systemInfoContainers.ProgressOrderItem;
 import systemInfoContainers.SingleDiscountContainer;
+import systemInfoContainers.webContainers.MinimalCartContainer;
 import systemInfoContainers.webContainers.SingleAreaOptionContainer;
 import systemInfoContainers.webContainers.SingleDynamicStoreContainer;
 import systemInfoContainers.webContainers.SingleStoreItemContainer;
@@ -54,13 +57,17 @@ public class CustomerServlet extends HttpServlet {
             } else if(actionType.equals("getDiscounts")) {
 
                 String store = req.getParameter("storeKey");
+
                 String method = req.getParameter("methodKey");
                 Integer storeId = Integer.parseInt(store.split(":")[0].trim());
-                String mapString = req.getParameter("itemIdToAmountKey");
+                String mapItemsString = req.getParameter("itemIdToAmountKey");
                 Type itemsMapType = new TypeToken<Map<Integer, Float>>() {}.getType();
-                Map<Integer,Float> itemIdToItemAmount = gson.fromJson(mapString,itemsMapType);
+                Map<Integer,Float> itemIdToItemAmount = gson.fromJson(mapItemsString,itemsMapType);
+                String minimalCartString = req.getParameter("minimalCartKey");
+                Type minimalCartMapType = new TypeToken<Map<Integer, List<ProgressOrderItem>>>() {}.getType();
+                Map<Integer, List<ProgressOrderItem>> minimalCart = gson.fromJson(minimalCartString,minimalCartMapType);
 
-                List<SingleDiscountContainer> discounts =  userManager.getDiscounts(areaNameFromSession, storeId, method, itemIdToItemAmount);
+                List<SingleDiscountContainer> discounts =  userManager.getDiscounts(areaNameFromSession, storeId, method, itemIdToItemAmount,minimalCart);
                 jsonResponse = gson.toJson(discounts);
 
             } else if(actionType.equals("getMinimalCart")) {
@@ -70,8 +77,29 @@ public class CustomerServlet extends HttpServlet {
                 Type itemsMapType = new TypeToken<Map<Integer, Float>>() {}.getType();
                 Map<Integer,Float> itemIdToItemAmount = gson.fromJson(mapString,itemsMapType);
 
-                List<SingleDynamicStoreContainer> minimalCart = userManager.getMinimalCart(areaNameFromSession,itemIdToItemAmount,xLocation,yLocation);
+                MinimalCartContainer minimalCart = userManager.getMinimalCart(areaNameFromSession,itemIdToItemAmount,xLocation,yLocation);
                 jsonResponse = gson.toJson(minimalCart);
+
+            } else if(actionType.equals("getOrderSummery")) {
+                String store = req.getParameter("storeKey");
+                String method = req.getParameter("methodKey");
+                Integer storeId = Integer.parseInt(store.split(":")[0].trim());
+                Integer xLocation = Integer.parseInt(req.getParameter("xLocationKey"));
+                Integer yLocation = Integer.parseInt(req.getParameter("yLocationKey"));
+
+                String itemsMapString = req.getParameter("itemIdToAmountKey");
+                Type itemsMapType = new TypeToken<Map<Integer, Float>>() {}.getType();
+                Map<Integer,Float> itemIdToItemAmount = gson.fromJson(itemsMapString,itemsMapType);
+
+                String discountsMapString = req.getParameter("discountListKey");
+                Type discountsMapType = new TypeToken<Map<String,List<Offer>>>() {}.getType();
+                Map<String,List<Offer>> discountNameToOffersList = gson.fromJson(discountsMapString,discountsMapType);
+
+                String minimalCartString = req.getParameter("minimalCartKey");
+                Type minimalCartMapType = new TypeToken<Map<Integer, List<ProgressOrderItem>>>() {}.getType();
+                Map<Integer, List<ProgressOrderItem>> minimalCart = gson.fromJson(minimalCartString,minimalCartMapType);
+
+                userManager.getOrderSummery(areaNameFromSession,itemIdToItemAmount,discountNameToOffersList,xLocation,yLocation,method,storeId, minimalCart);
 
             }
             out.print(jsonResponse);

@@ -8,10 +8,12 @@ import exceptions.XmlSimilarStoresIdException;
 import sdm.enums.AccountAction;
 import sdm.enums.UserType;
 import sdm.sdmElements.Item;
+import sdm.sdmElements.Offer;
 import sdm.sdmElements.OrderedItem;
 import sdm.sdmElements.Store;
 import systemEngine.WebEngine;
 import systemInfoContainers.ItemsContainer;
+import systemInfoContainers.OrderSummeryContainer;
 import systemInfoContainers.ProgressOrderItem;
 import systemInfoContainers.SingleDiscountContainer;
 import systemInfoContainers.webContainers.*;
@@ -198,7 +200,7 @@ public class UserManager {
         return engine.getNewOrderOptions(areaName,stores);
     }
 
-    public List<SingleDiscountContainer> getDiscounts(String areaName, Integer storeId,String method, Map<Integer,Float> itemIdToItemAmount) throws CloneNotSupportedException {
+    public List<SingleDiscountContainer> getDiscounts(String areaName, Integer storeId,String method, Map<Integer,Float> itemIdToItemAmount, Map<Integer, List<ProgressOrderItem>> minimalCart) throws CloneNotSupportedException {
         Store store = null;
         Map<Integer, List<ProgressOrderItem>>  storeIdToItemsList = null;
         Area area = null;
@@ -215,7 +217,7 @@ public class UserManager {
             for (SingleUser user : userNameToUser.values()) {
                 if (user.getAreaNameToAreas().containsKey(areaName)) {
                     area = user.getAreaNameToAreas().get(areaName);
-                    storeIdToItemsList = engine.calcMinimalCart(area, itemIdToItemAmount);
+                    storeIdToItemsList = minimalCart;
                 }
             }
         }
@@ -223,7 +225,7 @@ public class UserManager {
         return engine.findRelevantDiscounts(area, storeIdToItemsList);
     }
 
-    public List<SingleDynamicStoreContainer> getMinimalCart(String areaName, Map<Integer,Float> itemIdToAmount, Integer xLocation, Integer yLocation) {
+    public MinimalCartContainer getMinimalCart(String areaName, Map<Integer,Float> itemIdToAmount, Integer xLocation, Integer yLocation) {
         Point location = new Point(xLocation,yLocation);
         Area area = null;
 
@@ -234,4 +236,32 @@ public class UserManager {
         }
         return engine.getDynamicOrderCalcSummery(area,itemIdToAmount,location);
     }
+
+    public OrderSummeryContainer getOrderSummery(String areaName, Map<Integer,Float> itemIdToAmount, Map<String,List<Offer>> discountNameToOffersList, Integer xLocation, Integer yLocation,String method, Integer storeId, Map<Integer, List<ProgressOrderItem>> minimalCart) {
+        OrderSummeryContainer orderSummery = null;
+        Store store = null;
+        Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = null;
+        Area area = null;
+        if (method.equals("Static Order")) {
+            for (SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    area = user.getAreaNameToAreas().get(areaName);
+                    store = area.getStoreIdToStore().get(storeId);
+                    storeIdToItemsList = engine.makeOrderStoreIdToItemsList(store.getItemsAndPrices(), store.getId(), itemIdToAmount);
+                }
+            }
+        } else if (method.equals("Dynamic Order")) {
+            for (SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    area = user.getAreaNameToAreas().get(areaName);
+                    storeIdToItemsList = minimalCart;
+                }
+            }
+        }
+
+
+        orderSummery = engine.getOrderSummery(storeIdToItemsList,discountNameToOffersList,area,new Point(xLocation,yLocation));
+        return orderSummery;
+    }
+
 }
