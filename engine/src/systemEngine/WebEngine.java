@@ -247,13 +247,68 @@ public class WebEngine  extends Connector{
         return items;
     }
 
-   /* public List<SingleDiscountContainer> getStaticOrderDiscounts(Store store, Map<Integer,Float> itemIdToAmount) {
-        List<SingleDiscountContainer> discounts = new ArrayList<>();
-        Map<Integer, List<Integer>> storeIdToItemIDList = new HashMap<>();
+    public OrderSummeryContainer getOrderSummery(Map<Integer, List<ProgressOrderItem>> storeIdToItemsList ,Map<String,List<Offer>> discountNameToOffersList, Area area, Point userLocation) {
+        OrderSummeryContainer orderSummery = new OrderSummeryContainer();
+        Store currentStore = null;
+        float totalItemsCost = 0;
+        for (Integer storeId : storeIdToItemsList.keySet()) {
 
+            Map<Pair<Integer,Boolean>, OrderStoreItemInfo> itemIdMapToProgressItem = new HashMap<>();
+            SingleOrderStoreInfo store = new SingleOrderStoreInfo();
+            currentStore = area.getStoreIdToStore().get(storeId);
+            store.setStoreId(storeId);
+            store.setStoreName(currentStore.getName());
+            store.setPpk(currentStore.getDeliveryPPK());
+            store.setDistanceFromCustomer(currentStore.getLocation().distance(userLocation.x,userLocation.y));
+            store.setCustomerShippingCost(store.getDistanceFromCustomer() * store.getPpk());
+            for (ProgressOrderItem item : storeIdToItemsList.get(storeId)) {
+                OrderStoreItemInfo storeItem = new OrderStoreItemInfo();
+                storeItem.setItemId(item.getItemId());
+                storeItem.setItemName(item.getItemName());
+                storeItem.setPurchaseCategory(item.getPurchaseCategory());
+                storeItem.setAmount(item.getAmount());
+                storeItem.setPricePerPiece((float)(currentStore.getItemsIdAndPrices().get(item.getItemId())));
+                storeItem.setTotalPrice(storeItem.getPricePerPiece() * storeItem.getAmount());
+                storeItem.setFromDiscount(false);
+                totalItemsCost += storeItem.getTotalPrice();
+                itemIdMapToProgressItem.put(new Pair(item.getItemId(),false),storeItem);
+            }
+            for(String discountName : discountNameToOffersList.keySet()) {
+                for(Discount discount : currentStore.getDiscountList()) {
+                    if(discount.getName().equals(discountName)) {
+                        for(Offer offer : discount.getThenYouGet().getOffers()) {
+                            Pair<Integer,Boolean> discountItemPair = new Pair(offer.getItemId(),true);
+                            OrderStoreItemInfo offerItem = null;
+                            if(itemIdMapToProgressItem.containsKey(discountItemPair)) {
+                                offerItem = itemIdMapToProgressItem.get(discountItemPair);
+                                offerItem.setAmount(offerItem.getAmount() + (float)offer.getQuantity());
+                                offerItem.setTotalPrice(offerItem.getTotalPrice() + offer.getForAdditional());
+                                itemIdMapToProgressItem.put(discountItemPair,offerItem);
+                            } else {
+                                offerItem = new OrderStoreItemInfo();
+                                Item areaItem = area.getItemIdToItem().get(offer.getItemId());
+                                offerItem.setItemId(offer.getItemId());
+                                offerItem.setItemName(areaItem.getName());
+                                offerItem.setPurchaseCategory(areaItem.getPurchaseCategory());
+                                offerItem.setAmount((float)offer.getQuantity());
+                                offerItem.setFromDiscount(true);
+                                offerItem.setPricePerPiece((float)(offer.getForAdditional()));
+                                offerItem.setTotalPrice(offerItem.getPricePerPiece() * offerItem.getAmount());
+                                itemIdMapToProgressItem.put(new Pair(offerItem.getItemId(),true),offerItem);
+                            }
+                            totalItemsCost += offerItem.getTotalPrice();
+                        }
+                    }
+                }
+            }
 
-return discounts;
-    }*/
+            store.setItemIdMapToProgressItem(itemIdMapToProgressItem);
+            orderSummery.getStoreIdToStoreInfo().put(storeId,store);
+        }
+        orderSummery.setTotalOrderCostWithoutShipping(totalItemsCost);
+        orderSummery.setTotalOrderCost(orderSummery.getTotalShippingCost() + orderSummery.getTotalOrderCostWithoutShipping());
+        return orderSummery;
+    }
 
     public  Map<Integer, List<ProgressOrderItem>> makeOrderStoreIdToItemsList(Map<Item,Integer> itemToItemId, Integer storeId, Map<Integer,Float> itemIdToAmount ) {
         Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = new HashMap<>();
@@ -277,9 +332,9 @@ return discounts;
         return storeIdToItemsList;
     }
 
-    public List<SingleDynamicStoreContainer> getDynamicOrderCalcSummery(Area area, Map<Integer,Float> itemIdToAmount, Point location) {
+    public MinimalCartContainer getDynamicOrderCalcSummery(Area area, Map<Integer,Float> itemIdToAmount, Point location) {
         List<SingleDynamicStoreContainer> dynamicStores = new ArrayList<>();
-        Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = calcMinimalCart(area,itemIdToAmount);
+        Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = calcMinimalCart(area, itemIdToAmount);
 
         for (Integer storeId : storeIdToItemsList.keySet()) {
             SingleDynamicStoreContainer singleStore = new SingleDynamicStoreContainer();
@@ -301,7 +356,8 @@ return discounts;
             singleStore.setTotalItemsCost(totalItemCost);
             dynamicStores.add(singleStore);
         }
-        return dynamicStores;
+        MinimalCartContainer minimalCartContainer = new MinimalCartContainer(dynamicStores, storeIdToItemsList);
+        return minimalCartContainer;
     }
 
     public Map<Integer, List<ProgressOrderItem>> calcMinimalCart(Area area, Map<Integer,Float> itemIdToAmount) {

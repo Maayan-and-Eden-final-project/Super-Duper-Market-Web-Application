@@ -1,10 +1,12 @@
 var itemIdToAmount = new Map();
 var discountNameToOffersList= new Map();
+var minimalCartJson;
 var method;
 var store;
 var date;
 var xLocation;
 var yLocation;
+var discountRegex = /[$&+,:;=?@#|'<>.^*()%!]/g;
 
 function displayMinimalCartSummery(minimalCartStores) {
 
@@ -25,8 +27,10 @@ function displayMinimalCartSummery(minimalCartStores) {
         getDiscounts();
     });
 
+    var minimalCart = minimalCartStores.storeIdToItemsList;
+    minimalCartJson = JSON.stringify(minimalCart);
 
-    $.each(minimalCartStores || [], function(index, singleStore) {
+    $.each(minimalCartStores.dynamicStores || [], function(index, singleStore) {
 
         var storeImageUrl = "../../common/images/storeIcon.png";
 
@@ -130,6 +134,28 @@ function displayDynamicItemsOption(items) {
     });
 }
 
+function addToDiscountMap(offerItemId,offerItemQuantity,offerForAdditional,singleDiscountName) {
+    if(discountNameToOffersList.get(singleDiscountName) !== undefined) {
+        var offersList = discountNameToOffersList.get(singleDiscountName);
+        offersList.push({itemId:offerItemId,quantity:offerItemQuantity,forAdditional:offerForAdditional});
+        discountNameToOffersList.set(singleDiscountName,offersList);
+    } else {
+        discountNameToOffersList.set(singleDiscountName, new Array(
+            {itemId:offerItemId,quantity:offerItemQuantity,forAdditional:offerForAdditional}));
+    }
+}
+
+function addOfferDetailToMap(offerDetail,singleDiscountName) {
+    var offerItemId = offerDetail[0].innerText.split(":")[1].trim();
+    var offerItemQuantity = offerDetail[1].innerText.split(":")[1].trim();
+    var offerForAdditional = offerDetail[2].innerText.split(":")[1].trim();
+    addToDiscountMap(offerItemId,offerItemQuantity,offerForAdditional,singleDiscountName);
+}
+
+function displayOrderSummery(orderSummery) {
+
+}
+
 function displayDiscounts(discounts){
     $(".dynamic-container").empty();
 
@@ -141,14 +167,32 @@ function displayDiscounts(discounts){
         "        </div>\n" +
         "        <ul class=\"row items-list newOrderDiscountsList\">\n" +
         "        </ul>\n" +
+        "<button id=\"goToSummeryButton\" class=\"btn btn-primary mb-2 \">Go To Order Summery</button>" +
         "    </div>\n" +
         "</section>");
 
+    $("#goToSummeryButton").click(function () {
+        var itemsListJsonString = JSON.stringify(Array.from(itemIdToAmount));
+        var discountNameToOffersListString = JSON.stringify(Array.from(discountNameToOffersList));
+
+        $.ajax({
+            method: 'GET',
+            data: "methodKey=" + method + "&storeKey=" + store + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getOrderSummery" +"&itemIdToAmountKey=" +itemsListJsonString + "&discountListKey=" +discountNameToOffersListString + "&minimalCartKey=" +minimalCartJson ,
+            url: "customer",
+            error: function (jqXHR) {
+                setTimeout(bootstrap_alert.warning(jqXHR.responseText,"red"),3000);
+            },
+            success: function (r) {
+                displayOrderSummery(r);
+            }
+        });
+    });
 
     $.each(discounts || [], function(i, singleDiscount) {
 
         var discountImageUrl = "../../common/images/discount-tag.png";
-
+        var singleDiscountName = singleDiscount.name.replaceAll(discountRegex,"");
+        singleDiscountName = singleDiscountName.replaceAll(" ","-");
         $(".items-list").append(
             "<li class=\"col-12 col-md-6 col-lg-3 discount-card\">\n" +
             "       <div class=\"cnt-block equal-hight newOrderDiscountCard\">\n" +
@@ -159,8 +203,8 @@ function displayDiscounts(discounts){
             "           <p id=\"ifYouBuyQuantity\" class=\"newOrderSingleDiscount\">Item Quantity: " + singleDiscount.ifYouBuy.quantity + "</p>\n" +
             "           <p id=\"thenYouGet\" class=\"newOrderSingleDiscount\">Then You Get</p>\n" +
             "           <p id=\"thenYouGetOperator\" class=\"newOrderSingleDiscount\">" + singleDiscount.thenYouGet.operator.replaceAll("_"," ") + "</p>\n" +
-            "           <div id=\"offersList" + singleDiscount.name.replaceAll(" ","-") + i + "\" class=\"row newOrderSingleDiscount\"></div>\n" +
-            " <button id=\"addDiscount" + singleDiscount.name.replaceAll(" ","-") + i + "\" class=\"btn btn-primary mb-2 newOrderDiscountSubmit\">Add Discount</button>\n" +
+            "           <div id=\"offersList" + singleDiscountName + i + "\" class=\"row newOrderSingleDiscount\"></div>\n" +
+            " <button id=\"addDiscount" + singleDiscountName + i + "\" class=\"btn btn-primary mb-2 newOrderDiscountSubmit\">Add Discount</button>\n" +
             "        <div class=\"popup\" >\n" +
             "            <span class=\"popuptext\" id=\"myPopup\"></span>" +
             "        </div> \n" +
@@ -169,12 +213,12 @@ function displayDiscounts(discounts){
 
 
         if(singleDiscount.thenYouGet.operator.indexOf("ONE_OF") > -1) {
-            $("#offersList" + singleDiscount.name.replaceAll(" ","-") + i).append(
-            "<form id=\"oneOfForm" + singleDiscount.name.replaceAll(" ","-") + i + "\" >\n" +
+            $("#offersList" + singleDiscountName + i).append(
+            "<form id=\"oneOfForm" + singleDiscountName + i + "\" >\n" +
             "</form>");
 
             $.each(singleDiscount.thenYouGet.offers || [], function(j, singleOffer) {
-                $("#oneOfForm" + singleDiscount.name.replaceAll(" ","-") + i).append(
+                $("#oneOfForm" + singleDiscountName + i).append(
                     "  <input type=\"radio\" class=\"oneOfRadio" + i + "\" value=\"Offer" + singleOffer.itemId + j + i + "\" name=\"oneOfOffer" + i + "\">\n" +
                     "  <label for=\"Offer" + singleOffer.itemId + j + i + "\">Item Id: " + singleOffer.itemId + "</label><br>\n" +
                     "  <label for=\"Offer" + singleOffer.itemId + j + i +"\">Item Quantity: " + singleOffer.quantity + "</label><br>\n" +
@@ -182,34 +226,29 @@ function displayDiscounts(discounts){
             });
         } else {
             $.each(singleDiscount.thenYouGet.offers || [], function(index, singleOffer) {
-                $("#offersList" + singleDiscount.name.replaceAll(" ","-") + i).append(
+                $("#offersList" + singleDiscountName  + i).append(
+                    "<div id=\"item" + index + i + "\">" +
                     "  <p  class=\"newOrderSingleDiscount\">Item Id: " + singleOffer.itemId + "</p>\n" +
                     "  <p  class=\"newOrderSingleDiscount\">Item Quantity: " + singleOffer.quantity + "</p>\n" +
-                    "  <p  class=\"newOrderSingleDiscount\">For Additional: " + singleOffer.forAdditional + "</p>\n");
+                    "  <p  class=\"newOrderSingleDiscount\">For Additional: " + singleOffer.forAdditional + "</p>\n" +
+                    "</div>");
             });
         }
 
-        $("#addDiscount" + singleDiscount.name.replaceAll(" ","-") + i).click(function () {
+        $("#addDiscount" + singleDiscountName + i).click(function () {
             if(singleDiscount.thenYouGet.operator.indexOf("ONE_OF") > -1) {
                 var chosenOffer = document.querySelector("input[name=oneOfOffer" + i + "]:checked").value;
                 var offerDetail = $("label[for=" + chosenOffer + "]");
-                var offerItemId = offerDetail[0].innerText.split(":")[1].trim();
-                var offerItemQuantity = offerDetail[1].innerText.split(":")[1].trim();
-                var offerForAdditional = offerDetail[2].innerText.split(":")[1].trim();
-
-                if(discountNameToOffersList.get(singleDiscount.name.replaceAll(" ","-")) !== undefined) {
-                    var offersList = discountNameToOffersList.get(singleDiscount.name.replaceAll(" ","-"));
-                    offersList.push({itemId:offerItemId,quantity:offerItemQuantity,forAdditional:offerForAdditional});
-                    discountNameToOffersList.set(singleDiscount.name.replaceAll(" ","-"),offersList);
-                } else {
-                    discountNameToOffersList.set(singleDiscount.name.replaceAll(" ","-"), new Array(
-                            {itemId:offerItemId,quantity:offerItemQuantity,forAdditional:offerForAdditional}));
-                }
+                addOfferDetailToMap(offerDetail, singleDiscountName);
             } else {
-
+                var listItems = $("#offersList" + singleDiscountName  + i).children();
+                $.each(listItems || [], function(index, item) {
+                   var offerDetail = $("#item" + index + i).children();
+                    addOfferDetailToMap(offerDetail,singleDiscountName);
+                });
             }
             $(".oneOfRadio" + i).attr("disabled",true);
-            $("#addDiscount" + singleDiscount.name.replaceAll(" ","-") + i).attr("disabled",true);
+            $("#addDiscount" + singleDiscountName + i).attr("disabled",true);
         });
 
     });
@@ -220,7 +259,7 @@ function getDiscounts() {
 
     $.ajax({
         method: 'GET',
-        data: "methodKey=" + method + "&storeKey=" + store + "&actionType=getDiscounts" +"&itemIdToAmountKey=" +itemsListJsonString ,
+        data: "methodKey=" + method + "&storeKey=" + store + "&actionType=getDiscounts" +"&itemIdToAmountKey=" +itemsListJsonString + "&minimalCartKey=" +minimalCartJson ,
         url: "customer",
         error: function (jqXHR) {
             setTimeout(bootstrap_alert.warning(jqXHR.responseText,"red"),3000);
