@@ -4,10 +4,12 @@ import exceptions.InvalideOrderHistoryLoadFileException;
 import exceptions.ItemIsNotSoldException;
 import exceptions.SingleSellingStoreException;
 import exceptions.XmlSimilarItemsIdException;
-import javafx.util.Pair;
+
 import sdm.sdmElements.Item;
 import sdm.sdmElements.Store;
 import systemInfoContainers.*;
+import utils.IntegerToBooleanPair;
+import utils.IntegerToIntegerPair;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
@@ -24,7 +26,7 @@ public abstract class Connector implements Cloneable {
     public abstract ProgressStaticOrderContainer getProgressOrderInformation(Point userLocation, Integer storeId, Map<Integer,StoreItemInformation> storeItemInfo) throws CloneNotSupportedException;
     public abstract Map<Integer,StoreItemInformation> getStoreItemsInformation (Integer storeId) throws CloneNotSupportedException;
     public abstract void makeNewOrder(Integer storeId, Date orderDate, Orderable progressOrderInfo);
-    public abstract Map<Pair<Integer,Integer>, OrdersContainer> getStoresOrders();
+    public abstract Map<IntegerToIntegerPair, OrdersContainer> getStoresOrders();
     public abstract void deleteStoreItem(Integer storeId,Integer itemId) throws ItemIsNotSoldException, SingleSellingStoreException;
     public abstract void rejectIfItemDefinedInStore(Integer storeId, Integer itemId) throws XmlSimilarItemsIdException;
     public abstract void addNewItemToStore(Integer storeId, Integer itemId,Integer itemPrice);

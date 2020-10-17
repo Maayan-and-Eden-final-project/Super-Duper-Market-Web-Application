@@ -12,13 +12,11 @@ import sdm.sdmElements.Offer;
 import sdm.sdmElements.OrderedItem;
 import sdm.sdmElements.Store;
 import systemEngine.WebEngine;
-import systemInfoContainers.ItemsContainer;
-import systemInfoContainers.OrderSummeryContainer;
-import systemInfoContainers.ProgressOrderItem;
-import systemInfoContainers.SingleDiscountContainer;
+import systemInfoContainers.*;
 import systemInfoContainers.webContainers.*;
 
 import java.awt.*;
+import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 
@@ -264,4 +262,51 @@ public class UserManager {
         return orderSummery;
     }
 
+    public void addNewOrder(OrderSummeryContainer orderSummery, String date, String areaName, String userName) throws ParseException {
+
+        Area area = null;
+        SingleUser areaOwner = null;
+        SingleUser customer = userNameToUser.get(userName);
+
+        for (SingleUser user : userNameToUser.values()) {
+            if (user.getAreaNameToAreas().containsKey(areaName)) {
+                area = user.getAreaNameToAreas().get(areaName);
+                areaOwner = user;
+            }
+        }
+        Map<Integer,Float> storeIdToTotalCost = engine.addNewOrder(orderSummery,area,date);
+
+        List<String> messages = new ArrayList<>();
+        List<Integer> addedStoresIds = new ArrayList<>();
+
+        for(SingleUser shopOwner : userNameToUser.values()) {
+            for (Store store : shopOwner.getMyAddedStores()) {
+                if (orderSummery.getStoreIdToStoreInfo().containsKey(store.getId())) {
+                    Float orderCost = storeIdToTotalCost.get(store.getId());
+                    customer.handleTransferAction(date,orderCost);
+                    shopOwner.handlePaymentReceivedAction(date,orderCost);
+                    messages.add(userName + " has ordered from your store (" + store.getName() + ")");
+                    addedStoresIds.add(store.getId());
+                }
+            }
+            if(messages.size() != 0) {
+                shopOwner.addNewMessage(messages.toString().split(","));
+                messages.clear();
+            }
+        }
+
+        for (Integer storeId : orderSummery.getStoreIdToStoreInfo().keySet()) {
+            if(!addedStoresIds.contains(storeId)) {
+                Float orderCost = storeIdToTotalCost.get(storeId);
+                customer.handleTransferAction(date,orderCost);
+                areaOwner.handlePaymentReceivedAction(date,orderCost);
+                messages.add(userName + " has ordered from your store (" + area.getStoreIdToStore().get(storeId).getName() + ")");
+            }
+        }
+
+        if(messages.size() != 0) {
+            areaOwner.addNewMessage(messages.toString().split(","));
+            messages.clear();
+        }
+    }
 }

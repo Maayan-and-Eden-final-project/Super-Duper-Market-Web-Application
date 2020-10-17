@@ -1,9 +1,11 @@
 package sdm.sdmElements;
 
-import javafx.util.Pair;
+
 import systemInfoContainers.OrderStoreItemInfo;
 import systemInfoContainers.OrderSummeryContainer;
 import systemInfoContainers.SingleOrderStoreInfo;
+import utils.IntegerToBooleanPair;
+import utils.IntegerToIntegerPair;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -267,8 +269,8 @@ public class Store implements Cloneable{
         }
     }
 
-    public Map<Pair<Integer,Integer>,OrderSummeryContainer> getStoresOrders() {
-        Map<Pair<Integer,Integer>,OrderSummeryContainer> storeOrders = new HashMap<>();
+    public Map<IntegerToIntegerPair,OrderSummeryContainer> getStoresOrders() {
+        Map<IntegerToIntegerPair,OrderSummeryContainer> storeOrders = new HashMap<>();
 
         for (Order order : orders.values()) {
             OrderSummeryContainer orderContainer = new OrderSummeryContainer();
@@ -293,10 +295,10 @@ public class Store implements Cloneable{
                 itemContainer.setPurchaseCategory(item.getPurchaseCategory());
                 itemContainer.setAmount(item.getAmount());
 
-                storeInfo.getItemIdMapToProgressItem().put(new Pair<>(item.getItemId(),item.isFromDiscount()),itemContainer);
+                storeInfo.getItemIdMapToProgressItem().put(new IntegerToBooleanPair(item.getItemId(),item.isFromDiscount()),itemContainer);
             }
             orderContainer.getStoreIdToStoreInfo().put(id,storeInfo);
-            storeOrders.put(new Pair<>(id,order.getOrderId()),orderContainer);
+            storeOrders.put(new IntegerToIntegerPair(id,order.getOrderId()),orderContainer);
         }
         return storeOrders;
     }
