@@ -5,12 +5,14 @@ import components.welcomeScene.UiAdapter;
 import exceptions.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.layout.VBox;
-import javafx.util.Pair;
+
 import sdm.enums.PurchaseCategory;
 import sdm.sdmElements.*;
 import task.calcMinimalCart.CalcMinimalCartTask;
 import task.loadXmlTask.LoadXmlTask;
 import systemInfoContainers.*;
+import utils.IntegerToBooleanPair;
+import utils.IntegerToIntegerPair;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
@@ -197,7 +199,7 @@ public class DesktopEngine extends Connector implements Cloneable {
                     itemInfo.setTotalPrice(item.getAmount() * (float) store.getItemsIdAndPrices().get(itemId));
                     itemInfo.setFromDiscount(false);
 
-                    Pair<Integer, Boolean> itemIdToIsDiscount = new Pair<>(itemId, itemInfo.isFromDiscount());
+                    IntegerToBooleanPair itemIdToIsDiscount = new IntegerToBooleanPair(itemId, itemInfo.isFromDiscount());
                     singleDynamicStoreInfo.getItemIdMapToProgressItem().put(itemIdToIsDiscount, itemInfo);
                     totalOrderCostWithoutShipping += itemInfo.getTotalPrice();
                 }
@@ -221,7 +223,7 @@ public class DesktopEngine extends Connector implements Cloneable {
 
                     itemInfo.setFromDiscount(true);
 
-                    Pair<Integer, Boolean> itemIdToIsDiscount = new Pair<>(itemId, itemInfo.isFromDiscount());
+                    IntegerToBooleanPair itemIdToIsDiscount = new IntegerToBooleanPair(itemId, itemInfo.isFromDiscount());
                     singleDynamicStoreInfo.getItemIdMapToProgressItem().put(itemIdToIsDiscount, itemInfo);
                     totalOrderCostWithoutShipping += itemInfo.getTotalPrice();
                 }
@@ -265,7 +267,7 @@ public class DesktopEngine extends Connector implements Cloneable {
                     itemInfo.setTotalPrice(item.getTotalItemPrice());
                     itemInfo.setFromDiscount(false);
 
-                    Pair<Integer, Boolean> itemIdToIsDiscount = new Pair<>(itemId, itemInfo.isFromDiscount());
+                    IntegerToBooleanPair itemIdToIsDiscount = new IntegerToBooleanPair(itemId, itemInfo.isFromDiscount());
                     singleDynamicStoreInfo.getItemIdMapToProgressItem().put(itemIdToIsDiscount, itemInfo);
                     totalOrderCostWithoutShipping += itemInfo.getTotalPrice();
                 }
@@ -281,7 +283,7 @@ public class DesktopEngine extends Connector implements Cloneable {
 
                     itemInfo.setFromDiscount(true);
 
-                    Pair<Integer, Boolean> itemIdToIsDiscount = new Pair<>(itemId, itemInfo.isFromDiscount());
+                    IntegerToBooleanPair itemIdToIsDiscount = new IntegerToBooleanPair(itemId, itemInfo.isFromDiscount());
                     singleDynamicStoreInfo.getItemIdMapToProgressItem().put(itemIdToIsDiscount, itemInfo);
                     totalOrderCostWithoutShipping += itemInfo.getTotalPrice();
                 }
@@ -312,7 +314,7 @@ public class DesktopEngine extends Connector implements Cloneable {
                storeInfo.setDistanceFromCustomer(order.getDistance());
                storeInfo.setCustomerShippingCost(order.getDeliveryCost());
 
-                Map<Pair<Integer, Boolean>, OrderStoreItemInfo> itemIdMapToProgressItem = new HashMap<>();
+                Map<IntegerToBooleanPair, OrderStoreItemInfo> itemIdMapToProgressItem = new HashMap<>();
                 for(OrderedItem orderedItem : order.getItemIdPairToItems().values()) {
                     OrderStoreItemInfo itemInfo = new OrderStoreItemInfo();
                     itemInfo.setItemId(orderedItem.getItemId());
@@ -322,7 +324,7 @@ public class DesktopEngine extends Connector implements Cloneable {
                     itemInfo.setPricePerPiece(orderedItem.getPricePerPiece());
                     itemInfo.setPurchaseCategory(orderedItem.getPurchaseCategory());
                     itemInfo.setTotalPrice(orderedItem.getTotalPrice());
-                    itemIdMapToProgressItem.put(new Pair<>(itemInfo.getItemId(), itemInfo.isFromDiscount()), itemInfo);
+                    itemIdMapToProgressItem.put(new IntegerToBooleanPair(itemInfo.getItemId(), itemInfo.isFromDiscount()), itemInfo);
                 }
                 storeInfo.setItemIdMapToProgressItem(itemIdMapToProgressItem);
                 orderContainer.getStoreIdToStoreInfo().put(storeInfo.getStoreId(),storeInfo);
@@ -390,7 +392,7 @@ public class DesktopEngine extends Connector implements Cloneable {
                 orderedItem.setPricePerPiece(itemInfo.getPricePerPiece());
                 orderedItem.setFromDiscount(itemInfo.isFromDiscount());
                 orderedItem.setTotalPrice(itemInfo.getTotalPrice());
-                newOrder.getItemIdPairToItems().put(new Pair<>(orderedItem.getItemId(), orderedItem.isFromDiscount()), orderedItem);
+                newOrder.getItemIdPairToItems().put(new IntegerToBooleanPair(orderedItem.getItemId(), orderedItem.isFromDiscount()), orderedItem);
                 totalItemsCost += itemInfo.getTotalPrice();
 
                 stores.get(storeInfo.getStoreId()).getPurchasedItems().put(itemInfo.getItemId(),itemInfo.getAmount());
@@ -530,7 +532,7 @@ public class DesktopEngine extends Connector implements Cloneable {
     }
 
     @Override
-    public Map<Pair<Integer, Integer>, OrdersContainer> getStoresOrders() {
+    public Map<IntegerToIntegerPair, OrdersContainer> getStoresOrders() {
         return null;
     }
 

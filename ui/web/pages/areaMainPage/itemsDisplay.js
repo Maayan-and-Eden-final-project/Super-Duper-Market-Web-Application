@@ -10,6 +10,7 @@ $(function () {
                 console.error("test");
             },
             success: function (r) {
+                clearOrderData();
                 displayItems(r);
             }
         });

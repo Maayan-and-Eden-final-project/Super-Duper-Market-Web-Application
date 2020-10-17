@@ -5,15 +5,19 @@ import exceptions.InvalideOrderHistoryLoadFileException;
 import exceptions.ItemIsNotSoldException;
 import exceptions.SingleSellingStoreException;
 import exceptions.XmlSimilarItemsIdException;
-import javafx.util.Pair;
+
 import sdm.sdmElements.*;
 import systemInfoContainers.*;
 import systemInfoContainers.webContainers.*;
 import users.SingleUser;
+import utils.IntegerToBooleanPair;
+import utils.IntegerToIntegerPair;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +50,7 @@ public class WebEngine  extends Connector{
     }
 
     @Override
-    public Map<Pair<Integer, Integer>, OrdersContainer> getStoresOrders() {
+    public Map<IntegerToIntegerPair, OrdersContainer> getStoresOrders() {
         return null;
     }
 
@@ -251,9 +255,10 @@ public class WebEngine  extends Connector{
         OrderSummeryContainer orderSummery = new OrderSummeryContainer();
         Store currentStore = null;
         float totalItemsCost = 0;
+        double totalShippingCost = 0;
         for (Integer storeId : storeIdToItemsList.keySet()) {
 
-            Map<Pair<Integer,Boolean>, OrderStoreItemInfo> itemIdMapToProgressItem = new HashMap<>();
+            Map<IntegerToBooleanPair, OrderStoreItemInfo> itemIdMapToProgressItem = new HashMap<>();
             SingleOrderStoreInfo store = new SingleOrderStoreInfo();
             currentStore = area.getStoreIdToStore().get(storeId);
             store.setStoreId(storeId);
@@ -261,6 +266,7 @@ public class WebEngine  extends Connector{
             store.setPpk(currentStore.getDeliveryPPK());
             store.setDistanceFromCustomer(currentStore.getLocation().distance(userLocation.x,userLocation.y));
             store.setCustomerShippingCost(store.getDistanceFromCustomer() * store.getPpk());
+            totalShippingCost += store.getCustomerShippingCost();
             for (ProgressOrderItem item : storeIdToItemsList.get(storeId)) {
                 OrderStoreItemInfo storeItem = new OrderStoreItemInfo();
                 storeItem.setItemId(item.getItemId());
@@ -271,18 +277,18 @@ public class WebEngine  extends Connector{
                 storeItem.setTotalPrice(storeItem.getPricePerPiece() * storeItem.getAmount());
                 storeItem.setFromDiscount(false);
                 totalItemsCost += storeItem.getTotalPrice();
-                itemIdMapToProgressItem.put(new Pair(item.getItemId(),false),storeItem);
+                itemIdMapToProgressItem.put(new IntegerToBooleanPair(item.getItemId(),false),storeItem);
             }
             for(String discountName : discountNameToOffersList.keySet()) {
                 for(Discount discount : currentStore.getDiscountList()) {
-                    if(discount.getName().equals(discountName)) {
-                        for(Offer offer : discount.getThenYouGet().getOffers()) {
-                            Pair<Integer,Boolean> discountItemPair = new Pair(offer.getItemId(),true);
+                    if(discount.getName().contains(discountName)) {
+                        for(Offer offer : discountNameToOffersList.get(discountName)) {
+                            IntegerToBooleanPair discountItemPair = new IntegerToBooleanPair(offer.getItemId(),true);
                             OrderStoreItemInfo offerItem = null;
                             if(itemIdMapToProgressItem.containsKey(discountItemPair)) {
                                 offerItem = itemIdMapToProgressItem.get(discountItemPair);
                                 offerItem.setAmount(offerItem.getAmount() + (float)offer.getQuantity());
-                                offerItem.setTotalPrice(offerItem.getTotalPrice() + offer.getForAdditional());
+                                offerItem.setTotalPrice(offerItem.getTotalPrice() + offer.getForAdditional()*offerItem.getAmount());
                                 itemIdMapToProgressItem.put(discountItemPair,offerItem);
                             } else {
                                 offerItem = new OrderStoreItemInfo();
@@ -294,7 +300,7 @@ public class WebEngine  extends Connector{
                                 offerItem.setFromDiscount(true);
                                 offerItem.setPricePerPiece((float)(offer.getForAdditional()));
                                 offerItem.setTotalPrice(offerItem.getPricePerPiece() * offerItem.getAmount());
-                                itemIdMapToProgressItem.put(new Pair(offerItem.getItemId(),true),offerItem);
+                                itemIdMapToProgressItem.put(new IntegerToBooleanPair(offerItem.getItemId(),true),offerItem);
                             }
                             totalItemsCost += offerItem.getTotalPrice();
                         }
@@ -306,6 +312,7 @@ public class WebEngine  extends Connector{
             orderSummery.getStoreIdToStoreInfo().put(storeId,store);
         }
         orderSummery.setTotalOrderCostWithoutShipping(totalItemsCost);
+        orderSummery.setTotalShippingCost(totalShippingCost);
         orderSummery.setTotalOrderCost(orderSummery.getTotalShippingCost() + orderSummery.getTotalOrderCostWithoutShipping());
         return orderSummery;
     }
@@ -428,5 +435,51 @@ public class WebEngine  extends Connector{
             }
         }
         return discountsContainerList;
+    }
+
+    public Map<Integer,Float> addNewOrder(OrderSummeryContainer orderSummeryContainer, Area area, String date) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        float totalItemsCost = 0;
+        Map<Integer,Float> storeIdToTotalCost = new HashMap<>();
+        for (SingleOrderStoreInfo store : orderSummeryContainer.getStoreIdToStoreInfo().values()) {
+            Store areaStore = area.getStoreIdToStore().get(store.getStoreId());
+            Order newOrder = new Order();
+            newOrder.setStoreId(store.getStoreId());
+            newOrder.setStoreName(store.getStoreName());
+            newOrder.setDeliveryCost(store.getCustomerShippingCost());
+            newOrder.setDistance(store.getDistanceFromCustomer());
+            newOrder.setOrderDate(dateFormat.parse(date));
+
+            for (OrderStoreItemInfo itemInfo : store.getItemIdMapToProgressItem().values()) {
+                OrderedItem orderedItem = new OrderedItem();
+                orderedItem.setItemId(itemInfo.getItemId());
+                orderedItem.setItemName(itemInfo.getItemName());
+                orderedItem.setAmount(itemInfo.getAmount());
+                orderedItem.setPurchaseCategory(itemInfo.getPurchaseCategory());
+                orderedItem.setPricePerPiece(itemInfo.getPricePerPiece());
+                orderedItem.setFromDiscount(itemInfo.isFromDiscount());
+                orderedItem.setTotalPrice(itemInfo.getTotalPrice());
+                newOrder.getItemIdPairToItems().put(new IntegerToBooleanPair(orderedItem.getItemId(), orderedItem.isFromDiscount()), orderedItem);
+                totalItemsCost += itemInfo.getTotalPrice();
+                areaStore.getPurchasedItems().put(itemInfo.getItemId(), itemInfo.getAmount());
+            }
+
+            List<Integer> distinctItems = new ArrayList<>();
+            for (OrderStoreItemInfo item : store.getItemIdMapToProgressItem().values()) {
+                if (!distinctItems.contains(item.getItemId())) {
+                    distinctItems.add(item.getItemId());
+                }
+            }
+
+            newOrder.setTotalNumberOfItems(distinctItems.size());
+            newOrder.setTotalItemsPrice(totalItemsCost);
+            newOrder.setTotalOrderPrice(store.getCustomerShippingCost() + totalItemsCost);
+
+            double totalDeliveryPayments = areaStore.getTotalDeliveryPayment();
+            areaStore.setTotalDeliveryPayment(totalDeliveryPayments + newOrder.getDeliveryCost());
+            areaStore.getOrders().put(newOrder.getOrderId(), newOrder);
+            storeIdToTotalCost.put(store.getStoreId(),(float)newOrder.getTotalOrderPrice());
+        }
+        return storeIdToTotalCost;
     }
 }

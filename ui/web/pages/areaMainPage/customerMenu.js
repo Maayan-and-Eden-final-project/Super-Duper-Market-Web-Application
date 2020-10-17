@@ -7,6 +7,7 @@ var date;
 var xLocation;
 var yLocation;
 var discountRegex = /[$&+,:;=?@#|'<>.^*()%!]/g;
+var orderSummeryInfo;
 
 function displayMinimalCartSummery(minimalCartStores) {
 
@@ -27,7 +28,7 @@ function displayMinimalCartSummery(minimalCartStores) {
         getDiscounts();
     });
 
-    var minimalCart = minimalCartStores.storeIdToItemsList;
+    minimalCart = minimalCartStores.storeIdToItemsList;
     minimalCartJson = JSON.stringify(minimalCart);
 
     $.each(minimalCartStores.dynamicStores || [], function(index, singleStore) {
@@ -135,12 +136,13 @@ function displayDynamicItemsOption(items) {
 }
 
 function addToDiscountMap(offerItemId,offerItemQuantity,offerForAdditional,singleDiscountName) {
-    if(discountNameToOffersList.get(singleDiscountName) !== undefined) {
-        var offersList = discountNameToOffersList.get(singleDiscountName);
+    var discountName = singleDiscountName.replaceAll("-"," ").trim();
+    if(discountNameToOffersList.get(discountName) !== undefined) {
+        var offersList = discountNameToOffersList.get(discountName);
         offersList.push({itemId:offerItemId,quantity:offerItemQuantity,forAdditional:offerForAdditional});
-        discountNameToOffersList.set(singleDiscountName,offersList);
+        discountNameToOffersList.set(discountName,offersList);
     } else {
-        discountNameToOffersList.set(singleDiscountName, new Array(
+        discountNameToOffersList.set(discountName, new Array(
             {itemId:offerItemId,quantity:offerItemQuantity,forAdditional:offerForAdditional}));
     }
 }
@@ -152,8 +154,113 @@ function addOfferDetailToMap(offerDetail,singleDiscountName) {
     addToDiscountMap(offerItemId,offerItemQuantity,offerForAdditional,singleDiscountName);
 }
 
-function displayOrderSummery(orderSummery) {
+function clearOrderData() {
+    itemIdToAmount.clear();
+    discountNameToOffersList.clear();
+    minimalCartJson = undefined ;
+    method = undefined;
+    store = undefined;
+    date = undefined;
+    xLocation = undefined;
+    yLocation = undefined;
+    orderSummeryInfo = undefined;
+}
 
+function displayOrderSummery(orderSummery) {
+        $(".dynamic-container").children().remove();
+        $(".dynamic-container").append(
+            "<section id=\"orderSummerySection\" class=\"our-webcoderskull padding-lg\">\n" +
+            "    <div class=\"container orderSummery-container\">\n" +
+            "        <div class=\"row heading heading-icon\">\n" +
+            "            <h2 class=\"orderSummery-header\">Order Summery</h2>\n" +
+            "        </div>\n" +
+            "        <ul class=\"row stores-list\">\n" +
+            "        </ul>\n" +
+            "<button id=\"confirmOrderButton\" class=\"btn btn-primary mb-2 \">Confirm</button>" +
+            "<button id=\"cancelOrderButton\" class=\"btn btn-primary mb-2 \">Cancel</button>" +
+            "    </div>\n" +
+            "</section>");
+
+        $("#cancelOrderButton").click(function () {
+            $(".dynamic-container").children().remove();
+            clearOrderData();
+
+        });
+
+        $("#confirmOrderButton").click(function () {
+            $(".dynamic-container").children().remove();
+            var data;
+
+                data = "&actionType=confirmOrder" + "&orderSummeryKey=" + orderSummeryInfo + "&dateKey=" + date;
+
+            $.ajax({
+                method: 'POST',
+                data: data ,
+                url: "customer",
+                /*dataType: "json",*/
+                error: function (jqXHR) {
+                    setTimeout(bootstrap_alert.warning(jqXHR.responseText,"red"),3000);
+                },
+                success: function (r) {
+                    clearOrderData();
+                    //feedback
+                }
+            });
+
+        });
+
+
+        $.each(orderSummery.storeIdToStoreInfo || [], function(index, singleStore) {
+
+            var storeImageUrl = "../../common/images/storeIcon.png";
+            var itemImageUrl = "../../common/images/itemIcon.png";
+
+            $(".stores-list").append(
+                "<li class=\"col-12 col-md-6 col-lg-3 store-card\">\n" +
+                "       <div class=\"cnt-block equal-hight store-info-block\">\n" +
+                "            <figure><img src=" + storeImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
+                "             <h3 class=\"store-name\">" + singleStore.storeName + " " +
+                "                 <small class=\"text-muted\"> Store Id: " + singleStore.storeId +
+                "                 </small>" +
+                "             </h3>" +
+                "     <div class=\"row store-information-row\">" +
+                "         <div class=\"area-list-store col-sm-2\">PPK: " + singleStore.ppk + "</div>\n" +
+                "         <div class=\"area-list-store col-sm-2\">Distance From Customer: " + singleStore.distanceFromCustomer + "</div>\n" +
+                "         <div class=\"area-list-store col-sm-2\">Shipping Cost: " + singleStore.customerShippingCost + "</div>\n" +
+                "             </div>" +
+                "<section class=\"our-webcoderskull padding-lg\">\n" +
+                "    <div class=\"container store-item-container\">\n" +
+                "        <div class=\"row heading heading-icon \">\n" +
+                "            <h2 class=\"store-items-header\">Items</h2>\n" +
+                "        </div>\n" +
+                "        <ul id=\"store-" + singleStore.storeId + "\"  class=\"row store-items-list\">\n" +
+                "        </ul>\n" +
+                "    </div>\n" +
+                "</section>" +
+                "     </div>" +
+                "</li>\n");
+            $.each(singleStore.itemIdMapToProgressItem || [], function(index, singleStoreItem) {
+                $("#store-" + singleStore.storeId).append(
+                    "           <li class=\"col-12 col-md-6 col-lg-3 store-item-card\">\n" +
+                    "           <figure class=\"image-figure\"><img src=" + itemImageUrl + " class=\"img-responsive store-item-image\"  alt=\"\"></figure>\n" +
+                    "           <h3 class=\"item-name\">" + singleStoreItem.itemName + "</h3>" +
+                    "           <p class=\"area-list-item\">Item Id: " + singleStoreItem.itemId + " </p>\n" +
+                    "           <p class=\"area-list-item\">Purchase Category: " + singleStoreItem.purchaseCategory + "</p>\n" +
+                    "           <p class=\"area-list-item\">Amount: " + singleStoreItem.amount + "</p>\n" +
+                    "           <p class=\"area-list-item\">Price Per Piece: " + singleStoreItem.pricePerPiece + "</p>\n" +
+                    "           <p class=\"area-list-item\">Total Price: " + singleStoreItem.totalPrice + "</p>\n" +
+                    "           <p class=\"area-list-item\">Is From Discount: " + singleStoreItem.isFromDiscount + "</p>\n" +
+                    "           </li>\n");
+            });
+        });
+
+        $("#orderSummerySection").append(
+            "     <div class=\"row order-summery-information-row\">" +
+            "         <div class=\"area-list-store col-sm-4\">Total Items Cost: " + orderSummery.totalOrderCostWithoutShipping + "</div>\n" +
+            "         <div class=\"area-list-store col-sm-4\">Total Shipping Cost: " + orderSummery.totalShippingCost + "</div>\n" +
+            "         <div class=\"area-list-store col-sm-4\">Total Order Cost: " + orderSummery.totalOrderCost + "</div>\n" +
+            "             </div>"
+        );
 }
 
 function displayDiscounts(discounts){
@@ -173,16 +280,26 @@ function displayDiscounts(discounts){
 
     $("#goToSummeryButton").click(function () {
         var itemsListJsonString = JSON.stringify(Array.from(itemIdToAmount));
+
         var discountNameToOffersListString = JSON.stringify(Array.from(discountNameToOffersList));
+        var data;
+
+        if(method.indexOf("Static Order") > -1) {
+         data = "methodKey=" + method + "&storeKey=" + store + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getOrderSummery" +"&itemIdToAmountKey=" +itemsListJsonString + "&discountListKey=" +discountNameToOffersListString;
+        } else if(method.indexOf("Dynamic Order") > -1) {
+            data = "methodKey=" + method + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getOrderSummery" +"&itemIdToAmountKey=" +itemsListJsonString + "&discountListKey=" +discountNameToOffersListString + "&minimalCartKey=" +minimalCartJson;
+        }
 
         $.ajax({
-            method: 'GET',
-            data: "methodKey=" + method + "&storeKey=" + store + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getOrderSummery" +"&itemIdToAmountKey=" +itemsListJsonString + "&discountListKey=" +discountNameToOffersListString + "&minimalCartKey=" +minimalCartJson ,
+            method: 'POST',
+            data: data ,
             url: "customer",
+            dataType: "json",
             error: function (jqXHR) {
                 setTimeout(bootstrap_alert.warning(jqXHR.responseText,"red"),3000);
             },
             success: function (r) {
+                orderSummeryInfo = JSON.stringify(r);
                 displayOrderSummery(r);
             }
         });
@@ -257,10 +374,36 @@ function displayDiscounts(discounts){
 function getDiscounts() {
     var itemsListJsonString = JSON.stringify(Array.from(itemIdToAmount));
 
+    var data;
+/*
+
+    if(method.indexOf("Static Order") > -1) {
+        data = {methodKey:method, storeKey:store, actionType:"getDiscounts", itemIdToAmountKey:itemIdToAmount};
+    } else if(method.indexOf("Dynamic Order") > -1) {
+        data = {methodKey:method, actionType:"getDiscounts", itemIdToAmountKey:itemIdToAmount,minimalCartKey:minimalCart};
+    }
+*/
+
+    if(method.indexOf("Static Order") > -1) {
+        data = "&methodKey=" + method + "&storeKey=" + store + "&actionType=getDiscounts" + "&itemIdToAmountKey=" + itemsListJsonString;
+    } else if(method.indexOf("Dynamic Order") > -1) {
+        data = "&methodKey=" + method + "&storeKey=" + store + "&actionType=getDiscounts" + "&itemIdToAmountKey=" + itemsListJsonString + "&minimalCartKey=" + minimalCartJson;
+
+    }
+
+/*
+
+    var obj = { orderData: data };
+    var data2send = JSON.stringify(obj);
+
+*/
+
+
     $.ajax({
-        method: 'GET',
-        data: "methodKey=" + method + "&storeKey=" + store + "&actionType=getDiscounts" +"&itemIdToAmountKey=" +itemsListJsonString + "&minimalCartKey=" +minimalCartJson ,
+        method: 'POST',
+        data: data ,
         url: "customer",
+        dataType: "json",
         error: function (jqXHR) {
             setTimeout(bootstrap_alert.warning(jqXHR.responseText,"red"),3000);
         },

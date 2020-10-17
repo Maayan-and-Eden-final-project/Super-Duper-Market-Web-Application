@@ -1,6 +1,7 @@
 package systemInfoContainers;
 
-import javafx.util.Pair;
+
+import utils.IntegerToBooleanPair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,7 @@ public class SingleOrderStoreInfo implements Containable{
     private Integer ppk;
     private Double distanceFromCustomer;
     private Double customerShippingCost;
-    private Map<Pair<Integer,Boolean>, OrderStoreItemInfo> itemIdMapToProgressItem;
+    private Map<IntegerToBooleanPair, OrderStoreItemInfo> itemIdMapToProgressItem;
 
 
     public SingleOrderStoreInfo() {
@@ -58,11 +59,11 @@ public class SingleOrderStoreInfo implements Containable{
         this.customerShippingCost = customerShippingCost;
     }
 
-    public Map<Pair<Integer, Boolean>, OrderStoreItemInfo> getItemIdMapToProgressItem() {
+    public Map<IntegerToBooleanPair, OrderStoreItemInfo> getItemIdMapToProgressItem() {
         return itemIdMapToProgressItem;
     }
 
-    public void setItemIdMapToProgressItem(Map<Pair<Integer, Boolean>, OrderStoreItemInfo> itemIdMapToProgressItem) {
+    public void setItemIdMapToProgressItem(Map<IntegerToBooleanPair, OrderStoreItemInfo> itemIdMapToProgressItem) {
         this.itemIdMapToProgressItem = itemIdMapToProgressItem;
     }
 }
