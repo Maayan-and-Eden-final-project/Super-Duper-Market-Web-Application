@@ -78,6 +78,22 @@ function addItemToMap(itemId,amount) {
     }
 }
 
+function popupSuccessAddItem(popup) {
+    popup.innerText = "Item Successfuly Added";
+    popup.classList.toggle("show");
+    setTimeout(function () {
+        popup.classList.toggle("show"); //close the tooltip
+    }, 2000);
+}
+
+function popupFailAddItem(popup) {
+    popup.innerText = "Please enter whole number";
+    popup.classList.toggle("show");
+    setTimeout(function () {
+        popup.classList.toggle("show"); //close the tooltip
+    }, 2000);
+}
+
 
 function displayDynamicItemsOption(items) {
 
@@ -108,28 +124,26 @@ function displayDynamicItemsOption(items) {
             "<input type=\"number\" step=\"0.01\" min=0 class=\"form-control newOrderItemAmount\" id=\"itemAmount" + singleItem.itemId + "\" placeholder=\"Amount\" required>" +
             " <button id=\"addItem" + singleItem.itemId + "\" type=\"submit\" class=\"btn btn-primary mb-2 newOrderItemSubmit\">Add Item</button>\n" +
             "</form>" +
-            "        <div class=\"popup\" >\n" +
-            "            <span class=\"popuptext\" id=\"myPopup\"></span>" +
+            "        <div id=\"add-item-popup\" class=\"popup\" >\n" +
+            "            <span class=\"popuptext\" id=\"myPopup-" + singleItem.itemId + "\" ></span>" +
             "        </div> \n" +
             "       </div>" +
             " </li>\n");
         $("#new-order-item-form-" + singleItem.itemId).submit(function () {
             var amount =  $("#itemAmount" + singleItem.itemId).val();
-
+            var popup = document.getElementById("myPopup-" + singleItem.itemId);
             if(singleItem.purchaseCategory.indexOf("QUANTITY") > -1) {
                 if(amount.indexOf(".") > -1) {
-                    var popup = document.getElementById("myPopup");
-                    popup.innerText = "Please enter whole number";
-                    popup.classList.toggle("show");
-                    setTimeout(function () {
-                        popup.classList.toggle("show"); //close the tooltip
-                    }, 2000);
+                    popupFailAddItem(popup);
                 } else {
                     addItemToMap(singleItem.itemId,parseFloat(amount));
+                    popupSuccessAddItem(popup);
                 }
             } else {
                 addItemToMap(singleItem.itemId,parseFloat(amount));
+                popupSuccessAddItem(popup);
             }
+            $("#itemAmount" + singleItem.itemId).val(""); //empty amount value
             return false;
         });
     });
@@ -174,7 +188,7 @@ function displayOrderSummery(orderSummery) {
             "        <div class=\"row heading heading-icon\">\n" +
             "            <h2 class=\"orderSummery-header\">Order Summery</h2>\n" +
             "        </div>\n" +
-            "        <ul class=\"row stores-list\">\n" +
+            "        <ul class=\"row stores-list orderSummery-storesList\">\n" +
             "        </ul>\n" +
             "<button id=\"confirmOrderButton\" class=\"btn btn-primary mb-2 \">Confirm</button>" +
             "<button id=\"cancelOrderButton\" class=\"btn btn-primary mb-2 \">Cancel</button>" +
@@ -269,12 +283,12 @@ function displayDiscounts(discounts){
     $(".dynamic-container").append(
         "<section class=\"our-webcoderskull padding-lg\">\n" +
         "    <div class=\"container discounts-container\">\n" +
+        "<button id=\"goToSummeryButton\" class=\"btn btn-primary mb-2 \">Go To Order Summery</button>" +
         "        <div class=\"row heading heading-icon\">\n" +
         "            <p class=\"newOrderDiscountsHeader\">Discounts</p>\n" +
         "        </div>\n" +
         "        <ul class=\"row items-list newOrderDiscountsList\">\n" +
         "        </ul>\n" +
-        "<button id=\"goToSummeryButton\" class=\"btn btn-primary mb-2 \">Go To Order Summery</button>" +
         "    </div>\n" +
         "</section>");
 
@@ -337,9 +351,9 @@ function displayDiscounts(discounts){
             $.each(singleDiscount.thenYouGet.offers || [], function(j, singleOffer) {
                 $("#oneOfForm" + singleDiscountName + i).append(
                     "  <input type=\"radio\" class=\"oneOfRadio" + i + "\" value=\"Offer" + singleOffer.itemId + j + i + "\" name=\"oneOfOffer" + i + "\">\n" +
-                    "  <label for=\"Offer" + singleOffer.itemId + j + i + "\">Item Id: " + singleOffer.itemId + "</label><br>\n" +
-                    "  <label for=\"Offer" + singleOffer.itemId + j + i +"\">Item Quantity: " + singleOffer.quantity + "</label><br>\n" +
-                    "  <label for=\"Offer" + singleOffer.itemId + j + i + "\">For Additional: " + singleOffer.forAdditional + "</label><br>\n");
+                    "  <label class=\"offer-label\" for=\"Offer" + singleOffer.itemId + j + i + "\">Item Id: " + singleOffer.itemId + "</label><br>\n" +
+                    "  <label class=\"offer-label\" for=\"Offer" + singleOffer.itemId + j + i +"\">Item Quantity: " + singleOffer.quantity + "</label><br>\n" +
+                    "  <label class=\"offer-label\" for=\"Offer" + singleOffer.itemId + j + i + "\">For Additional: " + singleOffer.forAdditional + "</label><br>\n");
             });
         } else {
             $.each(singleDiscount.thenYouGet.offers || [], function(index, singleOffer) {
@@ -447,27 +461,24 @@ function displayStaticItemsOption(items) {
             "<input type=\"number\" step=\"0.01\" min=0 class=\"form-control newOrderItemAmount\" id=\"itemAmount" + singleItem.itemId + "\" placeholder=\"Amount\" required>" +
             " <button id=\"addItem" + singleItem.itemId + "\" type=\"submit\" class=\"btn btn-primary mb-2 newOrderItemSubmit\">Add Item</button>\n" +
             "</form>" +
-            "        <div class=\"popup\" >\n" +
+            "        <div id=\"add-item-popup\" class=\"popup\" >\n" +
             "            <span class=\"popuptext\" id=\"myPopup-" + singleItem.itemId + "\" ></span>" +
             "        </div> \n" +
             "       </div>" +
             " </li>\n");
         $("#new-order-item-form-" + singleItem.itemId).submit(function () {
             var amount =  $("#itemAmount" + singleItem.itemId).val();
-
+            var popup = document.getElementById("myPopup-" + singleItem.itemId);
             if(singleItem.purchaseCategory.indexOf("QUANTITY") > -1) {
                 if(amount.indexOf(".") > -1) {
-                    var popup = document.getElementById("myPopup-" + singleItem.itemId);
-                    popup.innerText = "Please enter whole number";
-                    popup.classList.toggle("show");
-                    setTimeout(function () {
-                        popup.classList.toggle("show"); //close the tooltip
-                    }, 2000);
+                    popupFailAddItem(popup);
                 } else {
                     addItemToMap(singleItem.itemId,parseFloat(amount));
+                    popupSuccessAddItem(popup);
                 }
             } else {
                 addItemToMap(singleItem.itemId,parseFloat(amount));
+                popupSuccessAddItem(popup);
             }
             $("#itemAmount" + singleItem.itemId).val("");
             return false;
@@ -505,13 +516,13 @@ function makeNewOrderForm(areaStores) {
     });
 
     $("#newOrderForm").append(
-        "<input type=\"date\" id=\"date-input\" name=\"orderDate\" required>\n" +
+        "<input type=\"date\" id=\"date-input\" class=\"orderFormControl\" name=\"orderDate\" required>\n" +
         "<input type=\"text\" class=\"form-control orderFormControl\" id=\"xStoreLocation\" placeholder=\"X Coordinate\" required pattern=\"^(50|[1-4]?[0-9])$\">" +
         "<input type=\"text\" class=\"form-control orderFormControl\" id=\"yStoreLocation\" placeholder=\"Y Coordinate\" required pattern=\"^(50|[1-4]?[0-9])$\">" +
 
 
         "<button type=\"submit\" class=\"btn orderFormControl\" id=\"orderOptionSubmit\" required> Show Items </button>" +
-        " <button id=\"nextStepButton\" class=\"btn btn-primary mb-2\">Next</button>\n" +
+        " <button id=\"nextStepButton\" class=\"btn btn-primary mb-2\" disabled=\"disabled\" >Next</button>\n" +
         "<div id = \"alert_placeholder\"></div>\n");
 
 
