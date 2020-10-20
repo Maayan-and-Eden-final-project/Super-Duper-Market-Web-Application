@@ -36,17 +36,17 @@ function displayMinimalCartSummery(minimalCartStores) {
         var storeImageUrl = "../../common/images/storeIcon.png";
 
         $(".items-list").append(
-            "<li class=\"col-12 col-md-6 col-lg-3 store-card\">\n" +
-            "       <div class=\"cnt-block equal-hight minimalCartStoreCard\">\n" +
+            "<li class=\"col-12 col-md-6 col-lg-3 store-card minimalCartStoreCard\">\n" +
+            "       <div class=\"cnt-block equal-hight\">\n" +
             "            <figure><img src=" + storeImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
-            "             <h3 class=\"store-name\">" + singleStore.storeName + "</h3>" +
+            "             <h3 class=\"store-name minimalCartStoreHeader\">" + singleStore.storeName + "</h3>" +
             "           <p id=\"storeId\" class=\"minimalCartSingleStore\">Store Id: " + singleStore.storeId + " </p>\n" +
             "           <p class=\"minimalCartSingleStore\">Location: [" + singleStore.location.x + "," + singleStore.location.y + "] </p>\n" +
-            "           <p class=\"minimalCartSingleStore\">Distance: " + singleStore.distanceFromCustomer + "</p>\n" +
+            "           <p class=\"minimalCartSingleStore\">Distance: " + singleStore.distanceFromCustomer.toFixed(2) + "</p>\n" +
             "           <p class=\"minimalCartSingleStore\">PPK: " + singleStore.ppk + "</p>\n" +
-            "           <p class=\"minimalCartSingleStore\">Delivery Cost: " + singleStore.customerShippingCost + "</p>\n" +
+            "           <p class=\"minimalCartSingleStore\">Delivery Cost: " + singleStore.customerShippingCost.toFixed(2) + "</p>\n" +
             "           <p class=\"minimalCartSingleStore\">Number Of Items: " + singleStore.numOfDifferentItem + "</p>\n" +
-            "           <p class=\"minimalCartSingleStore\">Total Items Cost: " + singleStore.totalItemsCost + "</p>\n" +
+            "           <p class=\"minimalCartSingleStore\">Total Items Cost: " + singleStore.totalItemsCost.toFixed(2) + "</p>\n" +
             "       </div>" +
             " </li>\n");
     });
@@ -194,9 +194,11 @@ function displayOrderSummery(orderSummery) {
             "        </div>\n" +
             "        <ul class=\"row stores-list orderSummery-storesList\">\n" +
             "        </ul>\n" +
+            "    </div>\n" +
+            "<div class=\"orderSummeryButtons\">" +
             "<button id=\"confirmOrderButton\" class=\"btn btn-primary mb-2 \">Confirm</button>" +
             "<button id=\"cancelOrderButton\" class=\"btn btn-primary mb-2 \">Cancel</button>" +
-            "    </div>\n" +
+                "</div>" +
             "</section>");
 
         $("#cancelOrderButton").click(function () {
@@ -222,7 +224,6 @@ function displayOrderSummery(orderSummery) {
                 success: function (r) {
                     clearOrderData();
                     displayFillFeedback(r);
-                    //feedback
                 }
             });
         });
@@ -233,17 +234,17 @@ function displayOrderSummery(orderSummery) {
             var itemImageUrl = "../../common/images/itemIcon.png";
 
             $(".stores-list").append(
-                "<li class=\"col-12 col-md-6 col-lg-3 store-card\">\n" +
+                "<li class=\"col-12 col-md-6 col-lg-3 store-card summeryStoreCard\">\n" +
                 "       <div class=\"cnt-block equal-hight store-info-block\">\n" +
                 "            <figure><img src=" + storeImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
                 "             <h3 class=\"store-name\">" + singleStore.storeName + " " +
                 "                 <small class=\"text-muted\"> Store Id: " + singleStore.storeId +
                 "                 </small>" +
                 "             </h3>" +
-                "     <div class=\"row store-information-row\">" +
-                "         <div class=\"area-list-store col-sm-2\">PPK: " + singleStore.ppk + "</div>\n" +
-                "         <div class=\"area-list-store col-sm-2\">Distance From Customer: " + singleStore.distanceFromCustomer + "</div>\n" +
-                "         <div class=\"area-list-store col-sm-2\">Shipping Cost: " + singleStore.customerShippingCost + "</div>\n" +
+                "     <div class=\"row store-information-row summery-store-information\">" +
+                "         <div class=\"area-list-store col-sm-4\">PPK: " + singleStore.ppk + "</div>\n" +
+                "         <div class=\"area-list-store col-sm-4\">Distance From Customer: " + singleStore.distanceFromCustomer.toFixed(2) + "</div>\n" +
+                "         <div class=\"area-list-store col-sm-4\">Shipping Cost: " + singleStore.customerShippingCost.toFixed(2) + "</div>\n" +
                 "             </div>" +
                 "<section class=\"our-webcoderskull padding-lg\">\n" +
                 "    <div class=\"container store-item-container\">\n" +
@@ -265,17 +266,17 @@ function displayOrderSummery(orderSummery) {
                     "           <p class=\"area-list-item\">Purchase Category: " + singleStoreItem.purchaseCategory + "</p>\n" +
                     "           <p class=\"area-list-item\">Amount: " + singleStoreItem.amount + "</p>\n" +
                     "           <p class=\"area-list-item\">Price Per Piece: " + singleStoreItem.pricePerPiece + "</p>\n" +
-                    "           <p class=\"area-list-item\">Total Price: " + singleStoreItem.totalPrice + "</p>\n" +
+                    "           <p class=\"area-list-item\">Total Price: " + singleStoreItem.totalPrice.toFixed(2) + "</p>\n" +
                     "           <p class=\"area-list-item\">Is From Discount: " + singleStoreItem.isFromDiscount + "</p>\n" +
                     "           </li>\n");
             });
         });
 
-        $("#orderSummerySection").append(
+        $(".orderSummery-container").append(
             "     <div class=\"row order-summery-information-row\">" +
-            "         <div class=\"area-list-store col-sm-4\">Total Items Cost: " + orderSummery.totalOrderCostWithoutShipping + "</div>\n" +
-            "         <div class=\"area-list-store col-sm-4\">Total Shipping Cost: " + orderSummery.totalShippingCost + "</div>\n" +
-            "         <div class=\"area-list-store col-sm-4\">Total Order Cost: " + orderSummery.totalOrderCost + "</div>\n" +
+            "         <div class=\"area-list-store order-summery-info col-sm-4\">Total Items Cost: " + orderSummery.totalOrderCostWithoutShipping.toFixed(2) + "</div>\n" +
+            "         <div class=\"area-list-store order-summery-info col-sm-4\">Total Shipping Cost: " + orderSummery.totalShippingCost.toFixed(2) + "</div>\n" +
+            "         <div class=\"area-list-store order-summery-info col-sm-4\">Total Order Cost: " + orderSummery.totalOrderCost.toFixed(2) + "</div>\n" +
             "             </div>"
         );
 }
@@ -332,11 +333,11 @@ function displayDiscounts(discounts){
             "       <div class=\"cnt-block equal-hight newOrderDiscountCard\">\n" +
             "            <figure><img src=" + discountImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
             "             <h3 class=\"discount-name\">" + singleDiscount.name + "</h3>" +
-            "           <p id=\"ifYouBuy\" class=\"newOrderSingleDiscount\">If You Buy</p>\n" +
+            "           <p id=\"ifYouBuy\" class=\"newOrderSingleDiscount discountHeaders\">If You Buy</p>\n" +
             "           <p id=\"ifYouBuyItemId\" class=\"newOrderSingleDiscount\">Item Id: " + singleDiscount.ifYouBuy.itemId + "</p>\n" +
             "           <p id=\"ifYouBuyQuantity\" class=\"newOrderSingleDiscount\">Item Quantity: " + singleDiscount.ifYouBuy.quantity + "</p>\n" +
-            "           <p id=\"thenYouGet\" class=\"newOrderSingleDiscount\">Then You Get</p>\n" +
-            "           <p id=\"thenYouGetOperator\" class=\"newOrderSingleDiscount\">" + singleDiscount.thenYouGet.operator.replaceAll("_"," ") + "</p>\n" +
+            "           <p id=\"thenYouGet\" class=\"newOrderSingleDiscount discountHeaders\">Then You Get</p>\n" +
+            "           <p id=\"thenYouGetOperator\" class=\"newOrderSingleDiscount\">" + singleDiscount.thenYouGet.operator.replaceAll("_"," ") + "</p><br>\n" +
             "           <div id=\"offersList" + singleDiscountName + i + "\" class=\"row newOrderSingleDiscount\"></div>\n" +
             " <button id=\"addDiscount" + singleDiscountName + i + "\" class=\"btn btn-primary mb-2 newOrderDiscountSubmit\">Add Discount</button>\n" +
             "        <div class=\"popup\" >\n" +
@@ -364,7 +365,7 @@ function displayDiscounts(discounts){
                     "<div id=\"item" + index + i + "\">" +
                     "  <p  class=\"newOrderSingleDiscount\">Item Id: " + singleOffer.itemId + "</p>\n" +
                     "  <p  class=\"newOrderSingleDiscount\">Item Quantity: " + singleOffer.quantity + "</p>\n" +
-                    "  <p  class=\"newOrderSingleDiscount\">For Additional: " + singleOffer.forAdditional + "</p>\n" +
+                    "  <p  class=\"newOrderSingleDiscount\">For Additional: " + singleOffer.forAdditional + "</p><br>\n" +
                     "</div>");
             });
         }
@@ -495,7 +496,8 @@ function makeNewOrderForm(areaStores) {
         "  <select id=\"storesDropdown\" class=\"orderFormControl\" disabled=\"disabled\" required>\n" +
         "<option value=\"\">Choose Store</option>\n" +
         "  </select>\n" +
-        "</form>");
+        "</form>" +
+        "<div class=\"row\"> <button id=\"nextStepButton\" class=\"btn btn-primary mb-2\" disabled=\"disabled\" >Next</button></div>\n");
 
     $.each(areaStores.stores || [], function(index, store) {
         $("#storesDropdown").append(
@@ -507,7 +509,6 @@ function makeNewOrderForm(areaStores) {
         "<input type=\"text\" class=\"form-control orderFormControl\" id=\"xStoreLocation\" placeholder=\"X Coordinate\" required pattern=\"^(50|[1-4]?[0-9])$\">" +
         "<input type=\"text\" class=\"form-control orderFormControl\" id=\"yStoreLocation\" placeholder=\"Y Coordinate\" required pattern=\"^(50|[1-4]?[0-9])$\">" +
         "<button type=\"submit\" class=\"btn orderFormControl\" id=\"orderOptionSubmit\" required> Show Items </button>" +
-        " <button id=\"nextStepButton\" class=\"btn btn-primary mb-2\" disabled=\"disabled\" >Next</button>\n" +
         "<div id = \"alert_placeholder\"></div>\n");
 
     $("#newOrderForm").submit(function () {
@@ -516,16 +517,6 @@ function makeNewOrderForm(areaStores) {
             date = $("#date-input").val();
             xLocation = $("#xStoreLocation").val();
             yLocation = $("#yStoreLocation").val();
-
-        if(method.indexOf("Dynamic Order") > -1) {
-            $("#nextStepButton").click(function () {
-                getMinimalCart();
-            });
-        } else if(method.indexOf("Static Order") > -1) {
-            $("#nextStepButton").click(function () {
-                getDiscounts();
-            });
-        }
 
             $.ajax({
                 method: 'GET',
@@ -542,8 +533,14 @@ function makeNewOrderForm(areaStores) {
                     $("#yStoreLocation").attr("disabled",true);
                     $("#orderOptionSubmit").attr("disabled",true);
                     if(method.indexOf("Static Order") > -1) {
+                        $("#nextStepButton").click(function () {
+                            getDiscounts();
+                        });
                         displayStaticItemsOption(r);
                     } else if(method.indexOf("Dynamic Order") > -1) {
+                        $("#nextStepButton").click(function () {
+                            getMinimalCart();
+                        });
                         displayDynamicItemsOption(r);
                     }
                 }
