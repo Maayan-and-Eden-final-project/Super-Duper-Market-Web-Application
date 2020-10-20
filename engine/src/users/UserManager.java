@@ -309,4 +309,36 @@ public class UserManager {
             messages.clear();
         }
     }
+
+    public FillFeedbackContainer getFeedbackStores(Map<Integer,SingleOrderStoreInfo> storeInfoMap, String date) {
+        return engine.getFeedbackStoreInfo(storeInfoMap, date);
+    }
+
+    public void addFeedbackToStore(String areaName, Integer storeId, String userName, String date, Integer rate, String review) {
+
+        SingleUser storeOwner = null;
+        Store reviewedStore = null;
+
+        for(SingleUser user : userNameToUser.values()) {
+            for (Store store : user.getMyAddedStores()) {
+                if(store.getId() == storeId) {
+                    storeOwner = user;
+                    reviewedStore = store;
+                }
+            }
+        }
+
+        if(storeOwner == null) {
+            for(SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    reviewedStore = user.getAreaNameToAreas().get(areaName).getStoreIdToStore().get(storeId);
+                    storeOwner = user;
+                }
+            }
+        }
+
+        engine.addFeedbackToStore(reviewedStore,userName,date,rate,review);
+
+
+    }
 }

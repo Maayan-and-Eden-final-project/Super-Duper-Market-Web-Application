@@ -8,10 +8,7 @@ import sdmWebApplication.utils.SessionUtils;
 import systemInfoContainers.OrderSummeryContainer;
 import systemInfoContainers.ProgressOrderItem;
 import systemInfoContainers.SingleDiscountContainer;
-import systemInfoContainers.webContainers.MinimalCartContainer;
-import systemInfoContainers.webContainers.SingleAreaOptionContainer;
-import systemInfoContainers.webContainers.SingleDynamicStoreContainer;
-import systemInfoContainers.webContainers.SingleStoreItemContainer;
+import systemInfoContainers.webContainers.*;
 import users.UserManager;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -145,6 +142,15 @@ public class CustomerServlet extends HttpServlet {
                 OrderSummeryContainer orderSummery = gson.fromJson(orderSummeryString, orderSummeryType);
 
                 userManager.addNewOrder(orderSummery,date,areaNameFromSession,usernameFromSession);
+                FillFeedbackContainer feedbackStores = userManager.getFeedbackStores(orderSummery.getStoreIdToStoreInfo(), date);
+                jsonResponse = gson.toJson(feedbackStores);
+            } else if(actionType.equals("addStoreFeedback")) {
+                Integer storeId = Integer.parseInt(req.getParameter("storeIdKey"));
+                Integer rate = Integer.parseInt(req.getParameter("chosenFeedbackRateKey"));
+                String review = req.getParameter("feedbackReviewKey");
+                String date = req.getParameter("orderDateKey");
+
+
 
             }
             out.print(jsonResponse);

@@ -1,11 +1,10 @@
 package sdm.sdmElements;
 
 
+import javafx.util.Pair;
 import systemInfoContainers.OrderStoreItemInfo;
 import systemInfoContainers.OrderSummeryContainer;
 import systemInfoContainers.SingleOrderStoreInfo;
-import utils.IntegerToBooleanPair;
-import utils.IntegerToIntegerPair;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -25,6 +24,7 @@ public class Store implements Cloneable{
     private Integer orderCounter = 0;
     private List<Discount> discountList;
     private String areaName;
+    private List<Feedback> feedbackList;
 
     @Override
     public Store clone() {
@@ -76,8 +76,8 @@ public class Store implements Cloneable{
         this.orders = new HashMap<>();
         this.itemsAndPrices = new HashMap<>();
         this.discountList = new ArrayList<>();
+        this.feedbackList = new ArrayList<>();
     }
-
 
     public Store(int id, String name, int deliveryPPK, Point location, Map<Integer, Integer> itemIdAndPrices, String areaName) {
         this.id = id;
@@ -90,6 +90,7 @@ public class Store implements Cloneable{
         this.orders = new HashMap<>();
         this.itemsAndPrices = new HashMap<>();
         this.discountList = new ArrayList<>();
+        this.feedbackList = new ArrayList<>();
         this.areaName = areaName;
     }
 
@@ -105,6 +106,11 @@ public class Store implements Cloneable{
         this.itemsAndPrices = itemToItemPrice;
         this.discountList = new ArrayList<>();
         this.areaName = areaName;
+        this.feedbackList = new ArrayList<>();
+    }
+
+    public List<Feedback> getFeedbackList() {
+        return feedbackList;
     }
 
     public String getAreaName() {
@@ -219,7 +225,6 @@ public class Store implements Cloneable{
 
     private String itemsListToString() {
         StringBuilder informationString = new StringBuilder();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM-hh:mm");
         informationString.append("~~~~~~~" + name.toUpperCase() + "~~~~~~~%n%n");
         informationString.append("Store id: " + id);
         informationString.append("%nName: " + name);
@@ -236,7 +241,7 @@ public class Store implements Cloneable{
 
         if(!orders.isEmpty()) {
             for (Order order : orders.values()) {
-                informationString.append("%nOrder date: " + dateFormat.format(order.getOrderDate()));
+                informationString.append("%nOrder date: " + order.getOrderDate());
                 informationString.append("%nTotal items: " + order.getTotalNumberOfItems());
                 informationString.append("%nTotal items price: " + order.getTotalItemsPrice());
                 informationString.append("%nDelivery cost: " + String.format("%.2f",order.getDeliveryCost()));
@@ -269,8 +274,8 @@ public class Store implements Cloneable{
         }
     }
 
-    public Map<IntegerToIntegerPair,OrderSummeryContainer> getStoresOrders() {
-        Map<IntegerToIntegerPair,OrderSummeryContainer> storeOrders = new HashMap<>();
+    public Map<Pair<Integer,Integer>,OrderSummeryContainer> getStoresOrders() {
+        Map<Pair<Integer,Integer>,OrderSummeryContainer> storeOrders = new HashMap<>();
 
         for (Order order : orders.values()) {
             OrderSummeryContainer orderContainer = new OrderSummeryContainer();
@@ -295,10 +300,10 @@ public class Store implements Cloneable{
                 itemContainer.setPurchaseCategory(item.getPurchaseCategory());
                 itemContainer.setAmount(item.getAmount());
 
-                storeInfo.getItemIdMapToProgressItem().put(new IntegerToBooleanPair(item.getItemId(),item.isFromDiscount()),itemContainer);
+                storeInfo.getProgressItems().add(itemContainer);
             }
             orderContainer.getStoreIdToStoreInfo().put(id,storeInfo);
-            storeOrders.put(new IntegerToIntegerPair(id,order.getOrderId()),orderContainer);
+            storeOrders.put(new Pair<>(id,order.getOrderId()),orderContainer);
         }
         return storeOrders;
     }
