@@ -30,6 +30,11 @@ function getUserType() {
                 $("#openNewStore").click(function () {
                     getAreasInfo();
                 });
+
+                $("#showFeedback").click(function () {
+                    getShopOwnerFeedback();
+                });
+
             }
         }
     });

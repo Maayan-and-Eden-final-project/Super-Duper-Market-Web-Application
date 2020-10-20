@@ -150,7 +150,7 @@ public class CustomerServlet extends HttpServlet {
                 String review = req.getParameter("feedbackReviewKey");
                 String date = req.getParameter("orderDateKey");
 
-
+                userManager.addFeedbackToStore(areaNameFromSession,storeId,usernameFromSession,date,rate,review);
 
             }
             out.print(jsonResponse);

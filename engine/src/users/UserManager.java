@@ -338,7 +338,6 @@ public class UserManager {
         }
 
         engine.addFeedbackToStore(reviewedStore,userName,date,rate,review);
-
-
+        storeOwner.addNewMessage(userName + " added a feedback on your store (" + reviewedStore.getName() + ")");
     }
 }
