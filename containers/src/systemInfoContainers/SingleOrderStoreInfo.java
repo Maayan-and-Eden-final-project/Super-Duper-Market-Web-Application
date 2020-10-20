@@ -1,10 +1,8 @@
 package systemInfoContainers;
 
 
-import utils.IntegerToBooleanPair;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SingleOrderStoreInfo implements Containable{
     private Integer storeId;
@@ -12,11 +10,11 @@ public class SingleOrderStoreInfo implements Containable{
     private Integer ppk;
     private Double distanceFromCustomer;
     private Double customerShippingCost;
-    private Map<IntegerToBooleanPair, OrderStoreItemInfo> itemIdMapToProgressItem;
+    private List<OrderStoreItemInfo> progressItems;
 
 
     public SingleOrderStoreInfo() {
-        this.itemIdMapToProgressItem = new HashMap<>();
+        this.progressItems = new ArrayList<>();
     }
 
     public Integer getStoreId() {
@@ -59,11 +57,11 @@ public class SingleOrderStoreInfo implements Containable{
         this.customerShippingCost = customerShippingCost;
     }
 
-    public Map<IntegerToBooleanPair, OrderStoreItemInfo> getItemIdMapToProgressItem() {
-        return itemIdMapToProgressItem;
+    public List<OrderStoreItemInfo> getProgressItems() {
+        return progressItems;
     }
 
-    public void setItemIdMapToProgressItem(Map<IntegerToBooleanPair, OrderStoreItemInfo> itemIdMapToProgressItem) {
-        this.itemIdMapToProgressItem = itemIdMapToProgressItem;
+    public void setProgressItems(List<OrderStoreItemInfo> progressItems) {
+        this.progressItems = progressItems;
     }
 }
