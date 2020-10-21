@@ -61,30 +61,31 @@ public class ShopOwnerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String usernameFromSession = SessionUtils.getUsername(req);
-
+        String actionType = req.getParameter("actionType");
         resp.setContentType("application/json");
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
-
-        if (usernameFromSession == null) {
-            resp.sendRedirect(req.getContextPath() + "/index.html");
-        }
-
-
-        int messageVersion = ServletUtils.getIntParameter(req, Constants.MESSAGE_VERSION_PARAMETER);
-        if (messageVersion == Constants.INT_PARAMETER_ERROR) {
-            return;
-        }
-
-        int userMessageVersion = 0;
-        List<String> messages;
-        synchronized (getServletContext()) {
-            userMessageVersion = userManager.getUserMessageVersion(usernameFromSession);
-            messages = userManager.getUserMessages(usernameFromSession,userMessageVersion);
-        }
-        MessagesAndVersion messagesAndVersion = new MessagesAndVersion(messages, userMessageVersion);
         Gson gson = new Gson();
-        String jsonResponse = gson.toJson(messagesAndVersion);
+        String jsonResponse = null;
+        if(actionType.equals("pullMessages")) {
+            if (usernameFromSession == null) {
+                resp.sendRedirect(req.getContextPath() + "/index.html");
+            }
 
+
+            int messageVersion = ServletUtils.getIntParameter(req, Constants.MESSAGE_VERSION_PARAMETER);
+            if (messageVersion == Constants.INT_PARAMETER_ERROR) {
+                return;
+            }
+
+            int userMessageVersion = 0;
+            List<String> messages;
+            synchronized (getServletContext()) {
+                userMessageVersion = userManager.getUserMessageVersion(usernameFromSession);
+                messages = userManager.getUserMessages(usernameFromSession, userMessageVersion);
+            }
+            MessagesAndVersion messagesAndVersion = new MessagesAndVersion(messages, userMessageVersion);
+            jsonResponse = gson.toJson(messagesAndVersion);
+        } else if(actionType.equals(""))
         try (PrintWriter out = resp.getWriter()) {
             out.print(jsonResponse);
             out.flush();

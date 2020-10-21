@@ -19,7 +19,7 @@ function createMessageModal(index, entry){
 function ajaxMessageContent() {
     $.ajax({
         url: MESSAGE_LIST_URL,
-        data: "messageVersion=" + messageVersion,
+        data: "messageVersion=" + messageVersion + "&actionType=pullMessages",
         dataType: 'json',
         success: function(data) {
 
