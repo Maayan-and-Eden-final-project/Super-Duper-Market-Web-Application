@@ -1,5 +1,6 @@
 package systemInfoContainers;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ public class OrderSummeryContainer implements Containable {
     private Double totalShippingCost;
     private Double totalOrderCost;
     private Integer dynamicOrderId;
+    private Point purchaserLocation;
 
     public OrderSummeryContainer() {
         this.storeIdToStoreInfo = new HashMap<>();
@@ -28,6 +30,14 @@ public class OrderSummeryContainer implements Containable {
 
     public void setStoreIdToStoreInfo(Map<Integer, SingleOrderStoreInfo> storeIdToStoreInfo) {
         this.storeIdToStoreInfo = storeIdToStoreInfo;
+    }
+
+    public Point getPurchaserLocation() {
+        return purchaserLocation;
+    }
+
+    public void setPurchaserLocation(Point purchaserLocation) {
+        this.purchaserLocation = purchaserLocation;
     }
 
     public Float getTotalOrderCostWithoutShipping() {

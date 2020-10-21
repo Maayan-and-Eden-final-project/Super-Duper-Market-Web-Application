@@ -12,6 +12,7 @@ public class Area {
     private String areaName;
     private Map<Integer, Store> storeIdToStore;
     private Map<Integer, Item> itemIdToItem;
+    private int dynamicIdCounter = 0;
 
     public Area( String areaName) {
         this.areaName = areaName;
@@ -45,6 +46,10 @@ public class Area {
 
     public void addStoreToArea(Store store) {
         storeIdToStore.put(store.getId(),store);
+    }
+
+    public synchronized int getNextDynamicOrderId() {
+        return ++dynamicIdCounter;
     }
 
 }

@@ -20,6 +20,9 @@ function getUserType() {
                 $("#makeOrder").click(function () {
                     getNewOrderOptions();
                 });
+                $("#customerOrdersHistory").click(function () {
+                    getCustomerOrderHistory();
+                });
             } else if(r.indexOf("SHOP_OWNER") > -1) {
                 $("#menu-items").append(
                     "<li id=\"shopOwnerOrdersHistory\" class=\"main-menu-item\">Orders History</li>\n");

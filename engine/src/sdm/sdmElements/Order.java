@@ -3,15 +3,18 @@ package sdm.sdmElements;
 
 import javafx.util.Pair;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.*;
 
 public class Order implements Serializable, Cloneable {
     private String orderDate;
+    private String orderPurchaser;
     private int orderId;
     private String storeName;
     private Integer storeId;
     private Double distance;
+    private Point purchaserLocation;
     private float totalItemsPrice;
     private double deliveryCost;
     private double totalOrderPrice;
@@ -31,6 +34,22 @@ public class Order implements Serializable, Cloneable {
         this.totalItemsPrice = totalItemsPrice;
         this.deliveryCost = deliveryCost;
         this.totalOrderPrice = totalOrderPrice;
+    }
+
+    public Point getPurchaserLocation() {
+        return purchaserLocation;
+    }
+
+    public void setPurchaserLocation(Point purchaserLocation) {
+        this.purchaserLocation = purchaserLocation;
+    }
+
+    public String getOrderPurchaser() {
+        return orderPurchaser;
+    }
+
+    public void setOrderPurchaser(String orderPurchaser) {
+        this.orderPurchaser = orderPurchaser;
     }
 
     public int getDynamicOrderId() {

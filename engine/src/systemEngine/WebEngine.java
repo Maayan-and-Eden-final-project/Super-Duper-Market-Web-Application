@@ -314,6 +314,7 @@ public class WebEngine  extends Connector {
         orderSummery.setTotalOrderCostWithoutShipping(totalItemsCost);
         orderSummery.setTotalShippingCost(totalShippingCost);
         orderSummery.setTotalOrderCost(orderSummery.getTotalShippingCost() + orderSummery.getTotalOrderCostWithoutShipping());
+        orderSummery.setPurchaserLocation(userLocation);
         return orderSummery;
     }
 
@@ -437,7 +438,7 @@ public class WebEngine  extends Connector {
         return discountsContainerList;
     }
 
-    public Map<Integer, Float> addNewOrder(OrderSummeryContainer orderSummeryContainer, Area area, String date) {
+    public Map<Integer, Float> addNewOrder(OrderSummeryContainer orderSummeryContainer, Area area, String date, String method,String orderPurchaser) {
         float totalItemsCost = 0;
         Map<Integer, Float> storeIdToTotalCost = new HashMap<>();
         for (SingleOrderStoreInfo store : orderSummeryContainer.getStoreIdToStoreInfo().values()) {
@@ -448,6 +449,11 @@ public class WebEngine  extends Connector {
             newOrder.setDeliveryCost(store.getCustomerShippingCost());
             newOrder.setDistance(store.getDistanceFromCustomer());
             newOrder.setOrderDate(date);
+            newOrder.setOrderPurchaser(orderPurchaser);
+            newOrder.setPurchaserLocation(orderSummeryContainer.getPurchaserLocation());
+            if(method.equals("Dynamic Order")) {
+                newOrder.setDynamicOrderId(area.getNextDynamicOrderId());
+            }
 
             for (OrderStoreItemInfo itemInfo : store.getProgressItems()) {
                 OrderedItem orderedItem = new OrderedItem();
@@ -511,6 +517,48 @@ public class WebEngine  extends Connector {
             }
         }
         return shopOwnerFeedback;
+    }
+
+    public List<SingleCustomerOrderContainer> getCustomerOrderHistory(List<Order> customerOrders) {
+        List<SingleCustomerOrderContainer> orderHistory = new ArrayList<>();
+
+        for (Order order : customerOrders) {
+            SingleCustomerOrderContainer singleOrder = new SingleCustomerOrderContainer();
+            singleOrder.setOrderDate(order.getOrderDate());
+            singleOrder.setCustomerLocation(order.getPurchaserLocation());
+            singleOrder.setNumberOfDifferentItems(order.getTotalNumberOfItems());
+            singleOrder.setTotalItemsCost(order.getTotalItemsPrice());
+            singleOrder.setShippingCost(order.getDeliveryCost());
+            singleOrder.setTotalOrderCost((float)order.getTotalOrderPrice());
+
+            if(order.getDynamicOrderId() != -1) {
+               long orderedStores = customerOrders.stream().filter(ord -> ord.getDynamicOrderId() == order.getDynamicOrderId()).count();
+               singleOrder.setNumOfOrderedStores((int)orderedStores);
+               singleOrder.setOrderId(order.getDynamicOrderId());
+            } else {
+                singleOrder.setNumOfOrderedStores(1);
+                singleOrder.setOrderId(order.getOrderId());
+            }
+
+            for(OrderedItem item : order.getItemIdPairToItems().values()) {
+                SingleOrderItemContainer singleOrderItem = new SingleOrderItemContainer();
+                singleOrderItem.setItemId(item.getItemId());
+                singleOrderItem.setItemName(item.getItemName());
+                singleOrderItem.setPurchaseCategory(item.getPurchaseCategory());
+                singleOrderItem.setAmount(item.getAmount());
+                singleOrderItem.setStoreId(order.getStoreId());
+                singleOrderItem.setStoreName(order.getStoreName());
+                singleOrderItem.setPricePerPiece(item.getPricePerPiece());
+                singleOrderItem.setTotalItemCost(item.getTotalPrice());
+                singleOrderItem.setFromDiscount(item.isFromDiscount());
+
+                singleOrder.getItems().add(singleOrderItem);
+            }
+
+            orderHistory.add(singleOrder);
+        }
+
+        return orderHistory;
     }
 }
 

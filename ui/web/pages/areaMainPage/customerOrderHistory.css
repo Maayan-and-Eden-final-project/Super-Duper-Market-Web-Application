@@ -1,0 +1,56 @@
+.card-header .title {
+    font-size: 17px;
+    color: #000;
+}
+.card-header .accicon {
+    float: right;
+    font-size: 20px;
+    width: 1.2em;
+}
+.card-header{
+    cursor: pointer;
+    border-bottom: none;
+}
+.card{
+    border: 1px solid #ddd;
+}
+.card-body{
+    border-top: 1px solid #ddd;
+}
+.card-header:not(.collapsed) .rotate-icon {
+    transform: rotate(180deg);
+}
+
+.collapse-order {
+    visibility: unset !important;
+}
+
+.order-store-img {
+    width: 100px;
+}
+
+.orderItems {
+    overflow: auto;
+    max-height: 415px;
+    width: 100% !important;
+}
+
+.order-item-card{
+    text-align: -webkit-center;
+    color: black;
+}
+
+
+.orderCardBody {
+    height: 402px;
+    margin-bottom: 50px;
+}
+
+#orderHistoryAccordion {
+    margin-bottom: 50px;
+}
+
+.orderCard {
+    background: ghostwhite;
+    margin-bottom: 16px;
+}

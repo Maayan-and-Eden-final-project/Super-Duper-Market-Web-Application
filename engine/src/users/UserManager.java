@@ -7,10 +7,7 @@ import exceptions.StoreLocationAlreadyExistException;
 import exceptions.XmlSimilarStoresIdException;
 import sdm.enums.AccountAction;
 import sdm.enums.UserType;
-import sdm.sdmElements.Item;
-import sdm.sdmElements.Offer;
-import sdm.sdmElements.OrderedItem;
-import sdm.sdmElements.Store;
+import sdm.sdmElements.*;
 import systemEngine.WebEngine;
 import systemInfoContainers.*;
 import systemInfoContainers.webContainers.*;
@@ -172,14 +169,10 @@ public class UserManager {
         areaOwner.addNewMessage(message);
     }
 
-    public List<String> getUserMessages(String userName, Integer version) {
-        if (version < 0 || version > userNameToUser.get(userName).getUserMessages().size()) {
-            version = 0;
-        }
-        if(version != 0){
-            return userNameToUser.get(userName).getUserMessages().subList(version -1, userNameToUser.get(userName).getUserMessages().size());
-        }
-        return userNameToUser.get(userName).getUserMessages();
+    public List<String> getUserMessages(String userName) {
+        List<String> messagesClone = new ArrayList<>(userNameToUser.get(userName).getUserMessages());
+        userNameToUser.get(userName).emptyMessagesList();
+        return messagesClone;
     }
 
     public int getUserMessageVersion(String userName) {
@@ -262,7 +255,7 @@ public class UserManager {
         return orderSummery;
     }
 
-    public void addNewOrder(OrderSummeryContainer orderSummery, String date, String areaName, String userName) throws ParseException {
+    public void addNewOrder(OrderSummeryContainer orderSummery, String date, String areaName, String userName,String method) throws ParseException {
 
         Area area = null;
         SingleUser areaOwner = null;
@@ -274,7 +267,7 @@ public class UserManager {
                 areaOwner = user;
             }
         }
-        Map<Integer,Float> storeIdToTotalCost = engine.addNewOrder(orderSummery,area,date);
+        Map<Integer,Float> storeIdToTotalCost = engine.addNewOrder(orderSummery,area,date,method,userName);
 
         List<String> messages = new ArrayList<>();
         List<Integer> addedStoresIds = new ArrayList<>();
@@ -364,5 +357,23 @@ public class UserManager {
         }
 
         return engine.getShopOwnerFeedback(shopOwnerStores);
+    }
+
+    public List<SingleCustomerOrderContainer> getCustomerOrderHistory(String userName,String areaName) {
+        List<Order> customerOrders = new ArrayList<>();
+
+        for (SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+               for(Store store : user.getAreaNameToAreas().get(areaName).getStoreIdToStore().values()) {
+                   for(Order order : store.getOrders().values()) {
+                       if(order.getOrderPurchaser().equals(userName)) {
+                           customerOrders.add(order);
+                       }
+                   }
+               }
+            }
+        }
+
+        return engine.getCustomerOrderHistory(customerOrders);
     }
 }
