@@ -1,21 +1,18 @@
-package sdm.sdmElements;
+package systemInfoContainers.webContainers;
 
-public class Feedback implements Cloneable {
+public class SingleFeedbackContainer {
     private String reviewerName;
     private String orderDate;
     private Integer rate;
     private String review;
+    private Integer storeId;
 
-    public Feedback(String reviewerName, String orderDate, Integer rate, String review) {
+    public SingleFeedbackContainer(String reviewerName, String orderDate, Integer rate, String review, Integer storeId) {
         this.reviewerName = reviewerName;
         this.orderDate = orderDate;
         this.rate = rate;
         this.review = review;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        this.storeId = storeId;
     }
 
     public String getReviewerName() {
@@ -32,5 +29,9 @@ public class Feedback implements Cloneable {
 
     public String getReview() {
         return review;
+    }
+
+    public Integer getStoreId() {
+        return storeId;
     }
 }

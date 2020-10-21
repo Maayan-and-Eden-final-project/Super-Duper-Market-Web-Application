@@ -340,4 +340,29 @@ public class UserManager {
         engine.addFeedbackToStore(reviewedStore,userName,date,rate,review);
         storeOwner.addNewMessage(userName + " added a feedback on your store (" + reviewedStore.getName() + ")");
     }
+
+    public List<SingleFeedbackContainer> getShopOwnerFeedback(String areaName) {
+        Area area = null;
+        List<Store> shopOwnerStores = null;
+        for(SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+                area = user.getAreaNameToAreas().get(areaName);
+                synchronized (this) {
+                    shopOwnerStores = new ArrayList<>(area.getStoreIdToStore().values());
+                }
+            }
+        }
+
+        for(Store store : area.getStoreIdToStore().values()){
+            for(SingleUser user : userNameToUser.values()) {
+                for(Store userStore : user.getMyAddedStores()) {
+                    if(userStore.getId() == store.getId() && userStore.getAreaName() == areaName) {
+                        shopOwnerStores.remove(userStore);
+                    }
+                }
+            }
+        }
+
+        return engine.getShopOwnerFeedback(shopOwnerStores);
+    }
 }

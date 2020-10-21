@@ -79,6 +79,51 @@ function displayFillFeedback(feedbackStores) {
 
 
 function displayShopOwnerFeedback(feedback) {
+    $(".dynamic-container").empty();
+    $(".dynamic-container").append(
+        "<p class=\"feedback-header\"> Feedback </p>" +
+        "<div class=\"row feedback-main-holder\">\n" +
+        "<div class=\"col-sm-12\">\n" +
+        "<div id=\"feedback-container\" class=\"review-block\">\n");
+
+
+    $.each(feedback|| [], function(index, singleFeedbackStore) {
+
+        var feedbackImageUrl = "../../common/images/customer.png";
+
+        $("#feedback-container").append(
+            "<div class=\"row\">\n" +
+            "<div class=\"col-sm-3 feedback-card\">\n" +
+            "<img src=" + feedbackImageUrl + " class=\"img-rounded feedbackImage\" >\n" +
+            "<div class=\"review-block-name\">" + singleFeedbackStore.reviewerName + " </div>\n" +
+            "<div class=\"review-block-date\">" + singleFeedbackStore.orderDate + " <br/> Store Id: " + singleFeedbackStore.storeId + " </div>\n" +
+            "</div>\n" +
+            "<div class=\"col-sm-9\">\n" +
+            "<div class=\"review-block-rate\">\n" +
+            "<button id=\"starbutton1" + index + "\" type=\"button\" class=\"btn btn-default btn-grey btn-xs star-button\" aria-label=\"Left Align\">\n" +
+            "</button>\n" +
+            "<button id=\"starbutton2" + index + "\" type=\"button\" class=\"btn btn-default btn-grey btn-xs star-button\" aria-label=\"Left Align\">\n" +
+            "</button>\n" +
+            "<button id=\"starbutton3" + index + "\" type=\"button\" class=\"btn btn-default btn-grey btn-xs star-button\" aria-label=\"Left Align\">\n" +
+            "</button>\n" +
+            "<button id=\"starbutton4" + index + "\" type=\"button\" class=\"btn btn-default btn-grey btn-xs star-button\" aria-label=\"Left Align\">\n" +
+            "</button>\n" +
+            "<button id=\"starbutton5" + index + "\" type=\"button\" class=\"btn btn-default btn-grey btn-xs star-button\" aria-label=\"Left Align\">\n" +
+            "</button>\n" +
+            "</div>\n" +
+            "<div class=\"review-block-description\">" + singleFeedbackStore.review + " </div>\n" +
+            "</div>\n" +
+            "</div>\n" +
+            "<hr/>\n");
+
+       var userRate = singleFeedbackStore.rate;
+
+       for (var i=1; i<=userRate; i++) {
+            document.getElementById("starbutton" + i + index).classList.toggle("btn-default");
+           document.getElementById("starbutton" + i + index).classList.toggle("btn-grey");
+           document.getElementById("starbutton" + i + index).classList.toggle("btn-warning");
+       }
+    });
 
 }
 
@@ -87,6 +132,7 @@ function getShopOwnerFeedback() {
     $.ajax({
         method: 'GET',
         url: "shopOwner",
+        data: "actionType=getFeedback",
         timeout: 4000,
         error: function (e) {
         },
