@@ -496,5 +496,21 @@ public class WebEngine  extends Connector {
         Feedback feedback = new Feedback(userName,date,rate,review);
         reviewedStore.getFeedbackList().add(feedback);
     }
+
+    public List<SingleFeedbackContainer> getShopOwnerFeedback(List<Store> stores) {
+        List<SingleFeedbackContainer> shopOwnerFeedback = new ArrayList<>();
+
+        for(Store store : stores) {
+            List<Feedback> feedbackClone = null;
+            synchronized (this) {
+                feedbackClone = new ArrayList<>(store.getFeedbackList());
+            }
+            for(Feedback feedback : feedbackClone) {
+                SingleFeedbackContainer singleFeedback = new SingleFeedbackContainer(feedback.getReviewerName(),feedback.getOrderDate(),feedback.getRate(),feedback.getReview(),store.getId());
+                shopOwnerFeedback.add(singleFeedback);
+            }
+        }
+        return shopOwnerFeedback;
+    }
 }
 

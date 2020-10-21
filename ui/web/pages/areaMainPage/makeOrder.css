@@ -165,7 +165,7 @@
 .order-summery-information-row {
     background: ghostwhite;
     padding-top: 13px;
-    font-size: 18px;
+    font-size: 18px !important;
     width: fit-content;
     display: inline-block;
 }
@@ -198,7 +198,7 @@
 }
 
 .newOrderFeedbackStore {
-    font-size: 19px;
+    font-size: 19px !important;
 }
 
 .feedbackCard {
@@ -207,7 +207,7 @@
 }
 
 .newOrderFeedbackSubmit {
-    font-size: 19px;
+    font-size: 19px !important;
 }
 
 .feedbackReview {
@@ -215,15 +215,19 @@
 }
 
 .minimalCartSingleStore {
-    font-size: 21px;
+    font-size: 21px !important;
 }
 
 .minimalCartStoreHeader {
-    font-size: 31px;
+    font-size: 31px !important;
 }
 
 #displayDiscountsButton {
-    font-size: 21px;
+    font-size: 21px !important;
     margin-top: 12px;
     margin-left: 216px;
+}
+
+.newOrderFeedbackCard {
+    font-family: 'GeosansLight';
 }

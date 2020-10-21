@@ -58,7 +58,7 @@ function refreshUsersList(users) {
         var imageUrl;
         var userType;
         if(singleUser.userType.indexOf("CUSTOMER") > -1 ) {
-            imageUrl = "../../common/images/soccer-player.png";
+            imageUrl = "../../common/images/customer.png";
             userType = "Customer";
         } else if(singleUser.userType.indexOf("SHOP_OWNER") > -1 ) {
             imageUrl = "../../common/images/shop_owner.png";
