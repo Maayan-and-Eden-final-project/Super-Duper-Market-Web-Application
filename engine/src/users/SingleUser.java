@@ -47,6 +47,10 @@ public class SingleUser {
         return Collections.unmodifiableList(userMessages);
     }
 
+    public void emptyMessagesList() {
+        userMessages.clear();
+    }
+
     public UserType getUserType() {
         return userType;
     }

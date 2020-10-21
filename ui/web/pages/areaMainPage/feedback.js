@@ -124,7 +124,6 @@ function displayShopOwnerFeedback(feedback) {
            document.getElementById("starbutton" + i + index).classList.toggle("btn-warning");
        }
     });
-
 }
 
 function getShopOwnerFeedback() {

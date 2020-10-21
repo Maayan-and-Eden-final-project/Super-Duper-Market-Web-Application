@@ -211,13 +211,12 @@ function displayOrderSummery(orderSummery) {
             $(".dynamic-container").children().remove();
             var data;
 
-            data = "&actionType=confirmOrder" + "&orderSummeryKey=" + orderSummeryInfo + "&dateKey=" + date;
+            data = "&actionType=confirmOrder" + "&orderSummeryKey=" + orderSummeryInfo + "&dateKey=" + date + "&methodKey=" + method;
 
             $.ajax({
                 method: 'POST',
                 data: data ,
                 url: "customer",
-                /*dataType: "json",*/
                 error: function (jqXHR) {
                     setTimeout(bootstrap_alert.warning(jqXHR.responseText,"red"),3000);
                 },

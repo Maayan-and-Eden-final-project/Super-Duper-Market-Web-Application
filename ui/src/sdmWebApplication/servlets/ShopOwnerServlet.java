@@ -53,10 +53,7 @@ public class ShopOwnerServlet extends HttpServlet {
             resp.setStatus(400);
             out.print(e.getMessage());
             out.flush();
-
-
         }
-
     }
 
     @Override
@@ -79,15 +76,11 @@ public class ShopOwnerServlet extends HttpServlet {
             return;
         }
 
-
-            int userMessageVersion = 0;
             List<String> messages;
             synchronized (getServletContext()) {
-                userMessageVersion = userManager.getUserMessageVersion(usernameFromSession);
-                messages = userManager.getUserMessages(usernameFromSession, userMessageVersion);
+                messages = userManager.getUserMessages(usernameFromSession);
             }
-            MessagesAndVersion messagesAndVersion = new MessagesAndVersion(messages, userMessageVersion);
-            jsonResponse = gson.toJson(messagesAndVersion);
+            jsonResponse = gson.toJson(messages);
         } else if(actionType.equals("getFeedback")) {
             List<SingleFeedbackContainer> shopOwnerFeedback =  userManager.getShopOwnerFeedback(areanameFromSession);
             jsonResponse = gson.toJson(shopOwnerFeedback);
@@ -95,16 +88,6 @@ public class ShopOwnerServlet extends HttpServlet {
         try (PrintWriter out = resp.getWriter()) {
             out.print(jsonResponse);
             out.flush();
-        }
-    }
-    private static class MessagesAndVersion {
-
-        final private List<String> entries;
-        final private int version;
-
-        public MessagesAndVersion(List<String> entries, int version) {
-            this.entries = entries;
-            this.version = version;
         }
     }
 }

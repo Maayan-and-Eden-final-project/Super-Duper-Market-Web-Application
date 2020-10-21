@@ -1,4 +1,3 @@
-var messageVersion = 0;
 var MESSAGE_LIST_URL = buildUrlWithContextPath("pages/areaMainPage/shopOwner");
 
 
@@ -10,22 +9,19 @@ function appendToMessageArea(entries) {
 
 }
 
-
 function createMessageModal(index, entry){
     $("#messages-body").append("<p>" + entry + "</p>");
 }
 
-
 function ajaxMessageContent() {
     $.ajax({
         url: MESSAGE_LIST_URL,
-        data: "messageVersion=" + messageVersion + "&actionType=pullMessages",
+        data: "&actionType=pullMessages",
         dataType: 'json',
         success: function(data) {
 
-            if (data.version !== messageVersion) {
-                messageVersion = data.version;
-                appendToMessageArea(data.entries);
+            if (data.length > 0) {
+                appendToMessageArea(data);
             }
             triggerAjaxMessageContent();
         },

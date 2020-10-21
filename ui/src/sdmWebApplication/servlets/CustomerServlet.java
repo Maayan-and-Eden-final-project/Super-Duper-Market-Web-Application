@@ -62,6 +62,12 @@ public class CustomerServlet extends HttpServlet {
                 MinimalCartContainer minimalCart = userManager.getMinimalCart(areaNameFromSession,itemIdToItemAmount,xLocation,yLocation);
                 jsonResponse = gson.toJson(minimalCart);
 
+            } else if(actionType.equals("getOrdersHistory")) {
+                String userNameFromSession = SessionUtils.getUsername(req);
+
+                List<SingleCustomerOrderContainer> ordersHistory = userManager.getCustomerOrderHistory(userNameFromSession,areaNameFromSession);
+                jsonResponse = gson.toJson(ordersHistory);
+
             }
             out.print(jsonResponse);
             out.flush();
@@ -136,12 +142,13 @@ public class CustomerServlet extends HttpServlet {
                 jsonResponse = gson.toJson(orderSummery);
 
             } else if(actionType.equals("confirmOrder")) {
+                String method = req.getParameter("methodKey");
                 String date = req.getParameter("dateKey");
                 String orderSummeryString = req.getParameter("orderSummeryKey");
                 Type orderSummeryType = new TypeToken<OrderSummeryContainer>() {}.getType();
                 OrderSummeryContainer orderSummery = gson.fromJson(orderSummeryString, orderSummeryType);
 
-                userManager.addNewOrder(orderSummery,date,areaNameFromSession,usernameFromSession);
+                userManager.addNewOrder(orderSummery,date,areaNameFromSession,usernameFromSession,method);
                 FillFeedbackContainer feedbackStores = userManager.getFeedbackStores(orderSummery.getStoreIdToStoreInfo(), date);
                 jsonResponse = gson.toJson(feedbackStores);
             } else if(actionType.equals("addStoreFeedback")) {
