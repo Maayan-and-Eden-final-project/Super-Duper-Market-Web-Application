@@ -10,6 +10,17 @@ public class SingleStoreItemContainer {
     private float amountSold=0;
 
 
+    public SingleStoreItemContainer() {
+
+    }
+
+    public SingleStoreItemContainer(Integer itemId, String itemName, PurchaseCategory purchaseCategory, Integer itemPrice) {
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.purchaseCategory = purchaseCategory;
+        this.itemPrice = itemPrice;
+    }
+
     public Integer getItemId() {
         return itemId;
     }

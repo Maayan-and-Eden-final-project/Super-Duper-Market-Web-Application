@@ -10,6 +10,7 @@ $(function () {
                 console.error("test");
             },
             success: function (r) {
+                clearOrderData();
                 displayStores(r);
             }
         });
@@ -48,9 +49,9 @@ function displayStores(stores) {
                     "         <div class=\"area-list-store col-sm-2\">Area Owner: " + singleStore.ownerName + "</div>\n" +
                     "         <div class=\"area-list-store col-sm-2\">Location: " + singleStore.location.x + "," + singleStore.location.y + "</div>\n" +
                     "         <div class=\"area-list-store col-sm-2\">Number Of Orders: " + singleStore.numOfOrders + "</div>\n" +
-                    "         <div class=\"area-list-store col-sm-2\">Purchased Items Cost: " + singleStore.purchasedItemsCost + "</div>\n" +
+                    "         <div class=\"area-list-store col-sm-2\">Purchased Items Cost: " + singleStore.purchasedItemsCost.toFixed(2) + "</div>\n" +
                     "         <div class=\"area-list-store col-sm-2\">PPK: " + singleStore.deliveryPPK + "</div>\n" +
-                    "         <div class=\"area-list-store col-sm-2\">Total Delivery Payment: " + singleStore.totalDeliveryPayment + "</div>\n" +
+                    "         <div class=\"area-list-store col-sm-2\">Total Delivery Payment: " + singleStore.totalDeliveryPayment.toFixed(2) + "</div>\n" +
             "             </div>" +
                     "<section class=\"our-webcoderskull padding-lg\">\n" +
                     "    <div class=\"container store-item-container\">\n" +

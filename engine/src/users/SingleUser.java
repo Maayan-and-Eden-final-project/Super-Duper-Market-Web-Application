@@ -1,7 +1,7 @@
 package users;
 
 import areas.Area;
-import javafx.util.Pair;
+
 import sdm.enums.AccountAction;
 import sdm.enums.UserType;
 import sdm.sdmElements.OrderedItem;
@@ -74,6 +74,20 @@ public class SingleUser {
         accountActions.add(singleAccountAction);
     }
 
+    public void handleTransferAction(String date, Float amount) {
+        SingleAccountAction singleAccountAction =
+                new SingleAccountAction(AccountAction.PAYMENT_TRANSFERRED,date,amount,balance - amount, balance);
+        balance -= amount;
+        accountActions.add(singleAccountAction);
+    }
+
+    public void handlePaymentReceivedAction(String date, Float amount) {
+        SingleAccountAction singleAccountAction =
+                new SingleAccountAction(AccountAction.PAYMENT_RECEIVED,date,amount,balance + amount, balance);
+        balance += amount;
+        accountActions.add(singleAccountAction);
+    }
+
     public void addNewStoreToMyStoresList(Store newStore) {
         myAddedStores.add(newStore);
     }
@@ -82,7 +96,7 @@ public class SingleUser {
         areaNameToAreas.get(newStore.getAreaName()).addStoreToArea(newStore);
     }
 
-    public synchronized void addNewMessage(String message) {
-        userMessages.add(message);
+    public synchronized void addNewMessage(String... messages) {
+        userMessages.addAll(Arrays.asList(messages));
     }
 }

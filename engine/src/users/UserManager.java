@@ -1,21 +1,22 @@
 package users;
 
 import areas.Area;
+import com.sun.xml.internal.bind.v2.model.core.EnumLeafInfo;
 import exceptions.AreaAlreadyExistException;
 import exceptions.StoreLocationAlreadyExistException;
 import exceptions.XmlSimilarStoresIdException;
 import sdm.enums.AccountAction;
 import sdm.enums.UserType;
 import sdm.sdmElements.Item;
+import sdm.sdmElements.Offer;
 import sdm.sdmElements.OrderedItem;
 import sdm.sdmElements.Store;
 import systemEngine.WebEngine;
-import systemInfoContainers.ItemsContainer;
-import systemInfoContainers.webContainers.AccountActionsContainer;
-import systemInfoContainers.webContainers.AreaContainer;
-import systemInfoContainers.webContainers.SingleStoreContainer;
+import systemInfoContainers.*;
+import systemInfoContainers.webContainers.*;
 
 import java.awt.*;
+import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 
@@ -117,6 +118,28 @@ public class UserManager {
         return stores;
     }
 
+    public List<SingleStoreItemContainer> getAreaStoreItems(String areaName, Integer storeId, Integer xLocation, Integer yLocation) throws StoreLocationAlreadyExistException {
+        Point location = new Point(xLocation,yLocation);
+
+        for(SingleUser user : userNameToUser.values()) {
+            for(Area area : user.getAreaNameToAreas().values()) {
+                for (Store store : area.getStoreIdToStore().values()) {
+                    if(store.getLocation().equals(location)) {
+                        throw new StoreLocationAlreadyExistException();
+                    }
+                }
+            }
+        }
+
+        for(SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+                Map<Item,Integer> itemToItemPrice = user.getAreaNameToAreas().get(areaName).getStoreIdToStore().get(storeId).getItemsAndPrices();
+                return engine.getStoreItems(itemToItemPrice);
+            }
+        }
+        return null;
+    }
+
     public void addNewStore(String areaName,Integer storeId, String storeName,Integer xLocation, Integer yLocation, Integer ppk, Map<Integer,Integer> itemIdToItemPrice, String usernameFromSession) throws XmlSimilarStoresIdException, StoreLocationAlreadyExistException, CloneNotSupportedException {
         Point newStoreLocation = new Point(xLocation,yLocation);
 
@@ -129,11 +152,6 @@ public class UserManager {
                     if(store.getLocation().equals(newStoreLocation)) {
                         throw new StoreLocationAlreadyExistException();
                     }
-                }
-            }
-            for(Store store : user.getMyAddedStores()) {
-                if(store.getLocation().equals(newStoreLocation)) {
-                    throw new StoreLocationAlreadyExistException();
                 }
             }
         }
@@ -166,5 +184,160 @@ public class UserManager {
 
     public int getUserMessageVersion(String userName) {
         return userNameToUser.get(userName).getUserMessages().size();
+    }
+
+    public SingleAreaOptionContainer getNewOrderOptions(String areaName) {
+        Map<Integer,Store> stores = null;
+
+        for(SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+                stores = user.getAreaNameToAreas().get(areaName).getStoreIdToStore();
+            }
+        }
+
+        return engine.getNewOrderOptions(areaName,stores);
+    }
+
+    public List<SingleDiscountContainer> getDiscounts(String areaName, Integer storeId,String method, Map<Integer,Float> itemIdToItemAmount, Map<Integer, List<ProgressOrderItem>> minimalCart) throws CloneNotSupportedException {
+        Store store = null;
+        Map<Integer, List<ProgressOrderItem>>  storeIdToItemsList = null;
+        Area area = null;
+        if(method.equals("Static Order")) {
+            for (SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    area = user.getAreaNameToAreas().get(areaName);
+                    store = area.getStoreIdToStore().get(storeId);
+                    storeIdToItemsList = engine.makeOrderStoreIdToItemsList(store.getItemsAndPrices(),store.getId(), itemIdToItemAmount);
+                }
+            }
+
+        } else if (method.equals("Dynamic Order")) {
+            for (SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    area = user.getAreaNameToAreas().get(areaName);
+                    storeIdToItemsList = minimalCart;
+                }
+            }
+        }
+
+        return engine.findRelevantDiscounts(area, storeIdToItemsList);
+    }
+
+    public MinimalCartContainer getMinimalCart(String areaName, Map<Integer,Float> itemIdToAmount, Integer xLocation, Integer yLocation) {
+        Point location = new Point(xLocation,yLocation);
+        Area area = null;
+
+        for (SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+                area = user.getAreaNameToAreas().get(areaName);
+            }
+        }
+        return engine.getDynamicOrderCalcSummery(area,itemIdToAmount,location);
+    }
+
+    public OrderSummeryContainer getOrderSummery(String areaName, Map<Integer,Float> itemIdToAmount, Map<String,List<Offer>> discountNameToOffersList, Integer xLocation, Integer yLocation,String method, Integer storeId, Map<Integer, List<ProgressOrderItem>> minimalCart) {
+        OrderSummeryContainer orderSummery = null;
+        Store store = null;
+        Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = null;
+        Area area = null;
+        if (method.equals("Static Order")) {
+            for (SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    area = user.getAreaNameToAreas().get(areaName);
+                    store = area.getStoreIdToStore().get(storeId);
+                    storeIdToItemsList = engine.makeOrderStoreIdToItemsList(store.getItemsAndPrices(), store.getId(), itemIdToAmount);
+                }
+            }
+        } else if (method.equals("Dynamic Order")) {
+            for (SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    area = user.getAreaNameToAreas().get(areaName);
+                    storeIdToItemsList = minimalCart;
+                }
+            }
+        }
+
+
+        orderSummery = engine.getOrderSummery(storeIdToItemsList,discountNameToOffersList,area,new Point(xLocation,yLocation));
+        return orderSummery;
+    }
+
+    public void addNewOrder(OrderSummeryContainer orderSummery, String date, String areaName, String userName) throws ParseException {
+
+        Area area = null;
+        SingleUser areaOwner = null;
+        SingleUser customer = userNameToUser.get(userName);
+
+        for (SingleUser user : userNameToUser.values()) {
+            if (user.getAreaNameToAreas().containsKey(areaName)) {
+                area = user.getAreaNameToAreas().get(areaName);
+                areaOwner = user;
+            }
+        }
+        Map<Integer,Float> storeIdToTotalCost = engine.addNewOrder(orderSummery,area,date);
+
+        List<String> messages = new ArrayList<>();
+        List<Integer> addedStoresIds = new ArrayList<>();
+
+        for(SingleUser shopOwner : userNameToUser.values()) {
+            for (Store store : shopOwner.getMyAddedStores()) {
+                if (orderSummery.getStoreIdToStoreInfo().containsKey(store.getId())) {
+                    Float orderCost = storeIdToTotalCost.get(store.getId());
+                    customer.handleTransferAction(date,orderCost);
+                    shopOwner.handlePaymentReceivedAction(date,orderCost);
+                    messages.add(userName + " has ordered from your store (" + store.getName() + ")");
+                    addedStoresIds.add(store.getId());
+                }
+            }
+            if(messages.size() != 0) {
+                shopOwner.addNewMessage(messages.toString().split(","));
+                messages.clear();
+            }
+        }
+
+        for (Integer storeId : orderSummery.getStoreIdToStoreInfo().keySet()) {
+            if(!addedStoresIds.contains(storeId)) {
+                Float orderCost = storeIdToTotalCost.get(storeId);
+                customer.handleTransferAction(date,orderCost);
+                areaOwner.handlePaymentReceivedAction(date,orderCost);
+                messages.add(userName + " has ordered from your store (" + area.getStoreIdToStore().get(storeId).getName() + ")");
+            }
+        }
+
+        if(messages.size() != 0) {
+            areaOwner.addNewMessage(messages.toString().split(","));
+            messages.clear();
+        }
+    }
+
+    public FillFeedbackContainer getFeedbackStores(Map<Integer,SingleOrderStoreInfo> storeInfoMap, String date) {
+        return engine.getFeedbackStoreInfo(storeInfoMap, date);
+    }
+
+    public void addFeedbackToStore(String areaName, Integer storeId, String userName, String date, Integer rate, String review) {
+
+        SingleUser storeOwner = null;
+        Store reviewedStore = null;
+
+        for(SingleUser user : userNameToUser.values()) {
+            for (Store store : user.getMyAddedStores()) {
+                if(store.getId() == storeId) {
+                    storeOwner = user;
+                    reviewedStore = store;
+                }
+            }
+        }
+
+        if(storeOwner == null) {
+            for(SingleUser user : userNameToUser.values()) {
+                if (user.getAreaNameToAreas().containsKey(areaName)) {
+                    reviewedStore = user.getAreaNameToAreas().get(areaName).getStoreIdToStore().get(storeId);
+                    storeOwner = user;
+                }
+            }
+        }
+
+        engine.addFeedbackToStore(reviewedStore,userName,date,rate,review);
+        storeOwner.addNewMessage(userName + " added a feedback on your store (" + reviewedStore.getName() + ")");
     }
 }

@@ -40,15 +40,6 @@ function triggerAjaxMessageContent() {
     setTimeout(ajaxMessageContent, 2000);
 }
 
-/*$(function() {
-    $("#messageButton").click(function () {
-        /!*$("#closed-button").click();
-        $("#messageModal").modal({show:true});*!/
-        $("#messageModal").modal("show");
-
-    });
-});*/
-
 $(function() {
     triggerAjaxMessageContent();
 });

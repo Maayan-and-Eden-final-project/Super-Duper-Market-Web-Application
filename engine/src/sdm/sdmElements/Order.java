@@ -1,12 +1,13 @@
 package sdm.sdmElements;
 
+
 import javafx.util.Pair;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class Order implements Serializable, Cloneable {
-    private Date orderDate;
+    private String orderDate;
     private int orderId;
     private String storeName;
     private Integer storeId;
@@ -22,7 +23,7 @@ public class Order implements Serializable, Cloneable {
         this.itemIdPairToItems = new HashMap<>();
     }
 
-    public Order(Date orderDate, int orderId, Map<Pair<Integer,Boolean>,OrderedItem> itemIdMapToItems, float totalItemsPrice, float deliveryCost, float totalOrderPrice, Double distance) {
+    public Order(String orderDate, int orderId, Map<Pair<Integer,Boolean>,OrderedItem> itemIdMapToItems, float totalItemsPrice, float deliveryCost, float totalOrderPrice, Double distance) {
         this.orderDate = orderDate;
         this.orderId = orderId;
         this.distance = distance;
@@ -52,7 +53,6 @@ public class Order implements Serializable, Cloneable {
     public Order clone() throws CloneNotSupportedException {
         Order order = (Order) super.clone();
         Map<Pair<Integer,Boolean>,OrderedItem> itemIdPairToItemsCopy = new HashMap<>();
-        Date orderDate = (Date)this.orderDate.clone();
         order.setOrderDate(orderDate);
 
         for(Pair<Integer,Boolean> itemIdPair : itemIdPairToItems.keySet()) {
@@ -66,11 +66,11 @@ public class Order implements Serializable, Cloneable {
     }
 
 
-    public Map<Pair<Integer, Boolean>, OrderedItem> getItemIdPairToItems() {
+    public Map<Pair<Integer,Boolean>, OrderedItem> getItemIdPairToItems() {
         return itemIdPairToItems;
     }
 
-    public void setItemIdPairToItems(Map<Pair<Integer, Boolean>, OrderedItem> itemIdPairToItems) {
+    public void setItemIdPairToItems(Map<Pair<Integer,Boolean>, OrderedItem> itemIdPairToItems) {
         this.itemIdPairToItems = itemIdPairToItems;
     }
 
@@ -98,14 +98,6 @@ public class Order implements Serializable, Cloneable {
         this.storeName = storeName;
     }
 
-    /*public Map<Item, Float> getItemAndQuantity() {
-        return itemAndQuantity;
-    }
-
-    public void setItemAndQuantity(Map<Item, Float> itemAndQuantity) {
-        this.itemAndQuantity = itemAndQuantity;
-    }*/
-
     public int getOrderId() {
         return orderId;
     }
@@ -114,11 +106,11 @@ public class Order implements Serializable, Cloneable {
         this.orderId = orderId;
     }
 
-    public Date getOrderDate() {
+    public String getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
     }
 

@@ -77,9 +77,9 @@ function refreshAccountActionsTable(accountActions) {
             "    <tr>\n" +
             "      <th scope=\"row\">" + action.actionDate + "</th>\n" +
             "      <td>" + action.accountAction + "</td>\n" +
-            "      <td>" + action.actionAmount + "</td>\n" +
-            "      <td>" + action.balanceBeforeAction + "</td>\n" +
-            "      <td>" + action.balanceAfterAction + "</td>\n" +
+            "      <td>" + action.actionAmount.toFixed(2) + "</td>\n" +
+            "      <td>" + action.balanceBeforeAction.toFixed(2) + "</td>\n" +
+            "      <td>" + action.balanceAfterAction.toFixed(2) + "</td>\n" +
             "    </tr>\n"
         );
     });

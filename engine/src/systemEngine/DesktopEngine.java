@@ -1,15 +1,12 @@
 package systemEngine;
 
-import components.welcomeScene.WelcomeController;
-import components.welcomeScene.UiAdapter;
 import exceptions.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.layout.VBox;
+
 import javafx.util.Pair;
 import sdm.enums.PurchaseCategory;
 import sdm.sdmElements.*;
-import task.calcMinimalCart.CalcMinimalCartTask;
-import task.loadXmlTask.LoadXmlTask;
 import systemInfoContainers.*;
 
 import java.awt.*;
@@ -20,21 +17,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DesktopEngine extends Connector implements Cloneable {
-    private WelcomeController welcomeController;
     private Map<Integer, Customer> idToCustomer;
     private int dynamicOrderId = 0;
 
-    public DesktopEngine(WelcomeController welcomeController) {
+   /* public DesktopEngine(WelcomeController welcomeController) {
         this.welcomeController = welcomeController;
         this.idToCustomer = new HashMap<>();
 
-    }
+    }*/
 
     public Integer getDynamicOrderId() {
         return dynamicOrderId;
     }
 
-    public void calcMinimalCart(UiAdapter uiAdapter, ProgressDynamicOrderContainer progressDynamicOrderContainer, VBox bodyComponent) {
+   /* public void calcMinimalCart(UiAdapter uiAdapter, ProgressDynamicOrderContainer progressDynamicOrderContainer, VBox bodyComponent) {
         CalcMinimalCartTask calcMinimalCartTask = new CalcMinimalCartTask(this, progressDynamicOrderContainer  , uiAdapter);
         welcomeController.initMinimalCart(calcMinimalCartTask, bodyComponent);
         new Thread(calcMinimalCartTask).start();
@@ -44,7 +40,7 @@ public class DesktopEngine extends Connector implements Cloneable {
         LoadXmlTask loadXmlTask = new LoadXmlTask(this, path,isFileSelected, this.welcomeController, uiAdapter, isValidFile);
         welcomeController.bindTaskToUIComponents(loadXmlTask, welcomeController.getProgressBar(), welcomeController.getProgressLabel());
         new Thread(loadXmlTask).start();
-    }
+    }*/
 
     public Double calcShipmentToCustomer(Integer customerId, Integer storeId) {
         double shippingCost = 0;
@@ -86,6 +82,7 @@ public class DesktopEngine extends Connector implements Cloneable {
             stores.get(storeId).getItemsAndPrices().put(newItem, sellingStoresIdToPrice.get(storeId));
         }
     }
+
 
     public  List<SingleDiscountContainer> findRelevantDiscounts(Map<Integer, List<Integer>> storeIdToItemIDList, Containable progressOrderInfo) throws CloneNotSupportedException {
         Integer purchasedItemId;
@@ -196,8 +193,7 @@ public class DesktopEngine extends Connector implements Cloneable {
                     itemInfo.setTotalPrice(item.getAmount() * (float) store.getItemsIdAndPrices().get(itemId));
                     itemInfo.setFromDiscount(false);
 
-                    Pair<Integer, Boolean> itemIdToIsDiscount = new Pair<>(itemId, itemInfo.isFromDiscount());
-                    singleDynamicStoreInfo.getItemIdMapToProgressItem().put(itemIdToIsDiscount, itemInfo);
+                    singleDynamicStoreInfo.getProgressItems().add(itemInfo);
                     totalOrderCostWithoutShipping += itemInfo.getTotalPrice();
                 }
 
@@ -220,8 +216,7 @@ public class DesktopEngine extends Connector implements Cloneable {
 
                     itemInfo.setFromDiscount(true);
 
-                    Pair<Integer, Boolean> itemIdToIsDiscount = new Pair<>(itemId, itemInfo.isFromDiscount());
-                    singleDynamicStoreInfo.getItemIdMapToProgressItem().put(itemIdToIsDiscount, itemInfo);
+                    singleDynamicStoreInfo.getProgressItems().add(itemInfo);
                     totalOrderCostWithoutShipping += itemInfo.getTotalPrice();
                 }
                 dynamicOrderSummeryContainer.getStoreIdToStoreInfo().put(storeId, singleDynamicStoreInfo);
@@ -264,8 +259,7 @@ public class DesktopEngine extends Connector implements Cloneable {
                     itemInfo.setTotalPrice(item.getTotalItemPrice());
                     itemInfo.setFromDiscount(false);
 
-                    Pair<Integer, Boolean> itemIdToIsDiscount = new Pair<>(itemId, itemInfo.isFromDiscount());
-                    singleDynamicStoreInfo.getItemIdMapToProgressItem().put(itemIdToIsDiscount, itemInfo);
+                    singleDynamicStoreInfo.getProgressItems().add(itemInfo);
                     totalOrderCostWithoutShipping += itemInfo.getTotalPrice();
                 }
 
@@ -280,8 +274,7 @@ public class DesktopEngine extends Connector implements Cloneable {
 
                     itemInfo.setFromDiscount(true);
 
-                    Pair<Integer, Boolean> itemIdToIsDiscount = new Pair<>(itemId, itemInfo.isFromDiscount());
-                    singleDynamicStoreInfo.getItemIdMapToProgressItem().put(itemIdToIsDiscount, itemInfo);
+                    singleDynamicStoreInfo.getProgressItems().add(itemInfo);
                     totalOrderCostWithoutShipping += itemInfo.getTotalPrice();
                 }
                 orderSummeryContainer.getStoreIdToStoreInfo().put(storeId, singleDynamicStoreInfo);
@@ -311,7 +304,7 @@ public class DesktopEngine extends Connector implements Cloneable {
                storeInfo.setDistanceFromCustomer(order.getDistance());
                storeInfo.setCustomerShippingCost(order.getDeliveryCost());
 
-                Map<Pair<Integer, Boolean>, OrderStoreItemInfo> itemIdMapToProgressItem = new HashMap<>();
+                List<OrderStoreItemInfo> progressItems = new ArrayList<>();
                 for(OrderedItem orderedItem : order.getItemIdPairToItems().values()) {
                     OrderStoreItemInfo itemInfo = new OrderStoreItemInfo();
                     itemInfo.setItemId(orderedItem.getItemId());
@@ -321,9 +314,9 @@ public class DesktopEngine extends Connector implements Cloneable {
                     itemInfo.setPricePerPiece(orderedItem.getPricePerPiece());
                     itemInfo.setPurchaseCategory(orderedItem.getPurchaseCategory());
                     itemInfo.setTotalPrice(orderedItem.getTotalPrice());
-                    itemIdMapToProgressItem.put(new Pair<>(itemInfo.getItemId(), itemInfo.isFromDiscount()), itemInfo);
+                    progressItems.add(itemInfo);
                 }
-                storeInfo.setItemIdMapToProgressItem(itemIdMapToProgressItem);
+                storeInfo.setProgressItems(progressItems);
                 orderContainer.getStoreIdToStoreInfo().put(storeInfo.getStoreId(),storeInfo);
                 ordersHistory.add(orderContainer);
             }
@@ -375,12 +368,12 @@ public class DesktopEngine extends Connector implements Cloneable {
         return maxCoordinates;
     }
 
-    public void updateNewOrder(OrderSummeryContainer orderSummery, Integer storeId, Integer userId,Date orderDate) {
+    public void updateNewOrder(OrderSummeryContainer orderSummery, Integer storeId, Integer userId,String orderDate) {
         float totalItemsCost = 0;
 
         for(SingleOrderStoreInfo storeInfo : orderSummery.getStoreIdToStoreInfo().values()) {
             Order newOrder = new Order();
-            for (OrderStoreItemInfo itemInfo : storeInfo.getItemIdMapToProgressItem().values()) {
+            for (OrderStoreItemInfo itemInfo : storeInfo.getProgressItems()) {
                 OrderedItem orderedItem = new OrderedItem();
                 orderedItem.setItemId(itemInfo.getItemId());
                 orderedItem.setItemName(itemInfo.getItemName());
@@ -398,7 +391,7 @@ public class DesktopEngine extends Connector implements Cloneable {
             newOrder.setDeliveryCost(storeInfo.getCustomerShippingCost());
             newOrder.setDistance(storeInfo.getDistanceFromCustomer());
             List<Integer> distinctItems = new ArrayList<>();
-            for (OrderStoreItemInfo item : storeInfo.getItemIdMapToProgressItem().values()) {
+            for (OrderStoreItemInfo item : storeInfo.getProgressItems()) {
                 if (!distinctItems.contains(item.getItemId())) {
                     distinctItems.add(item.getItemId());
                 }
@@ -426,7 +419,6 @@ public class DesktopEngine extends Connector implements Cloneable {
 
         customer.setAverageOrdersCost(((customer.getAverageOrdersCost() * (customer.getNumberOfOrders() - newAddedOrders)
                 + orderSummery.getTotalOrderCostWithoutShipping()) / customer.getNumberOfOrders()));
-
 
     }
 
@@ -529,7 +521,7 @@ public class DesktopEngine extends Connector implements Cloneable {
     }
 
     @Override
-    public Map<Pair<Integer, Integer>, OrdersContainer> getStoresOrders() {
+    public Map<Pair<Integer,Integer>, OrdersContainer> getStoresOrders() {
         return null;
     }
 

@@ -71,11 +71,11 @@ public class ShopOwnerServlet extends HttpServlet {
                 resp.sendRedirect(req.getContextPath() + "/index.html");
             }
 
+        int messageVersion = ServletUtils.getIntParameter(req, Constants.MESSAGE_VERSION_PARAMETER);
+        if (messageVersion == Constants.INT_PARAMETER_ERROR) {
+            return;
+        }
 
-            int messageVersion = ServletUtils.getIntParameter(req, Constants.MESSAGE_VERSION_PARAMETER);
-            if (messageVersion == Constants.INT_PARAMETER_ERROR) {
-                return;
-            }
 
             int userMessageVersion = 0;
             List<String> messages;

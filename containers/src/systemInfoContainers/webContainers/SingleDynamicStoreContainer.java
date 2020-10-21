@@ -1,21 +1,16 @@
-package systemInfoContainers;
+package systemInfoContainers.webContainers;
 
+import java.awt.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class SingleOrderStoreInfo implements Containable{
+public class SingleDynamicStoreContainer {
     private Integer storeId;
     private String storeName;
     private Integer ppk;
+    private Point location;
     private Double distanceFromCustomer;
     private Double customerShippingCost;
-    private List<OrderStoreItemInfo> progressItems;
-
-
-    public SingleOrderStoreInfo() {
-        this.progressItems = new ArrayList<>();
-    }
+    private Integer numOfDifferentItem;
+    private Float totalItemsCost;
 
     public Integer getStoreId() {
         return storeId;
@@ -41,6 +36,14 @@ public class SingleOrderStoreInfo implements Containable{
         this.ppk = ppk;
     }
 
+    public Point getLocation() {
+        return location;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
+    }
+
     public Double getDistanceFromCustomer() {
         return distanceFromCustomer;
     }
@@ -57,11 +60,19 @@ public class SingleOrderStoreInfo implements Containable{
         this.customerShippingCost = customerShippingCost;
     }
 
-    public List<OrderStoreItemInfo> getProgressItems() {
-        return progressItems;
+    public Integer getNumOfDifferentItem() {
+        return numOfDifferentItem;
     }
 
-    public void setProgressItems(List<OrderStoreItemInfo> progressItems) {
-        this.progressItems = progressItems;
+    public void setNumOfDifferentItem(Integer numOfDifferentItem) {
+        this.numOfDifferentItem = numOfDifferentItem;
+    }
+
+    public Float getTotalItemsCost() {
+        return totalItemsCost;
+    }
+
+    public void setTotalItemsCost(Float totalItemsCost) {
+        this.totalItemsCost = totalItemsCost;
     }
 }

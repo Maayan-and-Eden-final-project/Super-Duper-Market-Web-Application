@@ -10,6 +10,7 @@ $(function () {
                 console.error("test");
             },
             success: function (r) {
+                clearOrderData();
                 displayItems(r);
             }
         });
@@ -43,7 +44,7 @@ function displayItems(items) {
             "           <p class=\"area-list-item\">Item Id: " + singleItem.itemId + " </p>\n" +
             "           <p class=\"area-list-item\">Purchase Category: " + singleItem.purchaseCategory + "</p>\n" +
             "           <p class=\"area-list-item\">Number Of Selling Stores: " + singleItem.numOfSellingStores + "</p>\n" +
-            "           <p class=\"area-list-item\">Average Item Cost: " + singleItem.avgPrice + "</p>\n" +
+            "           <p class=\"area-list-item\">Average Item Cost: " + singleItem.avgPrice.toFixed(2) + "</p>\n" +
             "           <p class=\"area-list-item\">Total Item Purchases: " + singleItem.totalPurchases + "</p>\n" +
             "</div>" +
     "            </li>\n");
