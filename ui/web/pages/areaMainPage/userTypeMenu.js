@@ -37,6 +37,9 @@ function getUserType() {
                 $("#showFeedback").click(function () {
                     getShopOwnerFeedback();
                 });
+                $("#shopOwnerOrdersHistory").click(function () {
+                    getShopOwnerOrderHistory();
+                });
 
             }
         }
