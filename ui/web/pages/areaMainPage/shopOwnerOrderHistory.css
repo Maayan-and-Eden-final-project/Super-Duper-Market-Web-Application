@@ -25,35 +25,6 @@
     visibility: unset !important;
 }
 
-.order-store-img {
-    width: 100px;
-    max-width: none !important;
-}
-
-.orderItems {
-    overflow: auto;
-    max-height: 436px;
-    width: 100% !important;
-    padding-right: 52px;
-    display: inline-flex;
-}
-
-.order-item-card{
-    text-align: -webkit-center;
-    color: black;
-    width: 231px!important;
-    margin-left: 12px;
-    flex-grow: 0;
-    flex-shrink: 0;
-    height: max-content;
-}
-
-.orderCardBody {
-    height: 427px;
-    margin-bottom: 50px;
-    direction: rtl;
-}
-
 #orderHistoryAccordion {
     margin-bottom: 50px;
     margin-left: 85px;
@@ -61,21 +32,8 @@
     width: 100%;
 }
 
-.orderCard {
-    background: ghostwhite;
-    margin-bottom: 16px;
-    min-width: 1000px;
-    margin-right: -38px;
-}
-
-.orderInformationRow {
-    display: grid;
-    grid-template-columns: auto auto auto auto;
-    margin: 14px;
-}
-
-.order-info-item {
-    grid-row: 1/9 !important;
+.store-orders-info {
+    grid-row: 1/3 !important;
     display: flow-root !important;
     padding-bottom: 1%;
     color: #26394E;
@@ -85,10 +43,11 @@
     padding-top: 35px;
 }
 
-.order-img-holder {
-    grid-row: 1/9 !important;
+.store-orders-img-holder {
+    grid-row: 1/3 !important;
     display: flow-root !important;
     margin-right: 34px;
+    width: 100px;
 }
 
 .ordersHistoryHeader {
@@ -99,10 +58,26 @@
     margin-bottom: 25px;
 }
 
-.orderHistoryHolder {
-    position: absolute;
+.single-order-info {
+    grid-row: 1/8 !important;
+    display: flow-root !important;
+    padding-bottom: 1%;
+    color: #26394E;
+    font-weight: bold;
+    margin-right: 34px;
+    font-size: 18px;
+    padding-top: 35px;
 }
 
-.singleCustomerOrder {
+.orderHistoryHolder {
+    position: absolute;
+    min-width: 90%;
+}
+
+.singleStoreOrders {
     margin-right: 43px;
+}
+
+.singleShopOrder {
+    width: 100%;
 }

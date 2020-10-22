@@ -2,15 +2,16 @@ function displayCustomerOrdersHistory(ordersHistory) {
     $(".dynamic-container").empty();
 
     $(".dynamic-container").append(
+        "<div class=\"orderHistoryHolder\">" +
         "<div id=\"orderHistoryAccordion\">\n" +
             "<p class=\"ordersHistoryHeader\"> Orders History </p>" +
-        "</div>");
+        "</div></div>");
     var orderImageUrl = "../../common/images/orderIcon.png";
     var itemImageUrl = "../../common/images/itemIcon.png";
 
     $.each(ordersHistory || [], function(index, order) {
         $("#orderHistoryAccordion").append(
-            "  <div class=\"card orderCard\">\n" +
+            "  <div class=\"card orderCard singleCustomerOrder\">\n" +
             "<div class=\"card-header\" data-toggle=\"collapse\" data-target=\"#collapseOne" + index + "\" aria-expanded=\"true\">     \n" +
             "       <div class=\"cnt-block equal-hight store-info-block\">\n" +
             "         <div class=\"store-information-row orderInformationRow\">" +

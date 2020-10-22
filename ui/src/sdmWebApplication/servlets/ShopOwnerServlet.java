@@ -7,7 +7,9 @@ import com.google.gson.reflect.TypeToken;
 import sdmWebApplication.constants.Constants;
 import sdmWebApplication.utils.ServletUtils;
 import sdmWebApplication.utils.SessionUtils;
+import systemInfoContainers.webContainers.SingleCustomerOrderContainer;
 import systemInfoContainers.webContainers.SingleFeedbackContainer;
+import systemInfoContainers.webContainers.SingleStoreOrdersContainer;
 import users.UserManager;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -79,6 +81,9 @@ public class ShopOwnerServlet extends HttpServlet {
         } else if(actionType.equals("getFeedback")) {
             List<SingleFeedbackContainer> shopOwnerFeedback =  userManager.getShopOwnerFeedback(areanameFromSession);
             jsonResponse = gson.toJson(shopOwnerFeedback);
+        } else if(actionType.equals("getOrdersHistory")) {
+            List<SingleStoreOrdersContainer> ordersHistory = userManager.getShopOwnerOrderHistory(areanameFromSession,usernameFromSession);
+            jsonResponse = gson.toJson(ordersHistory);
         }
         try (PrintWriter out = resp.getWriter()) {
             out.print(jsonResponse);

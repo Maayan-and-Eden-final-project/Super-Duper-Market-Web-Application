@@ -438,12 +438,12 @@ public class WebEngine  extends Connector {
         return discountsContainerList;
     }
 
-    public Map<Integer, Float> addNewOrder(OrderSummeryContainer orderSummeryContainer, Area area, String date, String method,String orderPurchaser) {
+    public Map<Integer, Float> addNewOrder(OrderSummeryContainer orderSummeryContainer, Area area, String date, String method, String orderPurchaser) {
         float totalItemsCost = 0;
         Map<Integer, Float> storeIdToTotalCost = new HashMap<>();
         int orderId = 0;
 
-        if(method.equals("Dynamic Order")) {
+        if (method.equals("Dynamic Order")) {
             orderId = area.getNextDynamicOrderId();
         }
 
@@ -498,7 +498,7 @@ public class WebEngine  extends Connector {
             areaStore.setTotalDeliveryPayment(totalDeliveryPayments + newOrder.getDeliveryCost());
             areaStore.getOrders().add(newOrder);
 
-            storeIdToTotalCost.put(store.getStoreId(), (float)newOrder.getTotalOrderPrice());
+            storeIdToTotalCost.put(store.getStoreId(), (float) newOrder.getTotalOrderPrice());
         }
         return storeIdToTotalCost;
     }
@@ -513,21 +513,21 @@ public class WebEngine  extends Connector {
         return fillFeedbackContainer;
     }
 
-    public void addFeedbackToStore(Store reviewedStore,String userName,String date,Integer rate,String review) {
-        Feedback feedback = new Feedback(userName,date,rate,review);
+    public void addFeedbackToStore(Store reviewedStore, String userName, String date, Integer rate, String review) {
+        Feedback feedback = new Feedback(userName, date, rate, review);
         reviewedStore.getFeedbackList().add(feedback);
     }
 
     public List<SingleFeedbackContainer> getShopOwnerFeedback(List<Store> stores) {
         List<SingleFeedbackContainer> shopOwnerFeedback = new ArrayList<>();
 
-        for(Store store : stores) {
+        for (Store store : stores) {
             List<Feedback> feedbackClone = null;
             synchronized (this) {
                 feedbackClone = new ArrayList<>(store.getFeedbackList());
             }
-            for(Feedback feedback : feedbackClone) {
-                SingleFeedbackContainer singleFeedback = new SingleFeedbackContainer(feedback.getReviewerName(),feedback.getOrderDate(),feedback.getRate(),feedback.getReview(),store.getId());
+            for (Feedback feedback : feedbackClone) {
+                SingleFeedbackContainer singleFeedback = new SingleFeedbackContainer(feedback.getReviewerName(), feedback.getOrderDate(), feedback.getRate(), feedback.getReview(), store.getId());
                 shopOwnerFeedback.add(singleFeedback);
             }
         }
@@ -539,13 +539,13 @@ public class WebEngine  extends Connector {
         boolean isDynamicOrderExist = false;
         for (Order order : customerOrders) {
             isDynamicOrderExist = false;
-            for(SingleCustomerOrderContainer singleOrder : orderHistory) {
-                if(singleOrder.getOrderId().equals(order.getDynamicOrderId())) {
+            for (SingleCustomerOrderContainer singleOrder : orderHistory) {
+                if (singleOrder.getOrderId().equals(order.getDynamicOrderId())) {
                     isDynamicOrderExist = true;
                 }
             }
 
-            if(!isDynamicOrderExist) {
+            if (!isDynamicOrderExist) {
                 SingleCustomerOrderContainer singleOrder = new SingleCustomerOrderContainer();
                 singleOrder.setOrderDate(order.getOrderDate());
                 singleOrder.setCustomerLocation(order.getPurchaserLocation());
@@ -619,5 +619,38 @@ public class WebEngine  extends Connector {
 
         return orderHistory;
     }
-}
 
+    public List<SingleStoreOrdersContainer> getShopOwnerOrderHistory(List<Store> stores) {
+        List<SingleStoreOrdersContainer> orders = new ArrayList<>();
+
+        for(Store store : stores) {
+            SingleStoreOrdersContainer singleStoreOrders = new SingleStoreOrdersContainer();
+            singleStoreOrders.setStoreId(store.getId());
+            singleStoreOrders.setStoreName(store.getName());
+            for(Order order : store.getOrders()) {
+                SingleShopOwnerOrderContainer singleOrder = new SingleShopOwnerOrderContainer();
+                singleOrder.setOrderId(order.getOrderId());
+                singleOrder.setOrderDate(order.getOrderDate());
+                singleOrder.setPurchaserName(order.getOrderPurchaser());
+                singleOrder.setCustomerLocation(order.getPurchaserLocation());
+                singleOrder.setNumberOfDifferentItems(order.getTotalNumberOfItems());
+                singleOrder.setTotalItemsCost(order.getTotalItemsPrice());
+                singleOrder.setShippingCost(order.getDeliveryCost());
+                for(OrderedItem orderedItem : order.getItemIdPairToItems().values()) {
+                    SingleOrderItemContainer singleItem = new SingleOrderItemContainer();
+                    singleItem.setItemId(orderedItem.getItemId());
+                    singleItem.setItemName(orderedItem.getItemName());
+                    singleItem.setPurchaseCategory(orderedItem.getPurchaseCategory());
+                    singleItem.setAmount(orderedItem.getAmount());
+                    singleItem.setPricePerPiece(orderedItem.getPricePerPiece());
+                    singleItem.setTotalItemCost(orderedItem.getTotalPrice());
+                    singleItem.setFromDiscount(orderedItem.isFromDiscount());
+                    singleOrder.getItems().add(singleItem);
+                }
+                singleStoreOrders.getOrders().add(singleOrder);
+            }
+            orders.add(singleStoreOrders);
+        }
+        return orders;
+    }
+}

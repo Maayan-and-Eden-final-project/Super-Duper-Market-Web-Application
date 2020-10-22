@@ -376,4 +376,21 @@ public class UserManager {
 
         return engine.getCustomerOrderHistory(customerOrders);
     }
+
+    public List<SingleStoreOrdersContainer> getShopOwnerOrderHistory(String areaName, String userName ) {
+        List<Store> stores = new ArrayList<>();
+
+        if(!userNameToUser.get(userName).getAreaNameToAreas().containsKey(areaName)) {
+            for (Store store : userNameToUser.get(userName).getMyAddedStores()) {
+                if (store.getAreaName().equals(areaName)) {
+                    stores.add(store);
+                }
+            }
+        } else {
+            if(stores.size() == 0) {
+                stores = new ArrayList<>(userNameToUser.get(userName).getAreaNameToAreas().get(areaName).getStoreIdToStore().values());
+            }
+        }
+        return engine.getShopOwnerOrderHistory(stores);
+    }
 }
