@@ -19,7 +19,7 @@ public class Store implements Cloneable{
     private Map<Integer,Integer> itemsIdAndPrices;
     private Map<Integer,Float> purchasedItems;
     private double totalDeliveryPayment;
-    private Map<Integer,Order> orders;
+    private List<Order> orders;
     private Map<Item,Integer> itemsAndPrices;
     private Integer orderCounter = 0;
     private List<Discount> discountList;
@@ -33,7 +33,7 @@ public class Store implements Cloneable{
             newStore.setLocation(new Point(this.location.x, this.location.y));
             Map<Integer, Integer> itemsIdAndPricesCopy = new HashMap<>();
             Map<Integer, Float> purchasedItemsCopy = new HashMap<>();
-            Map<Integer, Order> ordersCopy = new HashMap<>();
+            List<Order> ordersCopy = new ArrayList<>();
             Map<Item, Integer> itemsAndPricesCopy = new HashMap<>();
             List<Discount> discountListCopy = new ArrayList<>();
 
@@ -41,8 +41,8 @@ public class Store implements Cloneable{
                 itemsAndPricesCopy.put(item.clone(), itemsAndPrices.get(item));
             }
 
-            for (Order order : orders.values()) {
-                ordersCopy.put(order.getOrderId(), order.clone());
+            for (Order order : orders) {
+                ordersCopy.add(order.clone());
             }
 
             for (Discount discount : discountList) {
@@ -73,7 +73,7 @@ public class Store implements Cloneable{
         this.itemsIdAndPrices = itemsAndPrices;
         this.purchasedItems = new HashMap<>();
         this.totalDeliveryPayment = 0;
-        this.orders = new HashMap<>();
+        this.orders = new ArrayList<>();
         this.itemsAndPrices = new HashMap<>();
         this.discountList = new ArrayList<>();
         this.feedbackList = new ArrayList<>();
@@ -87,7 +87,7 @@ public class Store implements Cloneable{
         this.itemsIdAndPrices = itemIdAndPrices;
         this.purchasedItems = new HashMap<>();
         this.totalDeliveryPayment = 0;
-        this.orders = new HashMap<>();
+        this.orders = new ArrayList<>();
         this.itemsAndPrices = new HashMap<>();
         this.discountList = new ArrayList<>();
         this.feedbackList = new ArrayList<>();
@@ -102,7 +102,7 @@ public class Store implements Cloneable{
         this.itemsIdAndPrices = itemIdAndPrices;
         this.purchasedItems = new HashMap<>();
         this.totalDeliveryPayment = 0;
-        this.orders = new HashMap<>();
+        this.orders = new ArrayList<>();
         this.itemsAndPrices = itemToItemPrice;
         this.discountList = new ArrayList<>();
         this.areaName = areaName;
@@ -133,11 +133,11 @@ public class Store implements Cloneable{
         this.orderCounter = orderCounter;
     }
 
-    public Map<Integer,Order> getOrders() {
+    public List<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(Map<Integer,Order> orders) {
+    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 
@@ -240,7 +240,7 @@ public class Store implements Cloneable{
         informationString.append("%n%n-----Orders in store-----%n");
 
         if(!orders.isEmpty()) {
-            for (Order order : orders.values()) {
+            for (Order order : orders) {
                 informationString.append("%nOrder date: " + order.getOrderDate());
                 informationString.append("%nTotal items: " + order.getTotalNumberOfItems());
                 informationString.append("%nTotal items price: " + order.getTotalItemsPrice());
@@ -277,7 +277,7 @@ public class Store implements Cloneable{
     public Map<Pair<Integer,Integer>,OrderSummeryContainer> getStoresOrders() {
         Map<Pair<Integer,Integer>,OrderSummeryContainer> storeOrders = new HashMap<>();
 
-        for (Order order : orders.values()) {
+        for (Order order : orders) {
             OrderSummeryContainer orderContainer = new OrderSummeryContainer();
             orderContainer.setTotalOrderCostWithoutShipping(order.getTotalItemsPrice());
             orderContainer.setTotalOrderCost(order.getTotalOrderPrice());

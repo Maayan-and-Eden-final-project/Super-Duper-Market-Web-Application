@@ -291,7 +291,7 @@ public class DesktopEngine extends Connector implements Cloneable {
         List<OrderSummeryContainer> ordersHistory = new ArrayList<>();
 
         for(Store store : stores.values()) {
-            for(Order order: store.getOrders().values()) {
+            for(Order order: store.getOrders()) {
                OrderSummeryContainer orderContainer = new OrderSummeryContainer();
                orderContainer.setDynamicOrderId(order.getDynamicOrderId());
                orderContainer.setTotalShippingCost(order.getDeliveryCost());
@@ -409,7 +409,7 @@ public class DesktopEngine extends Connector implements Cloneable {
 
             double totalDeliveryPayments = stores.get(storeInfo.getStoreId()).getTotalDeliveryPayment();
             stores.get(storeInfo.getStoreId()).setTotalDeliveryPayment(totalDeliveryPayments + newOrder.getDeliveryCost());
-            stores.get(storeInfo.getStoreId()).getOrders().put(newOrder.getOrderId(), newOrder);
+            stores.get(storeInfo.getStoreId()).getOrders().add(newOrder);
         }
         Customer customer = this.idToCustomer.get(userId);
         Integer newAddedOrders = orderSummery.getStoreIdToStoreInfo().size();

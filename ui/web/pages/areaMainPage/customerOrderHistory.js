@@ -3,9 +3,9 @@ function displayCustomerOrdersHistory(ordersHistory) {
 
     $(".dynamic-container").append(
         "<div id=\"orderHistoryAccordion\">\n" +
-
+            "<p class=\"ordersHistoryHeader\"> Orders History </p>" +
         "</div>");
-    var storeImageUrl = "../../common/images/storeIcon.png";
+    var orderImageUrl = "../../common/images/orderIcon.png";
     var itemImageUrl = "../../common/images/itemIcon.png";
 
     $.each(ordersHistory || [], function(index, order) {
@@ -13,20 +13,20 @@ function displayCustomerOrdersHistory(ordersHistory) {
             "  <div class=\"card orderCard\">\n" +
             "<div class=\"card-header\" data-toggle=\"collapse\" data-target=\"#collapseOne" + index + "\" aria-expanded=\"true\">     \n" +
             "       <div class=\"cnt-block equal-hight store-info-block\">\n" +
-            "         <div class=\"row store-information-row\">" +
-            "            <figure><img src=" + storeImageUrl + " class=\"img-responsive col-sm-4 order-store-img\"  alt=\"\"></figure>\n" +
-            "         <div class=\"area-list-store col-sm-1\">Order Id: " + order.orderId + "</div>\n" +
-            "         <div class=\"area-list-store col-sm-1\">Order Date: " + order.orderDate + "</div>\n" +
-            "         <div class=\"area-list-store col-sm-1\">Customer Location: " + order.customerLocation.x + "," + order.customerLocation.y + "</div>\n" +
-            "         <div class=\"area-list-store col-sm-1\">Number Of Ordered Stores: " + order.numOfOrderedStores + "</div>\n" +
-            "         <div class=\"area-list-store col-sm-1\">Number Of Different Items: " + order.numberOfDifferentItems + "</div>\n" +
-            "         <div class=\"area-list-store col-sm-1\">Total Items Cost: " + order.totalItemsCost.toFixed(2) + "</div>\n" +
-            "         <div class=\"area-list-store col-sm-1\">Shipping Cost: " + order.shippingCost.toFixed(2) + "</div>\n" +
-            "         <div class=\"area-list-store col-sm-1\">Total Order Cost: " + order.totalOrderCost.toFixed(2) + "</div>\n" +
+            "         <div class=\"store-information-row orderInformationRow\">" +
+            "            <figure class=\"order-img-holder\" ><img src=" + orderImageUrl + " class=\"img-responsive order-store-img\"  alt=\"\"></figure>\n" +
+            "         <div class=\"order-info-item\">Order Id: " + order.orderId + "</div>\n" +
+            "         <div class=\"order-info-item\">Order Date: " + order.orderDate + "</div>\n" +
+            "         <div class=\"order-info-item\">Customer Location: " + order.customerLocation.x + "," + order.customerLocation.y + "</div>\n" +
+            "         <div class=\"order-info-item\">Number Of Ordered Stores: " + order.numOfOrderedStores + "</div>\n" +
+            "         <div class=\"order-info-item\">Number Of Different Items: " + order.numberOfDifferentItems + "</div>\n" +
+            "         <div class=\"order-info-item\">Total Items Cost: " + order.totalItemsCost.toFixed(2) + "</div>\n" +
+            "         <div class=\"order-info-item\">Shipping Cost: " + order.shippingCost.toFixed(2) + "</div>\n" +
+            "         <div class=\"order-info-item\">Total Order Cost: " + order.totalOrderCost.toFixed(2) + "</div>\n" +
             "             </div>" +
             "</div>" +
             "            </div>" +
-            "    <div id=\"collapseOne" + index + "\" class=\"collapse show collapse-order\" aria-labelledby=\"headingOne\" data-parent=\"#orderHistoryAccordion\">\n" +
+            "    <div id=\"collapseOne" + index + "\" class=\"collapse collapse-order\" aria-labelledby=\"headingOne\" data-parent=\"#orderHistoryAccordion\">\n" +
             "      <div class=\"card-body orderCardBody\">\n" +
             "        <ul id=\"orderItems-" + index + "\"  class=\"row orderItems\">\n" +
             "        </ul>\n" +
@@ -34,7 +34,7 @@ function displayCustomerOrdersHistory(ordersHistory) {
             "    </div>\n" +
             "  </div>");
 
-        $.each(order.items || [], function(index, item) {
+        $.each(order.items || [], function(i, item) {
             $("#orderItems-" + index).append(
                 "           <li class=\"col-12 col-md-6 col-lg-3 store-item-card order-item-card\">\n" +
                 "           <figure class=\"image-figure\"><img src=" + itemImageUrl + " class=\"img-responsive store-item-image\"  alt=\"\"></figure>\n" +
