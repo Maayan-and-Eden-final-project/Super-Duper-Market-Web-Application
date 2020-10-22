@@ -27,6 +27,7 @@
 
 .order-store-img {
     width: 100px;
+    max-width: none !important;
 }
 
 .orderItems {
@@ -38,19 +39,55 @@
 .order-item-card{
     text-align: -webkit-center;
     color: black;
+    width: 231px!important;
+    margin-left: 12px;
 }
-
 
 .orderCardBody {
     height: 402px;
     margin-bottom: 50px;
+    direction: rtl;
 }
 
 #orderHistoryAccordion {
     margin-bottom: 50px;
+    margin-left: 85px;
+    margin-top: 54px;
+    width: 100%;
 }
 
 .orderCard {
     background: ghostwhite;
     margin-bottom: 16px;
+}
+
+.orderInformationRow {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    margin: 14px;
+}
+
+.order-info-item {
+    grid-row: 1/9 !important;
+    display: flow-root !important;
+    padding-bottom: 1%;
+    color: #26394E;
+    font-weight: bold;
+    margin-right: 34px;
+    font-size: 18px;
+    padding-top: 35px;
+}
+
+.order-img-holder {
+    grid-row: 1/9 !important;
+    display: flow-root !important;
+    margin-right: 34px;
+}
+
+.ordersHistoryHeader {
+    font-size: 50px;
+    margin-top: 31px;
+    margin-left: 0%;
+    color: ghostwhite;
+    margin-bottom: 25px;
 }

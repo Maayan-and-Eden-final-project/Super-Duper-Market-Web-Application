@@ -157,7 +157,7 @@ public class WebEngine  extends Connector {
                         areaContainer.setOrdersInArea(store.getOrders().size());
 
                         float ordersAvg = 0;
-                        for (Order order : store.getOrders().values()) {
+                        for (Order order : store.getOrders()) {
                             ordersAvg += order.getTotalItemsPrice();
                         }
                         if (store.getOrders().size() == 0) {
@@ -188,7 +188,7 @@ public class WebEngine  extends Connector {
             singleStore.setTotalDeliveryPayment(store.getTotalDeliveryPayment());
 
             float totalItemsCost = 0;
-            for (Order order : store.getOrders().values()) {
+            for (Order order : store.getOrders()) {
                 totalItemsCost += order.getTotalItemsPrice();
             }
             singleStore.setPurchasedItemsCost(totalItemsCost);
@@ -441,7 +441,14 @@ public class WebEngine  extends Connector {
     public Map<Integer, Float> addNewOrder(OrderSummeryContainer orderSummeryContainer, Area area, String date, String method,String orderPurchaser) {
         float totalItemsCost = 0;
         Map<Integer, Float> storeIdToTotalCost = new HashMap<>();
+        int orderId = 0;
+
+        if(method.equals("Dynamic Order")) {
+            orderId = area.getNextDynamicOrderId();
+        }
+
         for (SingleOrderStoreInfo store : orderSummeryContainer.getStoreIdToStoreInfo().values()) {
+            totalItemsCost = 0;
             Store areaStore = area.getStoreIdToStore().get(store.getStoreId());
             Order newOrder = new Order();
             newOrder.setStoreId(store.getStoreId());
@@ -451,8 +458,11 @@ public class WebEngine  extends Connector {
             newOrder.setOrderDate(date);
             newOrder.setOrderPurchaser(orderPurchaser);
             newOrder.setPurchaserLocation(orderSummeryContainer.getPurchaserLocation());
-            if(method.equals("Dynamic Order")) {
-                newOrder.setDynamicOrderId(area.getNextDynamicOrderId());
+            if (method.equals("Dynamic Order")) {
+                newOrder.setDynamicOrderId(orderId);
+            } else {
+                orderId = areaStore.getNewOrderId();
+                newOrder.setOrderId(orderId);
             }
 
             for (OrderStoreItemInfo itemInfo : store.getProgressItems()) {
@@ -466,7 +476,11 @@ public class WebEngine  extends Connector {
                 orderedItem.setTotalPrice(itemInfo.getTotalPrice());
                 newOrder.getItemIdPairToItems().put(new Pair<>(orderedItem.getItemId(), orderedItem.isFromDiscount()), orderedItem);
                 totalItemsCost += itemInfo.getTotalPrice();
-                areaStore.getPurchasedItems().put(itemInfo.getItemId(), itemInfo.getAmount());
+                if (areaStore.getPurchasedItems().containsKey(itemInfo.getItemId())) {
+                    areaStore.getPurchasedItems().put(itemInfo.getItemId(), areaStore.getPurchasedItems().get(itemInfo.getItemId()) + itemInfo.getAmount());
+                } else {
+                    areaStore.getPurchasedItems().put(itemInfo.getItemId(), itemInfo.getAmount());
+                }
             }
 
             List<Integer> distinctItems = new ArrayList<>();
@@ -482,8 +496,9 @@ public class WebEngine  extends Connector {
 
             double totalDeliveryPayments = areaStore.getTotalDeliveryPayment();
             areaStore.setTotalDeliveryPayment(totalDeliveryPayments + newOrder.getDeliveryCost());
-            areaStore.getOrders().put(newOrder.getOrderId(), newOrder);
-            storeIdToTotalCost.put(store.getStoreId(), (float) newOrder.getTotalOrderPrice());
+            areaStore.getOrders().add(newOrder);
+
+            storeIdToTotalCost.put(store.getStoreId(), (float)newOrder.getTotalOrderPrice());
         }
         return storeIdToTotalCost;
     }
@@ -521,41 +536,85 @@ public class WebEngine  extends Connector {
 
     public List<SingleCustomerOrderContainer> getCustomerOrderHistory(List<Order> customerOrders) {
         List<SingleCustomerOrderContainer> orderHistory = new ArrayList<>();
-
+        boolean isDynamicOrderExist = false;
         for (Order order : customerOrders) {
-            SingleCustomerOrderContainer singleOrder = new SingleCustomerOrderContainer();
-            singleOrder.setOrderDate(order.getOrderDate());
-            singleOrder.setCustomerLocation(order.getPurchaserLocation());
-            singleOrder.setNumberOfDifferentItems(order.getTotalNumberOfItems());
-            singleOrder.setTotalItemsCost(order.getTotalItemsPrice());
-            singleOrder.setShippingCost(order.getDeliveryCost());
-            singleOrder.setTotalOrderCost((float)order.getTotalOrderPrice());
-
-            if(order.getDynamicOrderId() != -1) {
-               long orderedStores = customerOrders.stream().filter(ord -> ord.getDynamicOrderId() == order.getDynamicOrderId()).count();
-               singleOrder.setNumOfOrderedStores((int)orderedStores);
-               singleOrder.setOrderId(order.getDynamicOrderId());
-            } else {
-                singleOrder.setNumOfOrderedStores(1);
-                singleOrder.setOrderId(order.getOrderId());
+            isDynamicOrderExist = false;
+            for(SingleCustomerOrderContainer singleOrder : orderHistory) {
+                if(singleOrder.getOrderId().equals(order.getDynamicOrderId())) {
+                    isDynamicOrderExist = true;
+                }
             }
 
-            for(OrderedItem item : order.getItemIdPairToItems().values()) {
-                SingleOrderItemContainer singleOrderItem = new SingleOrderItemContainer();
-                singleOrderItem.setItemId(item.getItemId());
-                singleOrderItem.setItemName(item.getItemName());
-                singleOrderItem.setPurchaseCategory(item.getPurchaseCategory());
-                singleOrderItem.setAmount(item.getAmount());
-                singleOrderItem.setStoreId(order.getStoreId());
-                singleOrderItem.setStoreName(order.getStoreName());
-                singleOrderItem.setPricePerPiece(item.getPricePerPiece());
-                singleOrderItem.setTotalItemCost(item.getTotalPrice());
-                singleOrderItem.setFromDiscount(item.isFromDiscount());
+            if(!isDynamicOrderExist) {
+                SingleCustomerOrderContainer singleOrder = new SingleCustomerOrderContainer();
+                singleOrder.setOrderDate(order.getOrderDate());
+                singleOrder.setCustomerLocation(order.getPurchaserLocation());
 
-                singleOrder.getItems().add(singleOrderItem);
+                if (order.getDynamicOrderId() != -1) {
+                    List<Order> dynamicOrder = customerOrders.stream().filter(ord -> ord.getDynamicOrderId() == order.getDynamicOrderId()).collect(Collectors.toList());
+                    long orderedStores = dynamicOrder.size();
+                    singleOrder.setNumOfOrderedStores((int) orderedStores);
+                    singleOrder.setOrderId(order.getDynamicOrderId());
+                    int numOfDifferentItems = dynamicOrder.stream()
+                            .map(order1 -> order1.getTotalNumberOfItems())
+                            .reduce(0, Math::addExact);
+
+                    double totalItemsPrice = dynamicOrder.stream()
+                            .mapToDouble(order1 -> order1.getTotalItemsPrice()).sum();
+
+                    double deliveryCost = dynamicOrder.stream()
+                            .mapToDouble(order1 -> order1.getDeliveryCost()).sum();
+                    double totalOrderPrice = dynamicOrder.stream()
+                            .mapToDouble(order1 -> order1.getTotalOrderPrice()).sum();
+
+                    singleOrder.setNumberOfDifferentItems(numOfDifferentItems);
+                    singleOrder.setTotalItemsCost((float) totalItemsPrice);
+                    singleOrder.setShippingCost(deliveryCost);
+                    singleOrder.setTotalOrderCost((float) totalOrderPrice);
+
+                    for (Order ord : dynamicOrder) {
+                        for (OrderedItem item : ord.getItemIdPairToItems().values()) {
+                            SingleOrderItemContainer singleOrderItem = new SingleOrderItemContainer();
+                            singleOrderItem.setItemId(item.getItemId());
+                            singleOrderItem.setItemName(item.getItemName());
+                            singleOrderItem.setPurchaseCategory(item.getPurchaseCategory());
+                            singleOrderItem.setAmount(item.getAmount());
+                            singleOrderItem.setStoreId(ord.getStoreId());
+                            singleOrderItem.setStoreName(ord.getStoreName());
+                            singleOrderItem.setPricePerPiece(item.getPricePerPiece());
+                            singleOrderItem.setTotalItemCost(item.getTotalPrice());
+                            singleOrderItem.setFromDiscount(item.isFromDiscount());
+
+                            singleOrder.getItems().add(singleOrderItem);
+                        }
+                    }
+
+                } else {
+                    singleOrder.setNumOfOrderedStores(1);
+                    singleOrder.setOrderId(order.getOrderId());
+                    singleOrder.setNumberOfDifferentItems(order.getTotalNumberOfItems());
+                    singleOrder.setTotalItemsCost(order.getTotalItemsPrice());
+                    singleOrder.setShippingCost(order.getDeliveryCost());
+                    singleOrder.setTotalOrderCost((float) order.getTotalOrderPrice());
+
+                    for (OrderedItem item : order.getItemIdPairToItems().values()) {
+                        SingleOrderItemContainer singleOrderItem = new SingleOrderItemContainer();
+                        singleOrderItem.setItemId(item.getItemId());
+                        singleOrderItem.setItemName(item.getItemName());
+                        singleOrderItem.setPurchaseCategory(item.getPurchaseCategory());
+                        singleOrderItem.setAmount(item.getAmount());
+                        singleOrderItem.setStoreId(order.getStoreId());
+                        singleOrderItem.setStoreName(order.getStoreName());
+                        singleOrderItem.setPricePerPiece(item.getPricePerPiece());
+                        singleOrderItem.setTotalItemCost(item.getTotalPrice());
+                        singleOrderItem.setFromDiscount(item.isFromDiscount());
+
+                        singleOrder.getItems().add(singleOrderItem);
+                    }
+
+                }
+                orderHistory.add(singleOrder);
             }
-
-            orderHistory.add(singleOrder);
         }
 
         return orderHistory;

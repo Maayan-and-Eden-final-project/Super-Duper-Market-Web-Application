@@ -365,7 +365,7 @@ public class UserManager {
         for (SingleUser user : userNameToUser.values()) {
             if(user.getAreaNameToAreas().containsKey(areaName)) {
                for(Store store : user.getAreaNameToAreas().get(areaName).getStoreIdToStore().values()) {
-                   for(Order order : store.getOrders().values()) {
+                   for(Order order : store.getOrders()) {
                        if(order.getOrderPurchaser().equals(userName)) {
                            customerOrders.add(order);
                        }

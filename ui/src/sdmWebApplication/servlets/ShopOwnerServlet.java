@@ -71,11 +71,6 @@ public class ShopOwnerServlet extends HttpServlet {
                 resp.sendRedirect(req.getContextPath() + "/index.html");
             }
 
-        int messageVersion = ServletUtils.getIntParameter(req, Constants.MESSAGE_VERSION_PARAMETER);
-        if (messageVersion == Constants.INT_PARAMETER_ERROR) {
-            return;
-        }
-
             List<String> messages;
             synchronized (getServletContext()) {
                 messages = userManager.getUserMessages(usernameFromSession);
