@@ -81,3 +81,7 @@
 .singleShopOrder {
     width: 100%;
 }
+
+.noOrders {
+    font-size: 21px;
+}

@@ -48,7 +48,7 @@ function displayFillFeedback(feedbackStores) {
             "<textarea id=\"feedbackReview" + singleFeedbackStore.storeId + "\" rows=\"10\" cols=\"50\" class=\"feedbackReview\" placeholder=\"Write Your Review\"></textarea>\n" +
             " <button id=\"addFeedback" + singleFeedbackStore.storeId + "\" type=\"submit\" class=\"btn btn-primary mb-2 newOrderFeedbackSubmit\">Add Feedback</button>\n" +
             "</form>" +
-            "        <div id=\"add-item-popup\" class=\"popup\" >\n" +
+            "        <div class=\"popup add-item-popup\" >\n" +
             "            <span class=\"popuptext\" id=\"myPopup-" + singleFeedbackStore.storeId + "\" ></span>" +
             "        </div> \n" +
             "       </div>" +
@@ -65,7 +65,7 @@ function displayFillFeedback(feedbackStores) {
                 error: function (jqXHR) {
                 },
                 success: function (r) {
-                    popupSuccess("Feedback Successfully Sent To Shop Owner",popup);
+                    displayPopup("Feedback Successfully Sent To Shop Owner",popup);
                     $("#addFeedback" + singleFeedbackStore.storeId).attr("disabled",true);
                     $(".ratingOption" + singleFeedbackStore.storeId).attr("disabled",true);
                     $("#feedbackReview" + singleFeedbackStore.storeId).attr("disabled",true);
