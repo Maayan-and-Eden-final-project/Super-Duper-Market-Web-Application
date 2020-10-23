@@ -1,3 +1,5 @@
+var ordersInterval;
+
 function displayShopOwnerOrdersHistory(ordersHistory) {
     $(".dynamic-container").empty();
 
@@ -91,4 +93,7 @@ function getShopOwnerOrderHistory() {
             displayShopOwnerOrdersHistory(r);
         }
     });
+}
+function makeOrdersInterval() {
+    ordersInterval = setInterval(getShopOwnerOrderHistory, 1500);
 }

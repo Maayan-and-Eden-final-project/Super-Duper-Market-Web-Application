@@ -21,6 +21,8 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static sdmWebApplication.constants.Constants.*;
+
 public class WebEngine  extends Connector {
 
     @Override
@@ -443,7 +445,7 @@ public class WebEngine  extends Connector {
         Map<Integer, Float> storeIdToTotalCost = new HashMap<>();
         int orderId = 0;
 
-        if (method.equals("Dynamic Order")) {
+        if (method.equals(DYNAMIC_ORDER)) {
             orderId = area.getNextDynamicOrderId();
         }
 
@@ -458,7 +460,7 @@ public class WebEngine  extends Connector {
             newOrder.setOrderDate(date);
             newOrder.setOrderPurchaser(orderPurchaser);
             newOrder.setPurchaserLocation(orderSummeryContainer.getPurchaserLocation());
-            if (method.equals("Dynamic Order")) {
+            if (method.equals(DYNAMIC_ORDER)) {
                 newOrder.setDynamicOrderId(orderId);
             } else {
                 orderId = areaStore.getNewOrderId();

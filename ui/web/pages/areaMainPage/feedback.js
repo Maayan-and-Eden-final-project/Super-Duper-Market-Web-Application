@@ -1,3 +1,5 @@
+var feedbackInterval;
+
 function displayFillFeedback(feedbackStores) {
 
     $(".dynamic-container").empty();
@@ -140,4 +142,8 @@ function getShopOwnerFeedback() {
         }
     });
 
+}
+
+function makeFeedbackInterval() {
+    feedbackInterval = setInterval(getShopOwnerFeedback, 1500);
 }

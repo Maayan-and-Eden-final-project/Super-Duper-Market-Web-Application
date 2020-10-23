@@ -24,27 +24,30 @@ import java.util.List;
 import java.util.Map;
 import java.lang.Object;
 
+import static sdmWebApplication.constants.Constants.*;
+
+
 
 public class ShopOwnerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        String area = (req.getParameter("areaKey"));
-        String storeName = (req.getParameter("storeNameKey"));
-        Integer storeId =  Integer.parseInt(req.getParameter("storeIdKey"));
-        Integer xLocation = Integer.parseInt(req.getParameter("xLocationKey"));
-        Integer yLocation = Integer.parseInt(req.getParameter("yLocationKey"));
-        Integer ppk = Integer.parseInt(req.getParameter("ppkKey"));
-        String action = (req.getParameter("actionKey"));
+        String area = (req.getParameter(AREA_KEY));
+        String storeName = (req.getParameter(STORE_NAME_KEY));
+        Integer storeId =  Integer.parseInt(req.getParameter(STORE_ID_KEY));
+        Integer xLocation = Integer.parseInt(req.getParameter(X_LOCATION ));
+        Integer yLocation = Integer.parseInt(req.getParameter(Y_LOCATION));
+        Integer ppk = Integer.parseInt(req.getParameter(PPK_KEY));
+        String action = (req.getParameter(ACTION_TYPE));
 
         Gson gson = new Gson();
-        String mapString = req.getParameter("itemsListKey");
+        String mapString = req.getParameter(ITEMS_LIST_KEY);
         Type itemsMapType = new TypeToken<Map<Integer, Integer>>() {}.getType();
         Map<Integer,Integer> itemIdToItemPrice = gson.fromJson(mapString,itemsMapType);
 
         String usernameFromSession = SessionUtils.getUsername(req);
         try {
-            if(action.equals("addStore")) {
+            if(action.equals(ADD_STORE)) {
                 ServletUtils.getUserManager(getServletContext()).addNewStore(area,storeId, storeName,xLocation,yLocation,ppk,itemIdToItemPrice,usernameFromSession);
             }
 
@@ -63,12 +66,12 @@ public class ShopOwnerServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(req);
         String areanameFromSession = SessionUtils.getAreaName(req);
 
-        String actionType = req.getParameter("actionType");
+        String actionType = req.getParameter(ACTION_TYPE);
         resp.setContentType("application/json");
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         Gson gson = new Gson();
         String jsonResponse = null;
-        if(actionType.equals("pullMessages")) {
+        if(actionType.equals(PULL_MESSAGES)) {
             if (usernameFromSession == null) {
                 resp.sendRedirect(req.getContextPath() + "/index.html");
             }
@@ -78,10 +81,10 @@ public class ShopOwnerServlet extends HttpServlet {
                 messages = userManager.getUserMessages(usernameFromSession);
             }
             jsonResponse = gson.toJson(messages);
-        } else if(actionType.equals("getFeedback")) {
+        } else if(actionType.equals(GET_FEEDBACK)) {
             List<SingleFeedbackContainer> shopOwnerFeedback =  userManager.getShopOwnerFeedback(areanameFromSession);
             jsonResponse = gson.toJson(shopOwnerFeedback);
-        } else if(actionType.equals("getOrdersHistory")) {
+        } else if(actionType.equals(GET_ORDERS_HISTORY)) {
             List<SingleStoreOrdersContainer> ordersHistory = userManager.getShopOwnerOrderHistory(areanameFromSession,usernameFromSession);
             jsonResponse = gson.toJson(ordersHistory);
         }

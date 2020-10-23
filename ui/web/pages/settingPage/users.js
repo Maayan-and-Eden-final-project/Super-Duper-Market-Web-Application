@@ -14,13 +14,13 @@ function getUsersInfo() {
     });
 }
 
-$(function () {
+/*$(function () {
     $("#usersTab").click(function () {
         $(".dynamic-container").children().remove();
             getUsersInfo();
     });
     $("#usersTab").click();
-});
+});*/
 
 /*
              data will arrive in the next form:
@@ -82,5 +82,7 @@ $(function () {
         $(".dynamic-container").children().remove();
         usersInterval = setInterval(getUsersInfo, 1500);
     });
+    $("#usersTab").click();
+
 });
 

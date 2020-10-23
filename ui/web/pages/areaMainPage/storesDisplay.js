@@ -1,5 +1,7 @@
 $(function () {
     $("#stores").click(function () {
+        clearInterval(feedbackInterval);
+        clearInterval(ordersInterval);
         $.ajax({
             method: 'GET',
             url: "itemsAndStores",

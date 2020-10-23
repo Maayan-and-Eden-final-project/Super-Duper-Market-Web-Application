@@ -45,13 +45,19 @@ function getUserType() {
                 $("#menu-items").append(
                     "<li id=\"openNewStore\" class=\"main-menu-item\">Open New Store</li>\n");
                 $("#openNewStore").click(function () {
+                    clearInterval(feedbackInterval);
+                    clearInterval(ordersInterval);
                     getAreasInfo();
                 });
                 $("#showFeedback").click(function () {
-                    getShopOwnerFeedback();
+                    clearInterval(feedbackInterval);
+                    clearInterval(ordersInterval);
+                    makeFeedbackInterval();
                 });
                 $("#shopOwnerOrdersHistory").click(function () {
-                    getShopOwnerOrderHistory();
+                    clearInterval(feedbackInterval);
+                    clearInterval(ordersInterval);
+                    makeOrdersInterval();
                 });
             }
             $("#menu-items").append(

@@ -17,6 +17,8 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 
+import static sdmWebApplication.constants.Constants.*;
+
 /*
 Adding and retrieving users is synchronized and in that manner - these actions are thread safe
 Note that asking if a user exists (isUserExists) does not participate in the synchronization and it is the responsibility
@@ -195,7 +197,7 @@ public class UserManager {
         Store store = null;
         Map<Integer, List<ProgressOrderItem>>  storeIdToItemsList = null;
         Area area = null;
-        if(method.equals("Static Order")) {
+        if(method.equals(STATIC_ORDER)) {
             for (SingleUser user : userNameToUser.values()) {
                 if (user.getAreaNameToAreas().containsKey(areaName)) {
                     area = user.getAreaNameToAreas().get(areaName);
@@ -204,7 +206,7 @@ public class UserManager {
                 }
             }
 
-        } else if (method.equals("Dynamic Order")) {
+        } else if (method.equals(DYNAMIC_ORDER)) {
             for (SingleUser user : userNameToUser.values()) {
                 if (user.getAreaNameToAreas().containsKey(areaName)) {
                     area = user.getAreaNameToAreas().get(areaName);
@@ -233,7 +235,7 @@ public class UserManager {
         Store store = null;
         Map<Integer, List<ProgressOrderItem>> storeIdToItemsList = null;
         Area area = null;
-        if (method.equals("Static Order")) {
+        if (method.equals(STATIC_ORDER)) {
             for (SingleUser user : userNameToUser.values()) {
                 if (user.getAreaNameToAreas().containsKey(areaName)) {
                     area = user.getAreaNameToAreas().get(areaName);
@@ -241,7 +243,7 @@ public class UserManager {
                     storeIdToItemsList = engine.makeOrderStoreIdToItemsList(store.getItemsAndPrices(), store.getId(), itemIdToAmount);
                 }
             }
-        } else if (method.equals("Dynamic Order")) {
+        } else if (method.equals(DYNAMIC_ORDER)) {
             for (SingleUser user : userNameToUser.values()) {
                 if (user.getAreaNameToAreas().containsKey(areaName)) {
                     area = user.getAreaNameToAreas().get(areaName);
