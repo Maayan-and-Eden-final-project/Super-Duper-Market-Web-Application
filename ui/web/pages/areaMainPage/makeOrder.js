@@ -77,16 +77,8 @@ function addItemToMap(itemId,amount) {
     }
 }
 
-function popupSuccess(message, popup) {
+function displayPopup(message,popup) {
     popup.innerText = message;
-    popup.classList.toggle("show");
-    setTimeout(function () {
-        popup.classList.toggle("show"); //close the tooltip
-    }, 2000);
-}
-
-function popupFailAddItem(popup) {
-    popup.innerText = "Please enter whole number";
     popup.classList.toggle("show");
     setTimeout(function () {
         popup.classList.toggle("show"); //close the tooltip
@@ -122,7 +114,7 @@ function displayDynamicItemsOption(items) {
             "<input type=\"number\" step=\"0.01\" min=0 class=\"form-control newOrderItemAmount\" id=\"itemAmount" + singleItem.itemId + "\" placeholder=\"Amount\" required>" +
             " <button id=\"addItem" + singleItem.itemId + "\" type=\"submit\" class=\"btn btn-primary mb-2 newOrderItemSubmit\">Add Item</button>\n" +
             "</form>" +
-            "        <div id=\"add-item-popup\" class=\"popup\" >\n" +
+            "        <div class=\"popup add-item-popup\" >\n" +
             "            <span class=\"popuptext\" id=\"myPopup-" + singleItem.itemId + "\" ></span>" +
             "        </div> \n" +
             "       </div>" +
@@ -132,17 +124,17 @@ function displayDynamicItemsOption(items) {
             var popup = document.getElementById("myPopup-" + singleItem.itemId);
             if(singleItem.purchaseCategory.indexOf("QUANTITY") > -1) {
                 if(amount.indexOf(".") > -1) {
-                    popupFailAddItem(popup);
+                    displayPopup("Please enter whole number",popup);
                 } else {
                     addItemToMap(singleItem.itemId,parseFloat(amount));
-                    popupSuccess("Item Successfuly Added",popup);
+                    displayPopup("Item Successfuly Added",popup);
                     if(itemIdToAmount.size > 0) {
                         $("#nextStepButton").attr("disabled",false);
                     }
                 }
             } else {
                 addItemToMap(singleItem.itemId,parseFloat(amount));
-                popupSuccess("Item Successfuly Added",popup);
+                displayPopup("Item Successfuly Added",popup);
                 if(itemIdToAmount.size > 0) {
                     $("#nextStepButton").attr("disabled",false);
                 }
@@ -280,7 +272,7 @@ function displayOrderSummery(orderSummery) {
         );
 }
 
-function displayDiscounts(discounts){
+function displayDiscounts(discounts) {
     $(".dynamic-container").empty();
 
     $(".dynamic-container").append(
@@ -301,19 +293,19 @@ function displayDiscounts(discounts){
         var discountNameToOffersListString = JSON.stringify(Array.from(discountNameToOffersList));
         var data;
 
-        if(method.indexOf("Static Order") > -1) {
-         data = "methodKey=" + method + "&storeKey=" + store + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getOrderSummery" +"&itemIdToAmountKey=" +itemsListJsonString + "&discountListKey=" +discountNameToOffersListString;
-        } else if(method.indexOf("Dynamic Order") > -1) {
-            data = "methodKey=" + method + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getOrderSummery" +"&itemIdToAmountKey=" +itemsListJsonString + "&discountListKey=" +discountNameToOffersListString + "&minimalCartKey=" +minimalCartJson;
+        if (method.indexOf("Static Order") > -1) {
+            data = "methodKey=" + method + "&storeKey=" + store + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getOrderSummery" + "&itemIdToAmountKey=" + itemsListJsonString + "&discountListKey=" + discountNameToOffersListString;
+        } else if (method.indexOf("Dynamic Order") > -1) {
+            data = "methodKey=" + method + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&actionType=getOrderSummery" + "&itemIdToAmountKey=" + itemsListJsonString + "&discountListKey=" + discountNameToOffersListString + "&minimalCartKey=" + minimalCartJson;
         }
 
         $.ajax({
             method: 'POST',
-            data: data ,
+            data: data,
             url: "customer",
             dataType: "json",
             error: function (jqXHR) {
-                setTimeout(bootstrap_alert.warning(jqXHR.responseText,"red"),3000);
+                setTimeout(bootstrap_alert.warning(jqXHR.responseText, "red"), 3000);
             },
             success: function (r) {
                 orderSummeryInfo = JSON.stringify(r);
@@ -322,11 +314,11 @@ function displayDiscounts(discounts){
         });
     });
 
-    $.each(discounts || [], function(i, singleDiscount) {
+    $.each(discounts || [], function (i, singleDiscount) {
 
         var discountImageUrl = "../../common/images/discount-tag.png";
-        var singleDiscountName = singleDiscount.name.replaceAll(discountRegex,"");
-        singleDiscountName = singleDiscountName.replaceAll(" ","-");
+        var singleDiscountName = singleDiscount.name.replaceAll(discountRegex, "");
+        singleDiscountName = singleDiscountName.replaceAll(" ", "-");
         $(".items-list").append(
             "<li class=\"col-12 col-md-6 col-lg-3 discount-card\">\n" +
             "       <div class=\"cnt-block equal-hight newOrderDiscountCard\">\n" +
@@ -336,31 +328,31 @@ function displayDiscounts(discounts){
             "           <p id=\"ifYouBuyItemId\" class=\"newOrderSingleDiscount\">Item Id: " + singleDiscount.ifYouBuy.itemId + "</p>\n" +
             "           <p id=\"ifYouBuyQuantity\" class=\"newOrderSingleDiscount\">Item Quantity: " + singleDiscount.ifYouBuy.quantity + "</p>\n" +
             "           <p id=\"thenYouGet\" class=\"newOrderSingleDiscount discountHeaders\">Then You Get</p>\n" +
-            "           <p id=\"thenYouGetOperator\" class=\"newOrderSingleDiscount\">" + singleDiscount.thenYouGet.operator.replaceAll("_"," ") + "</p><br>\n" +
+            "           <p id=\"thenYouGetOperator\" class=\"newOrderSingleDiscount\">" + singleDiscount.thenYouGet.operator.replaceAll("_", " ") + "</p><br>\n" +
             "           <div id=\"offersList" + singleDiscountName + i + "\" class=\"row newOrderSingleDiscount\"></div>\n" +
             " <button id=\"addDiscount" + singleDiscountName + i + "\" class=\"btn btn-primary mb-2 newOrderDiscountSubmit\">Add Discount</button>\n" +
-            "        <div class=\"popup\" >\n" +
-            "            <span class=\"popuptext\" id=\"myPopup\"></span>" +
+            "        <div class=\"popup add-item-popup\" >\n" +
+            "            <span class=\"popuptext\" id=\"myPopup" + i + "\"></span>" +
             "        </div> \n" +
             "       </div>" +
             " </li>\n");
 
 
-        if(singleDiscount.thenYouGet.operator.indexOf("ONE_OF") > -1) {
+        if (singleDiscount.thenYouGet.operator.indexOf("ONE_OF") > -1) {
             $("#offersList" + singleDiscountName + i).append(
-            "<form id=\"oneOfForm" + singleDiscountName + i + "\" >\n" +
-            "</form>");
+                "<form id=\"oneOfForm" + singleDiscountName + i + "\" >\n" +
+                "</form>");
 
-            $.each(singleDiscount.thenYouGet.offers || [], function(j, singleOffer) {
+            $.each(singleDiscount.thenYouGet.offers || [], function (j, singleOffer) {
                 $("#oneOfForm" + singleDiscountName + i).append(
                     "  <input type=\"radio\" class=\"oneOfRadio" + i + "\" value=\"Offer" + singleOffer.itemId + j + i + "\" name=\"oneOfOffer" + i + "\">\n" +
                     "  <label class=\"offer-label\" for=\"Offer" + singleOffer.itemId + j + i + "\">Item Id: " + singleOffer.itemId + "</label><br>\n" +
-                    "  <label class=\"offer-label\" for=\"Offer" + singleOffer.itemId + j + i +"\">Item Quantity: " + singleOffer.quantity + "</label><br>\n" +
+                    "  <label class=\"offer-label\" for=\"Offer" + singleOffer.itemId + j + i + "\">Item Quantity: " + singleOffer.quantity + "</label><br>\n" +
                     "  <label class=\"offer-label\" for=\"Offer" + singleOffer.itemId + j + i + "\">For Additional: " + singleOffer.forAdditional + "</label><br>\n");
             });
         } else {
-            $.each(singleDiscount.thenYouGet.offers || [], function(index, singleOffer) {
-                $("#offersList" + singleDiscountName  + i).append(
+            $.each(singleDiscount.thenYouGet.offers || [], function (index, singleOffer) {
+                $("#offersList" + singleDiscountName + i).append(
                     "<div id=\"item" + index + i + "\">" +
                     "  <p  class=\"newOrderSingleDiscount\">Item Id: " + singleOffer.itemId + "</p>\n" +
                     "  <p  class=\"newOrderSingleDiscount\">Item Quantity: " + singleOffer.quantity + "</p>\n" +
@@ -370,21 +362,27 @@ function displayDiscounts(discounts){
         }
 
         $("#addDiscount" + singleDiscountName + i).click(function () {
-            if(singleDiscount.thenYouGet.operator.indexOf("ONE_OF") > -1) {
-                var chosenOffer = document.querySelector("input[name=oneOfOffer" + i + "]:checked").value;
-                var offerDetail = $("label[for=" + chosenOffer + "]");
-                addOfferDetailToMap(offerDetail, singleDiscountName);
+            if (singleDiscount.thenYouGet.operator.indexOf("ONE_OF") > -1) {
+                if (document.querySelector("input[name=oneOfOffer" + i + "]:checked") !== null) {
+                    var chosenOffer = document.querySelector("input[name=oneOfOffer" + i + "]:checked").value;
+                    var offerDetail = $("label[for=" + chosenOffer + "]");
+                    addOfferDetailToMap(offerDetail, singleDiscountName);
+                    $(".oneOfRadio" + i).attr("disabled", true);
+                    $("#addDiscount" + singleDiscountName + i).attr("disabled", true);
+                } else {
+                    var popup = document.getElementById("myPopup" + i);
+                    displayPopup("Select One Option",popup);
+                }
             } else {
-                var listItems = $("#offersList" + singleDiscountName  + i).children();
-                $.each(listItems || [], function(index, item) {
-                   var offerDetail = $("#item" + index + i).children();
-                    addOfferDetailToMap(offerDetail,singleDiscountName);
+                var listItems = $("#offersList" + singleDiscountName + i).children();
+                $.each(listItems || [], function (index, item) {
+                    var offerDetail = $("#item" + index + i).children();
+                    addOfferDetailToMap(offerDetail, singleDiscountName);
                 });
+                $(".oneOfRadio" + i).attr("disabled", true);
+                $("#addDiscount" + singleDiscountName + i).attr("disabled", true);
             }
-            $(".oneOfRadio" + i).attr("disabled",true);
-            $("#addDiscount" + singleDiscountName + i).attr("disabled",true);
         });
-
     });
 }
 
@@ -442,7 +440,7 @@ function displayStaticItemsOption(items) {
             "<input type=\"number\" step=\"0.01\" min=0 class=\"form-control newOrderItemAmount\" id=\"itemAmount" + singleItem.itemId + "\" placeholder=\"Amount\" required>" +
             " <button id=\"addItem" + singleItem.itemId + "\" type=\"submit\" class=\"btn btn-primary mb-2 newOrderItemSubmit\">Add Item</button>\n" +
             "</form>" +
-            "        <div id=\"add-item-popup\" class=\"popup\" >\n" +
+            "        <div class=\"popup add-item-popup\" >\n" +
             "            <span class=\"popuptext\" id=\"myPopup-" + singleItem.itemId + "\" ></span>" +
             "        </div> \n" +
             "       </div>" +
@@ -452,17 +450,17 @@ function displayStaticItemsOption(items) {
             var popup = document.getElementById("myPopup-" + singleItem.itemId);
             if(singleItem.purchaseCategory.indexOf("QUANTITY") > -1) {
                 if(amount.indexOf(".") > -1) {
-                    popupFailAddItem(popup);
+                    displayPopup("Please enter whole number",popup);
                 } else {
                     addItemToMap(singleItem.itemId,parseFloat(amount));
-                    popupSuccess("Item Successfuly Added",popup);
+                    displayPopup("Item Successfuly Added",popup);
                     if(itemIdToAmount.size > 0) {
                         $("#nextStepButton").attr("disabled",false);
                     }
                 }
             } else {
                 addItemToMap(singleItem.itemId,parseFloat(amount));
-                popupSuccess("Item Successfuly Added",popup);
+                displayPopup("Item Successfuly Added",popup);
                 if(itemIdToAmount.size > 0) {
                     $("#nextStepButton").attr("disabled",false);
                 }

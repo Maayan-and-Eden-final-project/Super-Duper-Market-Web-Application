@@ -18,13 +18,8 @@ import static sdmWebApplication.constants.Constants.USERTYPE;
 
 public class LoginServlet extends HttpServlet {
 
-    // urls that starts with forward slash '/' are considered absolute
-    // urls that doesn't start with forward slash '/' are considered relative to the place where this servlet request comes from
-    // you can use absolute paths, but then you need to build them from scratch, starting from the context path
-    // ( can be fetched from request.getContextPath() ) and then the 'absolute' path from it.
-    // Each method with it's pros and cons...
     private final String SETTING_PAGE_URL = "../settingPage/settingPage.html";
-    private final String SIGN_UP_URL = "../login/login.html";
+    private final String SIGN_UP_URL = "/pages/login/login.html";
     private final String LOGIN_ERROR_URL = "/pages/loginerror/login_attempt_after_error.html";  // must start with '/' since will be used in request dispatcher...
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,14 +37,15 @@ public class LoginServlet extends HttpServlet {
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         if (usernameFromSession == null) {
             //user is not logged in yet
-            String usernameFromParameter = request.getParameter(USERNAME).toLowerCase();
+            String usernameFromParameter = request.getParameter(USERNAME);
             String usertypeFromParameter = request.getParameter(USERTYPE);
 
             if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {
-                response.sendRedirect(SIGN_UP_URL);
+                String path = request.getContextPath() + SIGN_UP_URL;
+                response.sendRedirect(path);
             } else {
                 //normalize the username value
-                usernameFromParameter = usernameFromParameter.trim();
+                usernameFromParameter = usernameFromParameter.trim().toLowerCase();
                 usertypeFromParameter = usertypeFromParameter.trim();
 
                 synchronized (this) {

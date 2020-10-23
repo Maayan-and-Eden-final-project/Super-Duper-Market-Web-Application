@@ -4,6 +4,20 @@ bootstrap_alert.warning = function(message, color) {
     $('#alert_placeholder').html('<div id="addStoreAlert" class="alert addStoreAlert" style="color:' + color + "!important;\"" + '><a class="close addStoreAlertClose" data-dismiss="alert">x</a><span>'+message+'</span></div>')
 }
 
+/*function backToPage2() {
+    $.ajax({
+        method: 'GET',
+        url: "../settingPage/uploadFile",
+        timeout: 4000,
+        error: function (e) {
+        },
+        success: function (r) {
+
+        }
+    });
+
+}*/
+
 function getUserType() {
     $.ajax({
         method: 'GET',
@@ -33,15 +47,22 @@ function getUserType() {
                 $("#openNewStore").click(function () {
                     getAreasInfo();
                 });
-
                 $("#showFeedback").click(function () {
                     getShopOwnerFeedback();
                 });
                 $("#shopOwnerOrdersHistory").click(function () {
                     getShopOwnerOrderHistory();
                 });
-
             }
+            $("#menu-items").append(
+                "<li id=\"backToPage2\" class=\"main-menu-item\">Back" +
+                "<form id=\"backForm\" method=\"GET\" action=\"../login/login\" > " +
+                "<input type=\"submit\" id=\"addButton\" value=\"Add\" style=\"display: none;\">\n" +
+                "</form>" +
+                "</li>\n");
+            $("#backToPage2").click(function () {
+                $("#backForm").submit();
+            });
         }
     });
 }
