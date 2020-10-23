@@ -57,6 +57,9 @@
 
 .feedback-card {
     text-align: -webkit-center;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 446px;
 }
 
 .star-button {

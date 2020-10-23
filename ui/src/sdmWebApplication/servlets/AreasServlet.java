@@ -16,8 +16,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Set;
 
-import static sdmWebApplication.constants.Constants.AREANAME;
-import static sdmWebApplication.constants.Constants.USERTYPE;
+import static sdmWebApplication.constants.Constants.*;
 
 public class AreasServlet extends HttpServlet {
     private final String SIGN_UP_URL = "../login/login.html";
@@ -39,7 +38,7 @@ public class AreasServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String areaName = req.getParameter("areaKey");
+        String areaName = req.getParameter(AREA_KEY);
         areaName = areaName.replaceAll("-"," ");
         String areaNameFromSession = SessionUtils.getAreaName(req);
         String usernameFromSession = SessionUtils.getUsername(req);

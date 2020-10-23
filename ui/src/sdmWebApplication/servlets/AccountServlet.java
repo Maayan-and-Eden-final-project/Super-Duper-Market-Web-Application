@@ -17,13 +17,16 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Map;
 
+import static sdmWebApplication.constants.Constants.AMOUNT_KEY;
+import static sdmWebApplication.constants.Constants.DATE_KEY;
+
 public class AccountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        Float amount = Float.parseFloat(req.getParameter("amountKey"));
-        String date = req.getParameter("dateKey");
+        Float amount = Float.parseFloat(req.getParameter(AMOUNT_KEY));
+        String date = req.getParameter(DATE_KEY);
         String usernameFromSession = SessionUtils.getUsername(req);
         ServletUtils.getUserManager(getServletContext()).addFundsToWallet(amount,date,usernameFromSession);
         out.println(amount.toString() + " was added to your wallet");

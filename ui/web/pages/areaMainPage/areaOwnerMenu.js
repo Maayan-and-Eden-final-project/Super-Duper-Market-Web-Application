@@ -29,11 +29,17 @@ function displayItemsOption(items) {
             "<input type=\"number\" min=0 class=\"form-control addStoreItemPrice\" id=\"itemPrice" + singleItem.itemId + "\" placeholder=\"Price\" required>" +
             " <button id=\"addItem" + singleItem.itemId + "\" type=\"submit\" class=\"btn btn-primary mb-2 addStoreItemSubmit\">Add Item</button>\n" +
             "</form>" +
+            "        <div class=\"popup add-item-popup\" >\n" +
+            "            <span class=\"popuptext\" id=\"myPopup-" + index + "\" ></span>" +
+            "        </div> \n" +
             "       </div>" +
             " </li>\n");
         $("#add-store-item-form-" + singleItem.itemId).submit(function () {
             var itemPrice = $("#itemPrice" + singleItem.itemId).val();
             itemIdToItemPrice.set(singleItem.itemId, itemPrice); //TODO: empty when back clicked
+            $("#itemPrice" + singleItem.itemId).val("");
+            var popup = document.getElementById("myPopup-" + index);
+            displayPopup("Item Successfully Added",popup);
             return false;
         });
     });
@@ -98,7 +104,7 @@ function makeNewStoreForm(areas) {
 
             $.ajax({
                 method: 'POST',
-                data: "areaKey=" + area + "&storeNameKey=" + storeName + "&storeIdKey=" + storeId + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&ppkKey=" + ppk + "&itemsListKey=" + itemsListJsonString + "&actionKey=addStore",
+                data: "areaKey=" + area + "&storeNameKey=" + storeName + "&storeIdKey=" + storeId + "&xLocationKey=" + xLocation + "&yLocationKey=" + yLocation + "&ppkKey=" + ppk + "&itemsListKey=" + itemsListJsonString + "&actionType=addStore",
                 url: "shopOwner",
                 error: function (jqXHR) {
                     bootstrap_alert.warning(jqXHR.responseText,"red");
