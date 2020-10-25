@@ -113,3 +113,23 @@ h2 {
     margin-left: 93px!important;
     margin-top: 6px!important;
 }
+
+
+#menu-items {
+    font-size: 22px;
+    width: 100% !important;
+    margin-left: 0 !important;
+}
+
+.main-menu-item {
+    cursor: pointer;
+    display: grid!important;
+    font-family: 'GeosansLight';
+    color: #26394e;
+    padding-left: 22px;
+}
+
+.main-menu-item:hover {
+    color: ghostwhite;
+    background-color:#26394e;
+}

@@ -99,7 +99,7 @@ public class ShopOwnerServlet extends HttpServlet {
             }
             jsonResponse = gson.toJson(messages);
         } else if(actionType.equals(GET_FEEDBACK)) {
-            List<SingleFeedbackContainer> shopOwnerFeedback =  userManager.getShopOwnerFeedback(areanameFromSession);
+            List<SingleFeedbackContainer> shopOwnerFeedback =  userManager.getShopOwnerFeedback(areanameFromSession, usernameFromSession);
             jsonResponse = gson.toJson(shopOwnerFeedback);
         } else if(actionType.equals(GET_ORDERS_HISTORY)) {
             List<SingleStoreOrdersContainer> ordersHistory = userManager.getShopOwnerOrderHistory(areanameFromSession,usernameFromSession);

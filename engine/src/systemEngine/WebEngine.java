@@ -157,8 +157,8 @@ public class WebEngine  extends Connector {
                     areaContainer.setItemsInArea(area.getItemIdToItem().size());
 
                     for (Store store : area.getStoreIdToStore().values()) {
-                        if(areaContainer.getOrdersInArea() != null) {
-                            areaContainer.setOrdersInArea(store.getOrders().size() + areaContainer.getOrdersInArea() );
+                        if (areaContainer.getOrdersInArea() != null) {
+                            areaContainer.setOrdersInArea(store.getOrders().size() + areaContainer.getOrdersInArea());
                         } else {
                             areaContainer.setOrdersInArea(store.getOrders().size());
                         }
@@ -172,7 +172,7 @@ public class WebEngine  extends Connector {
                         } else {
                             ordersAvg /= store.getOrders().size();
                         }
-                        if(areaContainer.getAvgOrdersCostsInArea() != null) {
+                        if (areaContainer.getAvgOrdersCostsInArea() != null) {
                             areaContainer.setAvgOrdersCostsInArea(ordersAvg + areaContainer.getAvgOrdersCostsInArea());
                         } else {
                             areaContainer.setAvgOrdersCostsInArea(ordersAvg);
@@ -509,7 +509,9 @@ public class WebEngine  extends Connector {
             areaStore.setTotalDeliveryPayment(totalDeliveryPayments + newOrder.getDeliveryCost());
             areaStore.getOrders().add(newOrder);
 
-            storeIdToTotalCost.put(store.getStoreId(), (float) newOrder.getTotalOrderPrice());
+            synchronized (this) {
+                storeIdToTotalCost.put(store.getStoreId(), (float) newOrder.getTotalOrderPrice());
+            }
         }
         return storeIdToTotalCost;
     }
@@ -524,7 +526,7 @@ public class WebEngine  extends Connector {
         return fillFeedbackContainer;
     }
 
-    public void addFeedbackToStore(Store reviewedStore, String userName, String date, Integer rate, String review) {
+    public synchronized void addFeedbackToStore(Store reviewedStore, String userName, String date, Integer rate, String review) {
         Feedback feedback = new Feedback(userName, date, rate, review);
         reviewedStore.getFeedbackList().add(feedback);
     }
@@ -634,11 +636,11 @@ public class WebEngine  extends Connector {
     public List<SingleStoreOrdersContainer> getShopOwnerOrderHistory(List<Store> stores) {
         List<SingleStoreOrdersContainer> orders = new ArrayList<>();
 
-        for(Store store : stores) {
+        for (Store store : stores) {
             SingleStoreOrdersContainer singleStoreOrders = new SingleStoreOrdersContainer();
             singleStoreOrders.setStoreId(store.getId());
             singleStoreOrders.setStoreName(store.getName());
-            for(Order order : store.getOrders()) {
+            for (Order order : store.getOrders()) {
                 SingleShopOwnerOrderContainer singleOrder = new SingleShopOwnerOrderContainer();
                 singleOrder.setOrderId(order.getOrderId());
                 singleOrder.setOrderDate(order.getOrderDate());
@@ -647,7 +649,7 @@ public class WebEngine  extends Connector {
                 singleOrder.setNumberOfDifferentItems(order.getTotalNumberOfItems());
                 singleOrder.setTotalItemsCost(order.getTotalItemsPrice());
                 singleOrder.setShippingCost(order.getDeliveryCost());
-                for(OrderedItem orderedItem : order.getItemIdPairToItems().values()) {
+                for (OrderedItem orderedItem : order.getItemIdPairToItems().values()) {
                     SingleOrderItemContainer singleItem = new SingleOrderItemContainer();
                     singleItem.setItemId(orderedItem.getItemId());
                     singleItem.setItemName(orderedItem.getItemName());
@@ -668,19 +670,32 @@ public class WebEngine  extends Connector {
     public List<StoreIdAndNameContainer> getAreaOwnerStores(List<Store> stores) {
         List<StoreIdAndNameContainer> areaOwnerStores = new ArrayList<>();
 
-        for(Store store : stores) {
-            areaOwnerStores.add(new StoreIdAndNameContainer(store.getId(),store.getName()));
+        for (Store store : stores) {
+            areaOwnerStores.add(new StoreIdAndNameContainer(store.getId(), store.getName()));
         }
         return areaOwnerStores;
     }
 
-    public void addNewItem(Area area, Map<Integer,Integer> storeIdToItemPrice, String itemName, PurchaseCategory purchaseCategory) {
-        Item item = new Item(area.getNextItemId(),itemName,purchaseCategory);
+    public synchronized void addNewItem(Area area, Map<Integer, Integer> storeIdToItemPrice, String itemName, PurchaseCategory purchaseCategory) {
+        Item item = new Item(area.getNextItemId(), itemName, purchaseCategory);
         area.addItem(item);
-        for(Integer storeId : storeIdToItemPrice.keySet()) {
+        for (Integer storeId : storeIdToItemPrice.keySet()) {
             Store store = area.getStoreIdToStore().get(storeId);
-            store.getItemsIdAndPrices().put(item.getId(),storeIdToItemPrice.get(storeId));
-            store.getItemsAndPrices().put(item,storeIdToItemPrice.get(storeId));
+            store.getItemsIdAndPrices().put(item.getId(), storeIdToItemPrice.get(storeId));
+            store.getItemsAndPrices().put(item, storeIdToItemPrice.get(storeId));
         }
+    }
+
+    public Map<String, SingleUserContainer> getUsersInfo(String userName, Map<String,SingleUser> users) {
+        Map<String, SingleUserContainer> usersInfo = new HashMap<>();
+
+        for(SingleUser user : users.values()) {
+            SingleUserContainer singleUser = new SingleUserContainer(user.getUserName(),user.getUserType());
+            if(singleUser.getUserName().equals(userName)) {
+                singleUser.setCurrentUser(true);
+            }
+            usersInfo.put(user.getUserName(),singleUser);
+        }
+        return usersInfo;
     }
 }

@@ -103,7 +103,6 @@ $(function () {
     $("#accountTab").click(function () {
         $(".dynamic-container").children().remove();
         getUserTypeForAccount();
-        accountTableInterval = setInterval(refreshAccountTable, 1500);
-
+        accountTableInterval = setInterval(refreshAccountTable, 2000);
     });
 });
