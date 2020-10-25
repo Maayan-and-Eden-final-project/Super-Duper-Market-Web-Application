@@ -36,10 +36,6 @@ public class Area {
         itemIdToItem.put(item.getId(),item);
     }
 
-    public void addStore(Store store) {
-        storeIdToStore.put(store.getId(),store);
-    }
-
     public void addItemToArea(Item item) {
         itemIdToItem.put(item.getId(),item);
     }
@@ -52,4 +48,8 @@ public class Area {
         return ++dynamicIdCounter;
     }
 
+    public int getNextItemId() {
+       int maxItemId = Collections.max(itemIdToItem.keySet());
+        return ++maxItemId;
+    }
 }

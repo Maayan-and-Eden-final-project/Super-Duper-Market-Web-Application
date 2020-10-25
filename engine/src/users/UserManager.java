@@ -6,6 +6,7 @@ import exceptions.AreaAlreadyExistException;
 import exceptions.StoreLocationAlreadyExistException;
 import exceptions.XmlSimilarStoresIdException;
 import sdm.enums.AccountAction;
+import sdm.enums.PurchaseCategory;
 import sdm.enums.UserType;
 import sdm.sdmElements.*;
 import systemEngine.WebEngine;
@@ -164,7 +165,9 @@ public class UserManager {
         }
 
         engine.addNewStore(areaName,storeId,storeName,newStoreLocation,ppk,itemIdToItemPrice,shopOwner,areaOwner);
-        addMessageToUser(shopOwner.getUserName() + " opened a new store- " + storeName +  " in your area- " + areaName, areaOwner);
+        if(!areaOwner.getUserName().equals(shopOwner.getUserName())) {
+            addMessageToUser(shopOwner.getUserName() + " opened a new store- " + storeName +  " in your area- " + areaName, areaOwner);
+        }
     }
 
     private void addMessageToUser(String message, SingleUser areaOwner) {
@@ -175,10 +178,6 @@ public class UserManager {
         List<String> messagesClone = new ArrayList<>(userNameToUser.get(userName).getUserMessages());
         userNameToUser.get(userName).emptyMessagesList();
         return messagesClone;
-    }
-
-    public int getUserMessageVersion(String userName) {
-        return userNameToUser.get(userName).getUserMessages().size();
     }
 
     public SingleAreaOptionContainer getNewOrderOptions(String areaName) {
@@ -379,7 +378,7 @@ public class UserManager {
         return engine.getCustomerOrderHistory(customerOrders);
     }
 
-    public List<SingleStoreOrdersContainer> getShopOwnerOrderHistory(String areaName, String userName ) {
+    public List<SingleStoreOrdersContainer> getShopOwnerOrderHistory(String areaName, String userName) {
         List<Store> stores = new ArrayList<>();
 
         if(!userNameToUser.get(userName).getAreaNameToAreas().containsKey(areaName)) {
@@ -394,5 +393,40 @@ public class UserManager {
             }
         }
         return engine.getShopOwnerOrderHistory(stores);
+    }
+
+    public List<StoreIdAndNameContainer> getAreaOwnerStores(String areaName, String userName) {
+       List<Store> areaOwnerStores = null;
+       Map<Integer,Store> areaStores = null;
+        if(userNameToUser.get(userName).getAreaNameToAreas().containsKey(areaName)) {
+            areaStores = userNameToUser.get(userName).getAreaNameToAreas().get(areaName).getStoreIdToStore();
+            areaOwnerStores = new ArrayList<>(areaStores.values());
+        }
+
+        for(SingleUser user : userNameToUser.values()) {
+            for (Store store : user.getMyAddedStores()) {
+                if (store.getAreaName().equals(areaName)) {
+                    areaOwnerStores.remove(areaStores.get(store.getId()));
+                }
+            }
+        }
+
+        if(areaOwnerStores != null) {
+          return  engine.getAreaOwnerStores(areaOwnerStores);
+        }
+        return null;
+    }
+
+    public void addNewItem(String areaName, Map<Integer,Integer> storeIdToItemPrice, String itemName, String purchaseCategory) {
+
+        Area area = null;
+
+        for(SingleUser user : userNameToUser.values()) {
+            if(user.getAreaNameToAreas().containsKey(areaName)) {
+                area = user.getAreaNameToAreas().get(areaName);
+            }
+        }
+
+        engine.addNewItem(area,storeIdToItemPrice,itemName, PurchaseCategory.valueOf(purchaseCategory));
     }
 }

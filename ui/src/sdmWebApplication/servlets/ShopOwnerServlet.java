@@ -32,27 +32,44 @@ public class ShopOwnerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        String area = (req.getParameter(AREA_KEY));
-        String storeName = (req.getParameter(STORE_NAME_KEY));
-        Integer storeId =  Integer.parseInt(req.getParameter(STORE_ID_KEY));
-        Integer xLocation = Integer.parseInt(req.getParameter(X_LOCATION ));
-        Integer yLocation = Integer.parseInt(req.getParameter(Y_LOCATION));
-        Integer ppk = Integer.parseInt(req.getParameter(PPK_KEY));
-        String action = (req.getParameter(ACTION_TYPE));
 
+        String action = (req.getParameter(ACTION_TYPE));
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
         Gson gson = new Gson();
-        String mapString = req.getParameter(ITEMS_LIST_KEY);
-        Type itemsMapType = new TypeToken<Map<Integer, Integer>>() {}.getType();
-        Map<Integer,Integer> itemIdToItemPrice = gson.fromJson(mapString,itemsMapType);
+
 
         String usernameFromSession = SessionUtils.getUsername(req);
         try {
             if(action.equals(ADD_STORE)) {
-                ServletUtils.getUserManager(getServletContext()).addNewStore(area,storeId, storeName,xLocation,yLocation,ppk,itemIdToItemPrice,usernameFromSession);
-            }
+                String area = (req.getParameter(AREA_KEY));
+                String storeName = (req.getParameter(STORE_NAME_KEY));
+                Integer storeId =  Integer.parseInt(req.getParameter(STORE_ID_KEY));
+                Integer xLocation = Integer.parseInt(req.getParameter(X_LOCATION ));
+                Integer yLocation = Integer.parseInt(req.getParameter(Y_LOCATION));
+                Integer ppk = Integer.parseInt(req.getParameter(PPK_KEY));
 
-            out.println("Store Added Successfully");
-            out.flush();
+                String mapString = req.getParameter(ITEMS_LIST_KEY);
+                Type itemsMapType = new TypeToken<Map<Integer, Integer>>() {}.getType();
+                Map<Integer,Integer> itemIdToItemPrice = gson.fromJson(mapString,itemsMapType);
+
+                userManager.addNewStore(area,storeId, storeName,xLocation,yLocation,ppk,itemIdToItemPrice,usernameFromSession);
+
+                out.println("Store Added Successfully");
+                out.flush();
+            } else if(action.equals(ADD_ITEM)) {
+                String purchaseCategory = (req.getParameter(PURCHASE_CATEGORY));
+                String itemName = (req.getParameter(ITEM_NAME));
+                String areanameFromSession = SessionUtils.getAreaName(req);
+
+                String mapString = req.getParameter(STORES_LIST_KEY);
+                Type itemsMapType = new TypeToken<Map<Integer, Integer>>() {}.getType();
+                Map<Integer,Integer> storeIdToItemPrice = gson.fromJson(mapString,itemsMapType);
+
+                userManager.addNewItem(areanameFromSession,storeIdToItemPrice,itemName,purchaseCategory);
+
+                out.println("Item Added Successfully");
+                out.flush();
+            }
 
         } catch (Exception e) {
             resp.setStatus(400);

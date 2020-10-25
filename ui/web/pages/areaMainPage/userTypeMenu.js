@@ -44,6 +44,8 @@ function getUserType() {
                     "<li id=\"showFeedback\" class=\"main-menu-item\">Show Feedback</li>\n");
                 $("#menu-items").append(
                     "<li id=\"openNewStore\" class=\"main-menu-item\">Open New Store</li>\n");
+                $("#menu-items").append(
+                    "<li id=\"addNewItem\" class=\"main-menu-item\">Add New Item</li>\n");
                 $("#openNewStore").click(function () {
                     clearInterval(feedbackInterval);
                     clearInterval(ordersInterval);
@@ -58,6 +60,11 @@ function getUserType() {
                     clearInterval(feedbackInterval);
                     clearInterval(ordersInterval);
                     makeOrdersInterval();
+                });
+                $("#addNewItem").click(function () {
+                    clearInterval(feedbackInterval);
+                    clearInterval(ordersInterval);
+                    addNewItem();
                 });
             }
             $("#menu-items").append(

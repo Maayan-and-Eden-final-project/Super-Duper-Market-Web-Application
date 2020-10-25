@@ -31,7 +31,24 @@ function displayShopOwnerOrdersHistory(ordersHistory) {
             "    </div>\n" +
             "  </div>");
 
+        $('#collapseStore' + index).on('shown.bs.collapse', function () {
+            window.clearInterval(ordersInterval);
+        });
+
+        $('#collapseStore' + index).on('hidden.bs.collapse', function () {
+            if(!$('#collapseStore' + index).hasClass("show")) {
+                window.clearInterval(ordersInterval);
+                ordersInterval = setInterval(getShopOwnerOrderHistory, 1500);
+            }
+        });
+
+        $('#collapseStore' + index).click(function () {
+            window.clearInterval(ordersInterval);
+        });
+
+
         if(storeOrders.orders.length !== 0 ) {
+
             $.each(storeOrders.orders || [], function (i, order) {
                 $("#storeOrdersHistoryAccordion" + index).append(
                     "  <div class=\"card orderCard singleShopOrder\">\n" +
@@ -70,6 +87,7 @@ function displayShopOwnerOrdersHistory(ordersHistory) {
                         "           <p class=\"area-list-item\">Is From Discount: " + item.isFromDiscount + "</p>\n" +
                         "           </li>\n");
                 });
+
             });
         } else {
             $("#storeOrdersHistoryAccordion" + index).append("<div class=\"noOrders\">No Orders</div>");

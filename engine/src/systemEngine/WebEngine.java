@@ -7,6 +7,7 @@ import exceptions.SingleSellingStoreException;
 import exceptions.XmlSimilarItemsIdException;
 
 import javafx.util.Pair;
+import sdm.enums.PurchaseCategory;
 import sdm.sdmElements.*;
 import systemInfoContainers.*;
 import systemInfoContainers.webContainers.*;
@@ -156,7 +157,11 @@ public class WebEngine  extends Connector {
                     areaContainer.setItemsInArea(area.getItemIdToItem().size());
 
                     for (Store store : area.getStoreIdToStore().values()) {
-                        areaContainer.setOrdersInArea(store.getOrders().size());
+                        if(areaContainer.getOrdersInArea() != null) {
+                            areaContainer.setOrdersInArea(store.getOrders().size() + areaContainer.getOrdersInArea() );
+                        } else {
+                            areaContainer.setOrdersInArea(store.getOrders().size());
+                        }
 
                         float ordersAvg = 0;
                         for (Order order : store.getOrders()) {
@@ -167,7 +172,11 @@ public class WebEngine  extends Connector {
                         } else {
                             ordersAvg /= store.getOrders().size();
                         }
-                        areaContainer.setAvgOrdersCostsInArea(ordersAvg);
+                        if(areaContainer.getAvgOrdersCostsInArea() != null) {
+                            areaContainer.setAvgOrdersCostsInArea(ordersAvg + areaContainer.getAvgOrdersCostsInArea());
+                        } else {
+                            areaContainer.setAvgOrdersCostsInArea(ordersAvg);
+                        }
                     }
                     areaContainersList.add(areaContainer);
                 }
@@ -654,5 +663,24 @@ public class WebEngine  extends Connector {
             orders.add(singleStoreOrders);
         }
         return orders;
+    }
+
+    public List<StoreIdAndNameContainer> getAreaOwnerStores(List<Store> stores) {
+        List<StoreIdAndNameContainer> areaOwnerStores = new ArrayList<>();
+
+        for(Store store : stores) {
+            areaOwnerStores.add(new StoreIdAndNameContainer(store.getId(),store.getName()));
+        }
+        return areaOwnerStores;
+    }
+
+    public void addNewItem(Area area, Map<Integer,Integer> storeIdToItemPrice, String itemName, PurchaseCategory purchaseCategory) {
+        Item item = new Item(area.getNextItemId(),itemName,purchaseCategory);
+        area.addItem(item);
+        for(Integer storeId : storeIdToItemPrice.keySet()) {
+            Store store = area.getStoreIdToStore().get(storeId);
+            store.getItemsIdAndPrices().put(item.getId(),storeIdToItemPrice.get(storeId));
+            store.getItemsAndPrices().put(item,storeIdToItemPrice.get(storeId));
+        }
     }
 }

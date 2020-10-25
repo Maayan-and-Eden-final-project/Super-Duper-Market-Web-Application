@@ -25,6 +25,9 @@ public class Constants {
     public static final String STORE_NAME_KEY = "storeNameKey";
     public static final String PPK_KEY = "ppkKey";
     public static final String ITEMS_LIST_KEY = "itemsListKey";
+    public static final String PURCHASE_CATEGORY = "purchaseCategoryKey";
+    public static final String ITEM_NAME = "itemNameKey";
+    public static final String STORES_LIST_KEY = "storesListKey";
 
     public static final String NEW_ORDER = "newOrder";
     public static final String ORDER_ITEMS_OPTION = "getOrderItemsOption";
@@ -41,5 +44,10 @@ public class Constants {
     public static final String ADD_STORE = "addStore";
     public static final String PULL_MESSAGES = "pullMessages";
     public static final String GET_FEEDBACK = "getFeedback";
+    public static final String STORES_FOR_ADD_ITEM = "storesForAddItem";
+    public static final String ADD_ITEM = "addItem";
+    public static final String GET_AREAS = "getAreas";
+
+
 
 }
