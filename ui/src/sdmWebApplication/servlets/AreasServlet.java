@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import sdmWebApplication.utils.ServletUtils;
 import sdmWebApplication.utils.SessionUtils;
 import systemInfoContainers.webContainers.AreaContainer;
+import systemInfoContainers.webContainers.StoreIdAndNameContainer;
 import users.SingleUser;
 import users.UserManager;
 
@@ -26,11 +27,21 @@ public class AreasServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
+        String actionType = req.getParameter(ACTION_TYPE);
         try (PrintWriter out = resp.getWriter()) {
+            String json = null;
             Gson gson = new Gson();
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            List<AreaContainer> areasList = userManager.getAreas();
-            String json = gson.toJson(areasList);
+           if(actionType.equals(STORES_FOR_ADD_ITEM)) {
+               String areaNameFromSession = SessionUtils.getAreaName(req);
+               String usernameFromSession = SessionUtils.getUsername(req);
+               List<StoreIdAndNameContainer> areaOwnerStores = userManager.getAreaOwnerStores(areaNameFromSession,usernameFromSession);
+               json = gson.toJson(areaOwnerStores);
+           } else if(actionType.equals(GET_AREAS)) {
+               List<AreaContainer> areasList = userManager.getAreas();
+               json = gson.toJson(areasList);
+           }
+
             out.println(json);
             out.flush();
         }

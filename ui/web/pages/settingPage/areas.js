@@ -39,6 +39,7 @@ function getAreasInfo() {
     $.ajax({
         method: 'GET',
         url: "areas",
+        data: "actionType=getAreas",
         timeout: 4000,
         dataType: "json",
         error: function (e) {
