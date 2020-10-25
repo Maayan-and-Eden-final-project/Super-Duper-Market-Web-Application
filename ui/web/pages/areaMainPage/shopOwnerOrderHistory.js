@@ -113,5 +113,6 @@ function getShopOwnerOrderHistory() {
     });
 }
 function makeOrdersInterval() {
-    ordersInterval = setInterval(getShopOwnerOrderHistory, 1500);
+    getShopOwnerOrderHistory();
+    ordersInterval = setInterval(getShopOwnerOrderHistory, 2000);
 }

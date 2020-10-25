@@ -1,11 +1,9 @@
 package users;
 
 import areas.Area;
-import com.sun.xml.internal.bind.v2.model.core.EnumLeafInfo;
 import exceptions.AreaAlreadyExistException;
 import exceptions.StoreLocationAlreadyExistException;
 import exceptions.XmlSimilarStoresIdException;
-import sdm.enums.AccountAction;
 import sdm.enums.PurchaseCategory;
 import sdm.enums.UserType;
 import sdm.sdmElements.*;
@@ -20,11 +18,6 @@ import java.util.List;
 
 import static sdmWebApplication.constants.Constants.*;
 
-/*
-Adding and retrieving users is synchronized and in that manner - these actions are thread safe
-Note that asking if a user exists (isUserExists) does not participate in the synchronization and it is the responsibility
-of the user of this class to handle the synchronization of isUserExists with other methods here on it's own
- */
 public class UserManager {
 
     private Map<String, SingleUser> userNameToUser;
@@ -43,16 +36,12 @@ public class UserManager {
         userNameToUser.put(username, new SingleUser(userType,username, userId));
     }
 
-    /*public synchronized void removeUser(String username) {
-        usersSet.forEach(user -> {
-            if(user.getUserName().equals(username)) {
-                usersSet.remove(user);
-            }
-        });
-    }*/
-
     public synchronized Map<String,SingleUser> getUsers() {
         return Collections.unmodifiableMap(userNameToUser);
+    }
+
+    public Map<String,SingleUserContainer> getUsersInfo(String userName) {
+        return engine.getUsersInfo(userName,getUsers());
     }
 
     public boolean isUserExists(String username) {
@@ -170,11 +159,11 @@ public class UserManager {
         }
     }
 
-    private void addMessageToUser(String message, SingleUser areaOwner) {
+    private synchronized void addMessageToUser(String message, SingleUser areaOwner) {
         areaOwner.addNewMessage(message);
     }
 
-    public List<String> getUserMessages(String userName) {
+    public synchronized List<String> getUserMessages(String userName) {
         List<String> messagesClone = new ArrayList<>(userNameToUser.get(userName).getUserMessages());
         userNameToUser.get(userName).emptyMessagesList();
         return messagesClone;
@@ -335,24 +324,34 @@ public class UserManager {
         storeOwner.addNewMessage(userName + " added a feedback on your store (" + reviewedStore.getName() + ")");
     }
 
-    public List<SingleFeedbackContainer> getShopOwnerFeedback(String areaName) {
+    public List<SingleFeedbackContainer> getShopOwnerFeedback(String areaName, String userName) {
         Area area = null;
         List<Store> shopOwnerStores = null;
+        SingleUser areaOwner = null;
         for(SingleUser user : userNameToUser.values()) {
             if(user.getAreaNameToAreas().containsKey(areaName)) {
+                areaOwner = user;
                 area = user.getAreaNameToAreas().get(areaName);
                 synchronized (this) {
                     shopOwnerStores = new ArrayList<>(area.getStoreIdToStore().values());
                 }
             }
         }
-
-        for(Store store : area.getStoreIdToStore().values()){
-            for(SingleUser user : userNameToUser.values()) {
-                for(Store userStore : user.getMyAddedStores()) {
-                    if(userStore.getId() == store.getId() && userStore.getAreaName() == areaName) {
-                        shopOwnerStores.remove(userStore);
+        if(areaOwner != null && areaOwner.getUserName().equals(userName)) {
+            for (Store store : area.getStoreIdToStore().values()) {
+                for (SingleUser user : userNameToUser.values()) {
+                    for (Store userStore : user.getMyAddedStores()) {
+                        if (userStore.getId() == store.getId() && userStore.getAreaName().equals(areaName)) {
+                            shopOwnerStores.remove(userStore);
+                        }
                     }
+                }
+            }
+        } else {
+            shopOwnerStores.clear();
+            for(Store store : userNameToUser.get(userName).getMyAddedStores()) {
+                if(store.getAreaName().equals(areaName)) {
+                    shopOwnerStores.add(store);
                 }
             }
         }
@@ -390,6 +389,15 @@ public class UserManager {
         } else {
             if(stores.size() == 0) {
                 stores = new ArrayList<>(userNameToUser.get(userName).getAreaNameToAreas().get(areaName).getStoreIdToStore().values());
+                for (Store store : userNameToUser.get(userName).getAreaNameToAreas().get(areaName).getStoreIdToStore().values()) {
+                    for (SingleUser user : userNameToUser.values()) {
+                        for (Store userStore : user.getMyAddedStores()) {
+                            if (userStore.getId() == store.getId() && userStore.getAreaName().equals(areaName)) {
+                                stores.remove(userStore);
+                            }
+                        }
+                    }
+                }
             }
         }
         return engine.getShopOwnerOrderHistory(stores);
@@ -403,17 +411,17 @@ public class UserManager {
             areaOwnerStores = new ArrayList<>(areaStores.values());
         }
 
-        for(SingleUser user : userNameToUser.values()) {
-            for (Store store : user.getMyAddedStores()) {
-                if (store.getAreaName().equals(areaName)) {
-                    areaOwnerStores.remove(areaStores.get(store.getId()));
+        if(areaOwnerStores != null) {
+            for (SingleUser user : userNameToUser.values()) {
+                for (Store store : user.getMyAddedStores()) {
+                    if (store.getAreaName().equals(areaName)) {
+                        areaOwnerStores.remove(areaStores.get(store.getId()));
+                    }
                 }
             }
+            return  engine.getAreaOwnerStores(areaOwnerStores);
         }
 
-        if(areaOwnerStores != null) {
-          return  engine.getAreaOwnerStores(areaOwnerStores);
-        }
         return null;
     }
 

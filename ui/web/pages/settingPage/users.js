@@ -14,14 +14,6 @@ function getUsersInfo() {
     });
 }
 
-/*$(function () {
-    $("#usersTab").click(function () {
-        $(".dynamic-container").children().remove();
-            getUsersInfo();
-    });
-    $("#usersTab").click();
-});*/
-
 /*
              data will arrive in the next form:
              {
@@ -67,20 +59,23 @@ function refreshUsersList(users) {
 
         $(".users-list").append(
             "<li class=\"col-12 col-md-6 col-lg-3\">\n" +
-        "                <div class=\"cnt-block equal-hight\" style=\"height: 321px;\">\n" +
+        "                <div id=\"userCard" + index + "\" class=\"cnt-block equal-hight\" style=\"height: 321px;\">\n" +
         "                    <figure><img src=" + imageUrl + " class=\"img-responsive rounded-circle\"  alt=\"\"></figure>\n" +
         "                    <p class=\"user-name\">" + singleUser.userName + "</p> <!--userName-->\n" +
         "                    <p class=\"user-type\">" + userType + "</p> <!--type-->\n" +
         "                </div>\n" +
         "            </li>\n");
-
+        if(singleUser.isCurrentUser === true) {
+            document.getElementById("userCard" + index).classList.add("current-user");
+        }
     });
 }
 
 $(function () {
     $("#usersTab").click(function () {
         $(".dynamic-container").children().remove();
-        usersInterval = setInterval(getUsersInfo, 1500);
+        getUsersInfo();
+        usersInterval = setInterval(getUsersInfo, 3000);
     });
     $("#usersTab").click();
 

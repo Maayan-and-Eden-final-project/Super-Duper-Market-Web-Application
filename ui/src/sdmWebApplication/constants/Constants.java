@@ -48,6 +48,4 @@ public class Constants {
     public static final String ADD_ITEM = "addItem";
     public static final String GET_AREAS = "getAreas";
 
-
-
 }

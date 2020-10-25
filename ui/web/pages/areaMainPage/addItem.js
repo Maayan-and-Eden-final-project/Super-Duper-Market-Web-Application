@@ -24,11 +24,11 @@ function displayStoresOption(stores) {
             "            <figure><img src=" + storeImageUrl + " class=\"img-responsive\"  alt=\"\"></figure>\n" +
             "             <h3 class=\"store-name\">" + singleStore.storeName + "</h3>" +
             "           <p id=\"storeId\" class=\"addItemSingleStore\">Store Id: " + singleStore.storeId + " </p>\n" +
-            "<form id=\"add-item-store-form-" + singleStore.storeId + "\">" +
-            "<input type=\"number\" min=0 class=\"form-control addStoreItemPrice\" id=\"itemPrice" + singleStore.storeId + "\" placeholder=\"Price\" required>" +
+            "<form id=\"add-item-store-form-" + singleStore.storeId + "\" class=\"add-item-store-form\">" +
+            "<input type=\"number\" min=0 class=\"form-control add-store-item-price\" id=\"itemPrice" + singleStore.storeId + "\" placeholder=\"Price\" required>" +
             " <button id=\"addItemToStore" + singleStore.storeId + "\" type=\"submit\" class=\"btn btn-primary mb-2 addStoreItemSubmit\">Add Item To Store</button>\n" +
             "</form>" +
-            "        <div class=\"popup add-store-popup\" >\n" +
+            "        <div class=\"popup add-item-popup\" >\n" +
             "            <span class=\"popuptext\" id=\"myPopup-" + index + "\" ></span>" +
             "        </div> \n" +
             "       </div>" +

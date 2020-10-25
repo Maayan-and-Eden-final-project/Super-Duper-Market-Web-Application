@@ -71,28 +71,28 @@ public class SingleUser {
         areaNameToAreas.put(newArea.getAreaName(),newArea);
     }
 
-    public void handleAddFundsAction(String date, Float amount) {
+    public synchronized void handleAddFundsAction(String date, Float amount) {
         SingleAccountAction singleAccountAction =
                 new SingleAccountAction(AccountAction.ADD_FUNDS,date,amount,balance+amount, balance);
         balance += amount;
         accountActions.add(singleAccountAction);
     }
 
-    public void handleTransferAction(String date, Float amount) {
+    public synchronized void handleTransferAction(String date, Float amount) {
         SingleAccountAction singleAccountAction =
                 new SingleAccountAction(AccountAction.PAYMENT_TRANSFERRED,date,amount,balance - amount, balance);
         balance -= amount;
         accountActions.add(singleAccountAction);
     }
 
-    public void handlePaymentReceivedAction(String date, Float amount) {
+    public synchronized void handlePaymentReceivedAction(String date, Float amount) {
         SingleAccountAction singleAccountAction =
                 new SingleAccountAction(AccountAction.PAYMENT_RECEIVED,date,amount,balance + amount, balance);
         balance += amount;
         accountActions.add(singleAccountAction);
     }
 
-    public void addNewStoreToMyStoresList(Store newStore) {
+    public synchronized void addNewStoreToMyStoresList(Store newStore) {
         myAddedStores.add(newStore);
     }
 

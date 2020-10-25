@@ -22,15 +22,7 @@
     margin-left: 0!important;
 }
 
-.main-menu-item {
-    cursor: pointer;
-    display: grid!important;
-}
-
-.main-menu-item:hover {
-    color: #0d3f57;
-}
-
 .items-container {
     width: 95%;
 }
+
