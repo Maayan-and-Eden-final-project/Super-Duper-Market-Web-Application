@@ -1,0 +1,89 @@
+#newItemForm{
+    display: inline-flex;
+    margin-left: 9%;
+}
+
+.addItemFormControl{
+    margin-right: 18px;
+    width: 153px;
+    min-width: 153px;
+    font-size: 17px;
+}
+
+.addItemHeader {
+    font-size: 50px;
+    margin-top: 31px;
+    margin-left: 10%;
+    color: ghostwhite;
+}
+
+.addItemStoresHeader{
+    font-size: 34px;
+    color: ghostwhite;
+    margin: 30px 0 0 8%;
+}
+
+.addItemStoresList {
+    margin-top: 328px !important;
+}
+
+#addItemSubmit{
+    background-color: transparent;
+    border: 1px solid ghostwhite !important;
+    color: #fff;
+    border-radius: 10px;
+}
+
+#addItemSubmit:hover, #addItemSubmit:focus {
+    background-color: #ed5485;
+}
+
+.addItemSingleStore{
+    font-size: 18px !important;
+}
+
+.addStoreItemSubmit {
+    font-size: 19px;
+}
+
+.addItemStoreCard{
+    padding-bottom: 13px !important;
+}
+
+.addStoreAlert {
+    /* color: red;*/
+    font-size: 19px;
+    font-weight: bold;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+    border: 1px solid ghostwhite;
+    padding: 5px !important;
+}
+
+
+.add-item-stores-container {
+    width: 95%;
+}
+
+.add-item-stores-list {
+    margin-top: 166px;
+    width: 90%;
+    text-align: -webkit-center;
+    position: absolute!important;
+    margin-right: 0!important;
+    margin-left: 0!important;
+}
+
+.add-item-store-card {
+    font-family: 'GeosansLight';
+}
+
+.add-item-store-form {
+    text-align: -webkit-center;
+}
+
+.add-store-item-price{
+    margin-bottom: 10px;
+    font-size: 17px !important;
+    width: 114px;
+}

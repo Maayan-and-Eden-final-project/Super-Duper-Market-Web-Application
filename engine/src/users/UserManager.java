@@ -262,11 +262,12 @@ public class UserManager {
         List<String> messages = new ArrayList<>();
         List<Integer> addedStoresIds = new ArrayList<>();
 
+        customer.handleTransferAction(date,(float)(orderSummery.getTotalOrderCost()));
         for(SingleUser shopOwner : userNameToUser.values()) {
             for (Store store : shopOwner.getMyAddedStores()) {
                 if (orderSummery.getStoreIdToStoreInfo().containsKey(store.getId())) {
                     Float orderCost = storeIdToTotalCost.get(store.getId());
-                    customer.handleTransferAction(date,orderCost);
+
                     shopOwner.handlePaymentReceivedAction(date,orderCost);
                     messages.add(userName + " has ordered from your store (" + store.getName() + ")");
                     addedStoresIds.add(store.getId());
@@ -281,7 +282,6 @@ public class UserManager {
         for (Integer storeId : orderSummery.getStoreIdToStoreInfo().keySet()) {
             if(!addedStoresIds.contains(storeId)) {
                 Float orderCost = storeIdToTotalCost.get(storeId);
-                customer.handleTransferAction(date,orderCost);
                 areaOwner.handlePaymentReceivedAction(date,orderCost);
                 messages.add(userName + " has ordered from your store (" + area.getStoreIdToStore().get(storeId).getName() + ")");
             }

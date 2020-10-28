@@ -1,0 +1,53 @@
+thead {
+    text-align: center;
+}
+
+tbody {
+text-align: left;
+}
+
+.account-actions{
+    margin: 46px 136px 25px 136px;
+    background-color: white;
+    padding: 13px 37px 37px 37px;
+    border-radius: 15px;
+    background-color: ghostwhite;
+    color: #0d3f57;
+}
+
+.table-hover>tbody>tr:hover {
+    background-color: ghostwhite;
+    color: #0d3f57 ;
+}
+
+.add-fund.popup{
+    position: unset !important;
+}
+
+#form-account {
+    margin-top: 46px;
+    display: inline-block;
+}
+
+#amount-input{
+    margin-right: 17px;
+    width: 150px;
+    margin-bottom: 3px!important;
+}
+
+#date-input{
+    margin-bottom: 0 !important;
+    margin-right: 17px;
+    border-radius: 4px !important;
+    border-style: hidden!important;
+    padding-left: 6px;
+    width: 150px;
+}
+
+#add-funds-button{
+    margin-top: 0!important;
+}
+
+#add-funds-button:hover, #add-funds-button:focus{
+    background-color: #ed5485;
+}

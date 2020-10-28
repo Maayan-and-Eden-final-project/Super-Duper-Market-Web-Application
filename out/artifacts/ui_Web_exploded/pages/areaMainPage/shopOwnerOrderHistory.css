@@ -1,0 +1,87 @@
+.card-header .title {
+    font-size: 17px;
+    color: #000;
+}
+.card-header .accicon {
+    float: right;
+    font-size: 20px;
+    width: 1.2em;
+}
+.card-header{
+    cursor: pointer;
+    border-bottom: none;
+}
+.card{
+    border: 1px solid #ddd;
+}
+.card-body{
+    border-top: 1px solid #ddd;
+}
+.card-header:not(.collapsed) .rotate-icon {
+    transform: rotate(180deg);
+}
+
+.collapse-order {
+    visibility: unset !important;
+}
+
+#orderHistoryAccordion {
+    margin-bottom: 50px;
+    margin-left: 85px;
+    margin-top: 54px;
+    width: 100%;
+}
+
+.store-orders-info {
+    grid-row: 1/3 !important;
+    display: flow-root !important;
+    padding-bottom: 1%;
+    color: #26394E;
+    font-weight: bold;
+    margin-right: 34px;
+    font-size: 18px;
+    padding-top: 35px;
+}
+
+.store-orders-img-holder {
+    grid-row: 1/3 !important;
+    display: flow-root !important;
+    margin-right: 34px;
+    width: 100px;
+}
+
+.ordersHistoryHeader {
+    font-size: 50px;
+    margin-top: 31px;
+    margin-left: 0%;
+    color: ghostwhite;
+    margin-bottom: 25px;
+}
+
+.single-order-info {
+    grid-row: 1/8 !important;
+    display: flow-root !important;
+    padding-bottom: 1%;
+    color: #26394E;
+    font-weight: bold;
+    margin-right: 34px;
+    font-size: 18px;
+    padding-top: 35px;
+}
+
+.orderHistoryHolder {
+    position: absolute;
+    min-width: 90%;
+}
+
+.singleStoreOrders {
+    margin-right: 43px;
+}
+
+.singleShopOrder {
+    width: 100%;
+}
+
+.noOrders {
+    font-size: 21px;
+}

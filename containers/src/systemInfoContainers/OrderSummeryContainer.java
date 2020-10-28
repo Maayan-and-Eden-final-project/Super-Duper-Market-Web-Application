@@ -56,7 +56,7 @@ public class OrderSummeryContainer implements Containable {
         this.totalShippingCost = totalShippingCost;
     }
 
-    public Double getTotalOrderCost() {
+    public double getTotalOrderCost() {
         return totalOrderCost;
     }
 
