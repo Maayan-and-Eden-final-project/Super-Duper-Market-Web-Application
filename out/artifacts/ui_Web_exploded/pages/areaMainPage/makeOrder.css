@@ -1,0 +1,234 @@
+.newOrderItemCard{
+    width: 315px;
+    font-family: GeosansLight !important;
+}
+
+.newOrderHeader {
+    font-size: 50px;
+    margin-top: 31px;
+    margin-left: 10%;
+    color: ghostwhite;
+}
+
+#newOrderForm {
+    display: inline-flex;
+    margin-left: 9%;
+}
+
+.orderFormControl {
+    margin-right: 18px;
+    width: 153px;
+    min-width: 153px;
+    font-size: 17px;
+    height: auto !important;
+}
+
+.newOrderItemCard{
+    padding-bottom: 13px !important;
+}
+
+.newOrderSingleItem{
+    font-size: 18px !important;
+}
+
+.newOrderItemSubmit{
+    font-size: 19px;
+}
+
+.newOrderItemAmount {
+    margin-bottom: 10px;
+    font-size: 17px !important;
+}
+
+
+.newOrderItemsHeader{
+    font-size: 34px;
+    color: ghostwhite;
+    margin: 20px 0 0 8%;
+}
+
+
+.newOrderItemsList{
+    margin-top: 394px !important;
+}
+
+.orderSummery-header {
+    left: 40%;
+}
+
+.newOrderDiscountsHeader {
+    font-size: 44px;
+    color: ghostwhite;
+    margin: 53px 0 0 0;
+}
+
+.discount-container {
+    width: fit-content!important;
+    position: relative!important;
+}
+
+#goToSummeryButton {
+    margin-top: 40px;
+    font-size: 24px;
+}
+
+.orderSummery-container {
+    width: 95%;
+    margin-left: 8%;
+    margin-top: 80px;
+}
+
+.discounts-container {
+    margin-top: 25px !important;
+}
+
+
+.orderSummery-storesList{
+
+}
+
+.newOrderDiscountsList {
+    position: relative !important;
+    margin-top: 7px !important;
+}
+
+.minimalCartHeader{
+    font-size: 44px;
+    color: ghostwhite;
+    margin: 53px 0 0 0;
+}
+
+.offer-label{
+    color: #0d3f57;
+}
+
+.add-item-popup {
+    position: unset !important;
+    display: unset !important;
+    cursor: unset !important;
+}
+
+.minimalCartStoreCard{
+    width: 300px !important;
+}
+
+.minimalCartList {
+    margin-top: 293px !important;
+}
+
+.orderSummeryButtons{
+    margin-bottom: 30px;
+    margin-left: 153px;
+}
+
+#confirmOrderButton {
+    margin: 8px;
+    font-size: 21px;
+    width: 128px;
+}
+
+#cancelOrderButton {
+    margin: 8px;
+    font-size: 21px;
+    width: 128px;
+}
+
+#nextStepButton {
+    font-size: 22px;
+    width: 106px;
+    margin-top: 24px;
+    margin-left: 109px;
+}
+
+.newOrderDiscountCard {
+    font-family: 'GeosansLight';
+}
+
+.newOrderSingleDiscount {
+    font-weight: bolder !important;
+    font-size: 16px !important;
+}
+
+.discountHeaders {
+    color: #50309e !important;
+    font-size: 23px !important;
+}
+
+.newOrderDiscountSubmit {
+    font-size: 20px !important;
+}
+
+.discount-name{
+    font-size: 25px !important;
+}
+
+.order-summery-information-row {
+    background: ghostwhite;
+    padding-top: 13px;
+    font-size: 18px !important;
+    width: fit-content;
+    display: inline-block;
+}
+
+.summery-store-information {
+    font-size: 18px !important;
+}
+
+.summeryStoreCard {
+    width: 782px;
+}
+
+.newOrderFinishSubmit {
+    font-size: 23px;
+    width: 108px;
+}
+
+.newOrderFeedbackList {
+    margin-top: 252px !important;
+}
+
+.newOrderFeedbackHeader {
+    color: ghostwhite;
+    font-size: 46px;
+    margin-top: 36px;
+}
+
+.feedback-store-name{
+    font-size: 30px;
+}
+
+.newOrderFeedbackStore {
+    font-size: 19px !important;
+}
+
+.feedbackCard {
+    font-size: 19px;
+    color: black;
+}
+
+.newOrderFeedbackSubmit {
+    font-size: 19px !important;
+}
+
+.feedbackReview {
+    margin-top: 21px;
+}
+
+.minimalCartSingleStore {
+    font-size: 21px !important;
+}
+
+.minimalCartStoreHeader {
+    font-size: 31px !important;
+}
+
+#displayDiscountsButton {
+    font-size: 21px !important;
+    margin-top: 12px;
+    margin-left: 216px;
+}
+
+.newOrderFeedbackCard {
+    font-family: 'GeosansLight';
+}
+

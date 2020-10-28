@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Super Duper Market</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../common/bootstrap.min.css">
+    <link rel="stylesheet" href="settingPageStyle.css">
+    <link rel="stylesheet" href="usersCards.css">
+    <link rel="stylesheet" href="areas.css">
+    <link rel="stylesheet" href="account.css">
+    <link rel="stylesheet" href="../areaMainPage/messagesStyle.css">
+    <script src="../../common/jquery-2.0.3.min.js"></script>
+    <script src="../../common/bootstrap.min.js"></script>
+    <script src="../../common/context-path-helper.js"></script>
+    <script src="account.js"></script>
+    <script src="loadFile.js"></script>
+    <script src="users.js"></script>
+    <script src="areas.js"></script>
+    <script src="settingPage.js"></script>
+    <script src="../areaMainPage/messagesHandler.js"></script>
+
+</head>
+<body class="header-row">
+<button id="messageButton" type="button" class="btn btn-primary" style="display: none;"
+        data-toggle="modal" data-target="#messageModal">
+</button>
+<div class="modal fade in" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title" id="exampleModalLabel">Messages</p>
+                <button id="closed-button" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+            </div>
+            <div id="messages-body" class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row sidebar-row">
+    <div class="col-xs-6">
+        <div class="sidebar">
+            <div class="image-icon" >
+                <img id="icon" src="../../common/images/superDuperMarketLogoTest.png"/>
+            </div>
+        </div>
+    </div>
+    <div class="file-btn-row col-xs-6 ">
+        <a href="#" id="uploadFileTab" class="upload-file-btn">Upload File</a>
+    </div>
+    <div class="col-xs-12  container setting-page-container">
+        <ul class="nav nav-tabs tabs-style">
+            <li class="setting-page-tabs"><a href="#" id="usersTab" class="single-tab-style active" >Users</a></li>
+            <li class="setting-page-tabs"><a href="#" id="areasTab" class="single-tab-style">Areas</a></li>
+            <li class="setting-page-tabs"><a href="#" id="accountTab" class="single-tab-style">Account</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="dynamic-container">
+
+</div>
+
+
+</body>
+</html>
+
+

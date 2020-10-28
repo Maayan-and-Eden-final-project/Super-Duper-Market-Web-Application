@@ -1,0 +1,28 @@
+
+<link rel="stylesheet" href="../../common/bootstrap.min.css">
+<link rel="stylesheet" href="loginStyle.css">
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <img src= "../../common/images/superDuperMarketLogoTest.png"
+                 id="icon" alt="User Icon" />
+        </div>
+
+        <!-- Login Form -->
+            <form method="GET" action="login">
+                <br>
+                <input type="text" name="username" class="fadeIn second" placeholder="username" required/><br>
+                <br>
+                <input type="radio" id="customer" class="fadeIn third" name="usertype" value="0" required>
+                <label for="customer" class="fadeIn third">Customer</label><br>
+                <input type="radio" id="shopOwner" class="fadeIn third" name="usertype" value="1" required>
+                <label for="shopOwner" class="fadeIn third">Shop Owner</label><br>
+                <br>
+                <input type="submit" class="fadeIn fourth" value="Login"/>
+            </form>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+#newStoreForm{
+    display: inline-flex;
+    margin-left: 9%;
+}
+
+.addStoreFormControl{
+    margin-right: 18px;
+    width: 153px;
+    min-width: 153px;
+    font-size: 17px;
+}
+
+.addStoreHeader {
+    font-size: 50px;
+    margin-top: 31px;
+    margin-left: 10%;
+    color: ghostwhite;
+}
+
+.addStoreItemsHeader{
+    font-size: 34px;
+    color: ghostwhite;
+    margin: 30px 0 0 8%;
+}
+
+.addStoreItemsList {
+    margin-top: 328px !important;
+}
+
+#addStoreSubmit{
+    background-color: transparent;
+    border: 1px solid ghostwhite !important;
+    color: #fff;
+    border-radius: 10px;
+}
+
+#addStoreSubmit:hover, #addStoreSubmit:focus {
+    background-color: #ed5485;
+}
+
+.addStoreSingleItem{
+    font-size: 18px !important;
+}
+
+.addStoreItemPrice {
+    margin-bottom: 10px;
+    font-size: 17px !important;
+}
+
+.addStoreItemSubmit {
+    font-size: 19px;
+}
+
+.addStoreItemCard{
+    padding-bottom: 13px !important;
+}
+
+.addStoreAlert {
+   /* color: red;*/
+    font-size: 19px;
+    font-weight: bold;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+    border: 1px solid ghostwhite;
+    padding: 5px !important;
+}
+
+.addStoreAlertClose{
+    color: ghostwhite !important;
+    font-size: 25px !important;
+    opacity: 100% !important;
+}
+
+.successAlert{
+    color: green !important;
+}

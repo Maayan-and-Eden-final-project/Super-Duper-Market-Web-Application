@@ -1,0 +1,93 @@
+/* @font-face kit by Fonts2u (https://fonts2u.com) */ @font-face {font-family:"GeosansLight";src:url("fontsResource/geosans/GeosansLight.eot?") format("eot"),url("fontsResource/geosans/GeosansLight.woff") format("woff"),url("fontsResource/geosans/GeosansLight.ttf") format("truetype"),url("fontsResource/geosans/GeosansLight.svg#GeosansLight") format("svg");font-weight:normal;font-style:normal;}
+
+
+body, html {
+    background-color: #FED057 ;
+}
+
+
+h1 {
+    color: #5bc0de;
+    margin-right: 70px;
+    text-align: right ;
+    font-family: "Calibri Light";
+    font-weight: bold;
+}
+
+h2 {
+    color: #ffa8f0;
+    text-align: right;
+    font-family:GeosansLight ;
+    margin-right: 3%;
+}
+
+.split {
+    top: 0;
+    z-index: 1;
+}
+
+/* Control the left side */
+.left {
+    left: 0;
+   /* min-width: border-box;*/
+    width: 60%;
+    resize: both;
+   /* position: fixed;*/
+}
+
+.left-img {
+    height: 100%;
+    position: absolute;
+}
+
+/* Control the right side */
+.right {
+    max-height: 100%;
+    min-height: 180px;
+    height: 180px;
+    margin-top: 10%;
+   /* min-width: border-box;*/
+    right: 0;
+    width: 40%;
+    resize: both;
+    position: absolute;
+    background-color: #FED057;
+}
+
+.icon-image {
+    margin-bottom: 15%;
+    margin-left: 8%;
+    margin-right: 8%;
+    float: left;
+}
+
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+    height: 100%;
+    min-width: fit-content;
+    text-align: right;
+    position: absolute;
+}
+
+
+
+.btn-info {
+    background-color: #5bc0de;
+}
+.btn {
+    background-color: #FED057;
+    border-radius: 10px;
+    border-color: #FFFFFF;
+    text-fill: #FFFFFF;
+    margin-right: 10% ;
+    font-weight: bold;
+    border-width: 2px;
+    background-radius: 10px;
+    font-size: 25px;
+}
+
+.btn-outline-info:hover, .btn-info:hover {
+    background-color: #26394E !important;
+    border-color: #ffffff;
+}

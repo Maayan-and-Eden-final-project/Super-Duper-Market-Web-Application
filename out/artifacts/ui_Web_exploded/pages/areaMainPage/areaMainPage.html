@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Super Duper Market</title>
+    <link rel="stylesheet" href="../../common/bootstrap.min.css">
+    <link rel="stylesheet" href="../settingPage/usersCards.css">
+    <link rel="stylesheet" href="areaMainPage.css">
+    <link rel="stylesheet" href="itemsDisplay.css">
+    <link rel="stylesheet" href="storesDisplay.css">
+    <link rel="stylesheet" href="addStore.css">
+    <link rel="stylesheet" href="customerMenu.css">
+    <link rel="stylesheet" href="makeOrder.css">
+    <link rel="stylesheet" href="feedback.css">
+    <link rel="stylesheet" href="customerOrderHistory.css">
+    <link rel="stylesheet" href="shopOwnerOrderHistory.css">
+    <link rel="stylesheet" href="messagesStyle.css">
+    <link rel="stylesheet" href="addItem.css">
+
+    <script src="../../common/jquery-2.0.3.min.js"></script>
+    <script src="../../common/bootstrap.min.js"></script>
+    <script src="../../common/context-path-helper.js"></script>
+    <script src="areaMainPage.js"></script>
+    <script src="areaOwnerMenu.js"></script>
+    <script src="makeOrder.js"></script>
+    <script src="itemsDisplay.js"></script>
+    <script src="storesDisplay.js"></script>
+    <script src="messagesHandler.js"></script>
+    <script src="feedback.js"></script>
+    <script src="customerOrderHistory.js"></script>
+    <script src="shopOwnerOrderHistory.js"></script>
+    <script src="userTypeMenu.js"></script>
+    <script src="addItem.js"></script>
+
+</head>
+<body class="main-body">
+<button id="messageButton" type="button" class="btn btn-primary" style="display: none;"
+        data-toggle="modal" data-target="#messageModal">
+</button>
+<div class="modal fade in" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title" id="exampleModalLabel">Messages</p>
+                <button id="closed-button" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+            </div>
+            <div id="messages-body" class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="menu">
+    <div class="hamburger">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <div class="menu-inner">
+        <ul id="menu-items">
+            <li id="items" class="main-menu-item">Show Items</li>
+            <li id="stores" class="main-menu-item">Show Stores</li>
+        </ul>
+    </div>
+
+    <svg version="1.1" id="blob">
+        <path id="blob-path" d="M60,500H0V0h60c0,0,20,172,20,250S60,900,60,500z"/>
+    </svg>
+</div>
+<div class="row">
+    <img src="../../common/images/superDuperMaketLight.png" class="area-logo-image">
+</div>
+<div class="dynamic-container">
+
+</div>
+
+</body>
+</html>
